@@ -1,5 +1,6 @@
 import numpy as np
 from config import SimulationConfig
+from plotting import Animation
 
 class Simulation:
 
@@ -41,7 +42,7 @@ class Simulation:
         Does one timestep in the visceck model
 
         Returns:
-            new walkers after step
+            walkers after step
         """
         
         # get which are neighbors 
@@ -68,6 +69,9 @@ class Simulation:
         return self.walkers
     
     # TODO
-    def plot(self):
-        return
-    
+    def run(self):
+        tend = self.config.timestepsize * self.config.runtimesteps
+        while self.time < tend:
+            
+            self.step()
+
