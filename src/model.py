@@ -69,9 +69,16 @@ class Simulation:
         return self.walkers
     
     # TODO
-    def run(self):
+    def run(self, write=False):
         tend = self.config.timestepsize * self.config.runtimesteps
+        if write:
+            # TODO write initial pos to file 
+            pass
         while self.time < tend:
-            
             self.step()
+            if write:
+            # TODO write pos to file 
+                pass
+            
+        print(f"Reached time t: {self.time} in simulation. Run for {self.time/self.config.timestepsize} steps in total.")
 
