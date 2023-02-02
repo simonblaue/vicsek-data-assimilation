@@ -12,26 +12,50 @@ class Simulation:
         self.config = SimulationConfig()
         # Array with posx, posy, orientation as rad for n walkers
         self.walkers = np.random.rand(self.config.n_particles, 3)
+        self.walkers[:,0] *= self.config.x_axis
+        self.walkers[:,1] *= self.config.y_axis
+        self.walkers[:,2] *= 2*np.pi
         self.time = 0
         
 
-    def distances(self):
+    def abs_distances(self):
         distances = np.zeros((self.config.n_particles, self.config.n_particles)) 
         walker_pos = self.walkers[:,0:2]
 
         for i,walker in enumerate(walker_pos):
+ 
             distances[i,:] = np.linalg.norm(walker_pos - walker, axis=1)
+            
+            distances[i,i] = np.Inf
 
         return distances
         
     
+    
     def step(self):
-        # Calculate all distances to every other walker
-
-        # In 
+        # get which are neigbours 
+        aligner = self.abs_distances() < self.config.alignment_radius
         
+        # calculate mean angles
+        all_phi = self.walkers[:,2]
+        av_phi_per_walker = np.zeros(self.config.n_particles)
+        for i in range(self.config.n_particles):
+            if np.all(aligner[i] == False):
+                av_phi_per_walker[i] = 0
+                continue
+            av_phi_per_walker[i] = np.mean(all_phi[aligner[i]])
+
+        # noise for new angle
+        noise = np.random.randn(self.config.n_particles)
+        self.walkers[:,2] = av_phi_per_walker + noise 
+        
+        # Calculate new positions
+        new_directions = np.array([np.cos(self.walkers[:,2]), np.sin(self.walkers[:,2])]).transpose()
+        
+        self.walkers[:,0:2] = self.walkers[:,0:2] + self.config.velocity * self.config.timestepsize * new_directions 
+    
         self.time += self.config.timestepsize
-        return 
+        return self.walkers
     
     # TODO
     def plot(self):
