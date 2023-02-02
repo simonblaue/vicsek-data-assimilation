@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from typing import 
+from dataclasses import dataclass, field
 
 @dataclass
 class SimulationConfig:
@@ -16,3 +15,5 @@ class SimulationConfig:
 
     runtimesteps: int = 100
     timestepsize: float = 0.1
+
+    examplearray: list[int] = field(default_factory=list)
