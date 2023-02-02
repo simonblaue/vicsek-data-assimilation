@@ -14,7 +14,15 @@ class Simulation:
         self.time = 0
         
 
+
     def abs_distances(self):
+        """
+        Calculates the absolute distance from every walker to every other walker. 
+        Distance to itself is set to Inf for easier use, TODO maybe change this?
+
+        Returns:
+            numpy Array(n,n): distances from every walker to every walker
+        """
         distances = np.zeros((self.config.n_particles, self.config.n_particles)) 
         walker_pos = self.walkers[:,0:2]
 
@@ -29,7 +37,14 @@ class Simulation:
     
     
     def step(self):
-        # get which are neigbours 
+        """
+        Does one timestep in the visceck model
+
+        Returns:
+            new walkers after step
+        """
+        
+        # get which are neighbors 
         aligner = self.abs_distances() < self.config.alignment_radius
         
         # calculate mean angles
@@ -45,9 +60,8 @@ class Simulation:
         noise = np.random.randn(self.config.n_particles)
         self.walkers[:,2] = av_phi_per_walker + noise 
         
-        # Calculate new positions
+        # Calculate and set new positions
         new_directions = np.array([np.cos(self.walkers[:,2]), np.sin(self.walkers[:,2])]).transpose()
-        
         self.walkers[:,0:2] = self.walkers[:,0:2] + self.config.velocity * self.config.timestepsize * new_directions 
     
         self.time += self.config.timestepsize
