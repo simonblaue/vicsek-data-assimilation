@@ -1,10 +1,6 @@
 import numpy as np
 from config import SimulationConfig
 
-from itertools import permutations
-
-
-
 class Simulation:
 
     def __init__(self):
