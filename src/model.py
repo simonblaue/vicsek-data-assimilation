@@ -1,12 +1,13 @@
+from dataclasses import dataclass
+
 import numpy as np
-from config import SimulationConfig
-# from plotting import Animation
 
-class Simulation:
 
-    def __init__(self):
+class ViszecSimulation:
+
+    def __init__(self, config):
         # Init Config
-        self.config = SimulationConfig()
+        self.config = config
         # Array with posx, posy, orientation as rad for n walkers
         self.walkers = np.random.rand(self.config.n_particles, 3)
         self.walkers[:,0] *= self.config.x_axis
@@ -15,7 +16,7 @@ class Simulation:
         self.time = 0
         
 
-    def distances(self):
+    def distances(self) -> np.ndarray:
         """
         Calculates the  distance vector from every walker to every other walker. 
 
@@ -35,7 +36,7 @@ class Simulation:
         return distances
         
         
-    def av_directions(self):
+    def av_directions(self) -> np.ndarray:
          # get which are neighbors 
         dists = self.distances()
         d =  np.linalg.norm(dists, axis=2)
@@ -94,3 +95,54 @@ class Simulation:
             
         print(f"Reached time t: {self.time} in simulation. Run for {self.time/self.config.timestepsize} steps in total.")
 
+
+@dataclass
+class BaseSimulationConfig:
+
+    exec_ref = ViszecSimulation
+
+    # particles
+    n_particles: int = 300
+    # repulsion_radius: float = 0.5
+    alignment_radius: float = 1.0
+
+    # field
+    x_axis = 25
+    y_axis = 25
+
+    # simulation
+    velocity: float = 0.03
+    noisestrength: float = 0.1
+
+    endtime: float = 100
+    timestepsize: float = 1.0
+
+
+# Das sind base parameter für random movement:
+
+@dataclass
+class RandomSimulationConfig(BaseSimulationConfig):
+
+    # field
+    x_axis = 7
+    y_axis = 7
+
+    # simulation
+    velocity: float = 0.03
+    noisestrength: float = 2.0
+
+
+######
+
+# Das sind parameter für orderd movement:
+
+@dataclass
+class OrderedSimulationConfig(BaseSimulationConfig):
+
+    # field
+    x_axis = 25
+    y_axis = 25
+
+    # simulation
+    velocity: float = 0.03
+    noisestrength: float = 0.1
