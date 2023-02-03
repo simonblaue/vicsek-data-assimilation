@@ -17,11 +17,13 @@ def get_cmap(n: int, cmapname:str = 'hsv') -> Colormap:
     return plt.cm.get_cmap(cmapname, n)
 
 def n_colors(n: int, cmapname:str = 'hsv') -> List:
+    '''generates list list of n colors from given matplotlib colormap'''
     cmap = get_cmap(n, cmapname)
     return [cmap(i) for i in range(n)]
 
 
 def triangle(x: float, y: float, phi: float) -> np.ndarray:
+    '''converts x, y, phi to triangle points a, b, c'''
     ax = (x+POLYGONSIZE*np.cos(phi))
     ay = (y+POLYGONSIZE*np.sin(phi))
 
@@ -33,12 +35,6 @@ def triangle(x: float, y: float, phi: float) -> np.ndarray:
 
     triangle = np.array([[ax, ay], [bx, by], [cx, cy]])
     return triangle
-
-
-def polygon(datapoint: Tuple[float, float, float] = (0,0,0)) -> Polygon:
-    x, y, phi = datapoint
-    polygon_points = triangle(x,y,phi,)
-    return Polygon(polygon_points, facecolor = 'green', alpha=0.5)
 
 
 class VicsekAnimation():
@@ -66,11 +62,10 @@ class VicsekAnimation():
 
 
     # initialization function: plot the background of each frame
-    def init_function_triangle(self):
+    def init_function(self):
         return self.vicsek_polygons
 
     def animate_triangle(self, i: int):
-
         # run simulation for <FREQUENCY steps>
         for _ in range(self.config.simulation_frequency):
             self.simulation.step()
@@ -82,26 +77,30 @@ class VicsekAnimation():
         return self.vicsek_polygons
 
     def init_vicsek(self):
-        self.vicsec_colors = n_colors(self.simulation.config.n_particles)
+        '''initializes polygons in vicsek plot'''
+        self.vicsek_colors = n_colors(self.simulation.config.n_particles)
         vicsek_polygon_coors = [
             triangle(w[0],w[1], w[2]) for w in self.simulation.walkers
         ]
         self.vicsek_polygons = [
-            Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(vicsek_polygon_coors, self.vicsec_colors)
+            Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(vicsek_polygon_coors, self.vicsek_colors)
         ]
         for p in self.vicsek_polygons:
             self.axis_simulation.add_patch(p)
 
     def update_vicsek(self):
+        '''updates polygons in vicsek plot'''
         for w, p in zip(self.simulation.walkers, self.vicsek_polygons):
             t = triangle(w[0], w[1], w[2])
             p.set_xy(t)
 
     def init_kalmann(self):
+        '''initializes polygons in kalmann plot'''
         # colors green red
         pass
 
     def update_kalmann(self):
+        '''updates polygons in kalmann plot'''
         # change color of filter if filter is assigned to other particle
         pass
 
@@ -111,7 +110,7 @@ class VicsekAnimation():
         anim = animation.FuncAnimation(
             self.fig, 
             self.animate_triangle, 
-            init_func=self.init_function_triangle,
+            init_func=self.init_function,
             # frames=np.arange(1, 10, 0.05), 
             frames=self.config.frames, 
             interval=self.config.plot_interval, 
