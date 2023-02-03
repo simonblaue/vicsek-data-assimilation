@@ -15,7 +15,6 @@ class Simulation:
         self.time = 0
         
 
-
     def distances(self):
         """
         Calculates the  distance vector from every walker to every other walker. 
@@ -72,13 +71,12 @@ class Simulation:
         
         # Calculate and set new positions
         new_directions = np.array([np.cos(self.walkers[:,2]), np.sin(self.walkers[:,2])]).transpose()
-        
         self.walkers[:,0:2] +=  self.config.velocity * self.config.timestepsize * new_directions 
+        
         # Apply boundaries
         self.walkers[:,0] = np.mod(self.walkers[:,0], self.config.x_axis)
         self.walkers[:,1] = np.mod(self.walkers[:,1], self.config.y_axis)
     
-        
         self.time += self.config.timestepsize
         return self.walkers
     
