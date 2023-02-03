@@ -1,13 +1,14 @@
+from dataclasses import dataclass, field
 from typing import List, Tuple
 
 import numpy as np
-from config import FREQUENCY, POLYGONSIZE, RESOLUTION, THETA
+from config import POLYGONSIZE, THETA
 from matplotlib import animation
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.colors import Colormap
 from matplotlib.patches import Polygon
-from model import OrderedSimulationConfig, RandomSimulationConfig
+from vicsek import OrderedSimulationConfig, RandomSimulationConfig
 
 
 def get_cmap(n: int, cmapname:str = 'hsv') -> Colormap:
@@ -39,8 +40,12 @@ def polygon(datapoint: Tuple[float, float, float] = (0,0,0)) -> Polygon:
     polygon_points = triangle(x,y,phi,)
     return Polygon(polygon_points, facecolor = 'green', alpha=0.5)
 
-class Animation():
-    def __init__(self):        
+
+class VicsekAnimation():
+    def __init__(self, config):
+
+        self.config = config
+
         # initializing the Simulation
         self.simulation = RandomSimulationConfig.exec_ref(RandomSimulationConfig)
 
@@ -48,21 +53,13 @@ class Animation():
         self.set_axis(self.axis_simulation, 'Model')
         self.set_axis(self.axis_tracking, 'Tracking')
 
-        # initializing all polygons and add them to axes
-        # TODO: create function for this and use function for kalmann polygons as well
-        self.colors = n_colors(self.simulation.config.n_particles)
-        self.polygon_coors = [
-            triangle(w[0],w[1], w[2]) for w in self.simulation.walkers
-        ]
-        self.polygons = [Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(self.polygon_coors, self.colors)]
-        for p in self.polygons:
-            self.axis_simulation.add_patch(p)
+        self.init_vicsek()
+        # TODO: init kalman
 
 
     def set_axis(self, ax: Axes, title: str):
-        boundary = 0.5
-        ax.set_xlim(-boundary, self.simulation.config.x_axis+boundary)
-        ax.set_ylim(-boundary, self.simulation.config.x_axis+boundary)
+        ax.set_xlim(-self.config.boundary, self.simulation.config.x_axis+self.config.boundary)
+        ax.set_ylim(-self.config.boundary, self.simulation.config.x_axis+self.config.boundary)
         ax.set_title(title)
         ax.set_aspect('equal', 'box')
         ax.grid(alpha=0.25)
@@ -70,21 +67,43 @@ class Animation():
 
     # initialization function: plot the background of each frame
     def init_function_triangle(self):
-        return self.polygons
+        return self.vicsek_polygons
 
     def animate_triangle(self, i: int):
 
         # run simulation for <FREQUENCY steps>
-        for j in range(FREQUENCY):
+        for _ in range(self.config.simulation_frequency):
             self.simulation.step()
 
-        # update plot
-        # TODO: new function to call for kalmann polygons
-        for w, p in zip(self.simulation.walkers, self.polygons):
+        self.update_vicsek()
+
+        # TODO: update kalmann
+
+        return self.vicsek_polygons
+
+    def init_vicsek(self):
+        self.vicsec_colors = n_colors(self.simulation.config.n_particles)
+        vicsek_polygon_coors = [
+            triangle(w[0],w[1], w[2]) for w in self.simulation.walkers
+        ]
+        self.vicsek_polygons = [
+            Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(vicsek_polygon_coors, self.vicsec_colors)
+        ]
+        for p in self.vicsek_polygons:
+            self.axis_simulation.add_patch(p)
+
+    def update_vicsek(self):
+        for w, p in zip(self.simulation.walkers, self.vicsek_polygons):
             t = triangle(w[0], w[1], w[2])
             p.set_xy(t)
 
-        return self.polygons
+    def init_kalmann(self):
+        # colors green red
+        pass
+
+    def update_kalmann(self):
+        # change color of filter if filter is assigned to other particle
+        pass
 
 
     def __call__(self):
@@ -93,14 +112,39 @@ class Animation():
             self.fig, 
             self.animate_triangle, 
             init_func=self.init_function_triangle,
-            frames=np.arange(1, 10, 0.05), 
-            interval=20, 
+            # frames=np.arange(1, 10, 0.05), 
+            frames=self.config.frames, 
+            interval=self.config.plot_interval, 
             blit=True
         )
         plt.show()
 
 
+@dataclass
+class VicsekAnimationConfig:
+
+    exec_ref = VicsekAnimation
+
+    # simulation steps before plotting
+    simulation_frequency: int = 2
+    
+    # simulation steps before sampling
+    sample_frequency: int = 1
+
+    # delay between frames in ms
+    plot_interval = 20
+
+    # frames per simulation
+    frames = 100
+
+    # boundary around plots
+    boundary = 0.5
+    
+
+
+
+
 if __name__ == "__main__":
-    anim = Animation()
+    anim = VicsekAnimationConfig.exec_ref(VicsekAnimationConfig)
     anim()
 
