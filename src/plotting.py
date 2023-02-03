@@ -65,16 +65,6 @@ class VicsekAnimation():
     def init_function(self):
         return self.vicsek_polygons
 
-    def animate_triangle(self, i: int):
-        # run simulation for <FREQUENCY steps>
-        for _ in range(self.config.simulation_frequency):
-            self.simulation.step()
-
-        self.update_vicsek()
-
-        # TODO: update kalmann
-
-        return self.vicsek_polygons
 
     def init_vicsek(self):
         '''initializes polygons in vicsek plot'''
@@ -104,12 +94,28 @@ class VicsekAnimation():
         # change color of filter if filter is assigned to other particle
         pass
 
+    # TODO:
+    def return_metrics(self):
+        pass
+
+
+    def animate_step(self, i: int):
+            # run simulation for <FREQUENCY steps>
+            for _ in range(self.config.simulation_frequency):
+                self.simulation.step()
+
+            self.update_vicsek()
+
+            # TODO: update kalmann
+
+            return self.vicsek_polygons
+
 
     def __call__(self):
         # call the animator.  blit=True means only re-draw the parts that have changed.
         anim = animation.FuncAnimation(
             self.fig, 
-            self.animate_triangle, 
+            self.animate_step, 
             init_func=self.init_function,
             # frames=np.arange(1, 10, 0.05), 
             frames=self.config.frames, 
@@ -117,6 +123,10 @@ class VicsekAnimation():
             blit=True
         )
         plt.show()
+
+        self.return_metrics()
+
+
 
 
 @dataclass
