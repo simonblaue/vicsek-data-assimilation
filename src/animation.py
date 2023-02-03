@@ -2,39 +2,12 @@ from dataclasses import dataclass, field
 from typing import List, Tuple
 
 import numpy as np
-from config import POLYGONSIZE, THETA
+from polygons import n_colors, xyphi_to_abc
 from matplotlib import animation
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
-from matplotlib.colors import Colormap
 from matplotlib.patches import Polygon
 from vicsek import OrderedSimulationConfig, RandomSimulationConfig
-
-
-def get_cmap(n: int, cmapname:str = 'hsv') -> Colormap:
-    '''Returns a function that maps each index in 0, 1, ..., n-1 to a distinct 
-    RGB color; the keyword argument name must be a standard mpl colormap name.'''
-    return plt.cm.get_cmap(cmapname, n)
-
-def n_colors(n: int, cmapname:str = 'hsv') -> List:
-    '''generates list list of n colors from given matplotlib colormap'''
-    cmap = get_cmap(n, cmapname)
-    return [cmap(i) for i in range(n)]
-
-
-def triangle(x: float, y: float, phi: float) -> np.ndarray:
-    '''converts x, y, phi to triangle points a, b, c'''
-    ax = (x+POLYGONSIZE*np.cos(phi))
-    ay = (y+POLYGONSIZE*np.sin(phi))
-
-    bx = (x+POLYGONSIZE*np.cos(phi+THETA))
-    by = (y+POLYGONSIZE*np.sin(phi+THETA))
-
-    cx = (x+POLYGONSIZE*np.cos(phi-THETA))
-    cy = (y+POLYGONSIZE*np.sin(phi-THETA))
-
-    triangle = np.array([[ax, ay], [bx, by], [cx, cy]])
-    return triangle
 
 
 class VicsekAnimation():
@@ -70,7 +43,7 @@ class VicsekAnimation():
         '''initializes polygons in vicsek plot'''
         self.vicsek_colors = n_colors(self.simulation.config.n_particles)
         vicsek_polygon_coors = [
-            triangle(w[0],w[1], w[2]) for w in self.simulation.walkers
+            xyphi_to_abc(w[0],w[1], w[2]) for w in self.simulation.walkers
         ]
         self.vicsek_polygons = [
             Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(vicsek_polygon_coors, self.vicsek_colors)
@@ -81,7 +54,7 @@ class VicsekAnimation():
     def update_vicsek(self):
         '''updates polygons in vicsek plot'''
         for w, p in zip(self.simulation.walkers, self.vicsek_polygons):
-            t = triangle(w[0], w[1], w[2])
+            t = xyphi_to_abc(w[0], w[1], w[2])
             p.set_xy(t)
 
     def init_kalmann(self):
