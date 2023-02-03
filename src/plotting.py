@@ -73,6 +73,8 @@ class Animation():
         )
         plt.show()
 
-anim = Animation()
-anim()
+
+if __name__ == "__main__":
+    anim = Animation()
+    anim()
 

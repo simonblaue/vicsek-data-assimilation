@@ -12,18 +12,18 @@ POLYGONSIZE = 0.2
 @dataclass
 class SimulationConfig:
     # particles
-    n_particles: int = 10
-    repulsion_radius: float = 0.5
-    alignment_radius: float = 3.0
+    n_particles: int = 300
+    # repulsion_radius: float = 0.5
+    alignment_radius: float = 1
 
     # field
-    x_axis = 10
-    y_axis = 10
+    x_axis = 7
+    y_axis = 7
 
     # simulation
-    velocity: float = 1.0
+    velocity: float = 0.03
+    noisestrength: float = 2.0
 
-    runtimesteps: int = 100
-    timestepsize: float = 0.1
+    endtime: float = 100
+    timestepsize: float = 1.0
 
-    examplearray: list[int] = field(default_factory=list)

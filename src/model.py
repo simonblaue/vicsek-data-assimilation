@@ -1,6 +1,6 @@
 import numpy as np
 from config import SimulationConfig
-from plotting import Animation
+# from plotting import Animation
 
 class Simulation:
 
@@ -16,37 +16,33 @@ class Simulation:
         
 
 
-    def abs_distances(self):
+    def distances(self):
         """
-        Calculates the absolute distance from every walker to every other walker. 
-        Distance to itself is set to Inf for easier use, TODO maybe change this?
+        Calculates the  distance vector from every walker to every other walker. 
 
         Returns:
             numpy Array(n,n): distances from every walker to every walker
         """
-        distances = np.zeros((self.config.n_particles, self.config.n_particles)) 
+        distances = np.zeros((self.config.n_particles, self.config.n_particles, 2)) 
         walker_pos = self.walkers[:,0:2]
 
         for i,walker in enumerate(walker_pos):
  
-            distances[i,:] = np.linalg.norm(walker_pos - walker, axis=1)
-            
-            distances[i,i] = np.Inf
+            distances[i,:,:] =walker_pos - walker 
 
+        # Enforce boundaries
+        distances[:,:,0] = np.mod(distances[:,:,0], self.config.x_axis)
+        distances[:,:,1] = np.mod(distances[:,:,1], self.config.x_axis)
         return distances
         
-    
-    
-    def step(self):
-        """
-        Does one timestep in the visceck model
-
-        Returns:
-            walkers after step
-        """
         
-        # get which are neighbors 
-        aligner = self.abs_distances() < self.config.alignment_radius
+    def av_directions(self):
+         # get which are neighbors 
+        dists = self.distances()
+        d =  np.linalg.norm(dists, axis=2)
+        # Ignore itself
+        d[d == 0] = np.Inf
+        aligner = d < self.config.alignment_radius
         
         # calculate mean angles
         all_phi = self.walkers[:,2]
@@ -56,15 +52,33 @@ class Simulation:
                 av_phi_per_walker[i] = 0
                 continue
             av_phi_per_walker[i] = np.mean(all_phi[aligner[i]])
+            
+        return av_phi_per_walker
+    
+    def step(self):
+        """
+        Does one timestep in the visceck model
 
+        Returns:
+            walkers after step
+        """
+        av_phi_per_walker = self.av_directions()
+        
         # noise for new angle
-        noise = np.random.randn(self.config.n_particles)
+        noise = (np.random.rand(self.config.n_particles) -0.5) * self.config.noisestrength
+        
+        # set the new direction
         self.walkers[:,2] = av_phi_per_walker + noise 
         
         # Calculate and set new positions
         new_directions = np.array([np.cos(self.walkers[:,2]), np.sin(self.walkers[:,2])]).transpose()
-        self.walkers[:,0:2] = self.walkers[:,0:2] + self.config.velocity * self.config.timestepsize * new_directions 
+        
+        self.walkers[:,0:2] +=  self.config.velocity * self.config.timestepsize * new_directions 
+        # Apply boundaries
+        self.walkers[:,0] = np.mod(self.walkers[:,0], self.config.x_axis)
+        self.walkers[:,1] = np.mod(self.walkers[:,1], self.config.y_axis)
     
+        
         self.time += self.config.timestepsize
         return self.walkers
     
