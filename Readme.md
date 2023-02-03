@@ -6,9 +6,13 @@
 Parameters from paper:
 
 $\Delta t$ = 1
+
 $0.003 < v < 0.3$ no big difference 
+
 $v = 0.03$
+
 Interaction radius $r=1$
+
 
 Variational Parameters:
 

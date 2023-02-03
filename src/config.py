@@ -14,7 +14,7 @@ class SimulationConfig:
     # particles
     n_particles: int = 300
     # repulsion_radius: float = 0.5
-    alignment_radius: float = 1
+    alignment_radius: float = 1.0
 
     # field
     x_axis = 25
