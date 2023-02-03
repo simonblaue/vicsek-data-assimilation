@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Tuple
 
 import numpy as np
-from polygons import n_colors, xyphi_to_abc
+from misc import n_colors, xyphi_to_abc
 from matplotlib import animation
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes

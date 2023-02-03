@@ -1,4 +1,5 @@
 from matplotlib.colors import Colormap
+import matplotlib.pyplot as plt
 import numpy as np
 from typing import List
 
@@ -19,7 +20,7 @@ def n_colors(n: int, cmapname:str = 'hsv') -> List:
     return [cmap(i) for i in range(n)]
 
 
-def triangle(x: float, y: float, phi: float) -> np.ndarray:
+def xyphi_to_abc(x: float, y: float, phi: float) -> np.ndarray:
     '''converts x, y, phi to triangle points a, b, c'''
     ax = (x+POLYGONSIZE*np.cos(phi))
     ay = (y+POLYGONSIZE*np.sin(phi))
