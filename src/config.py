@@ -50,3 +50,26 @@ class SimulationConfig:
 
 #     endtime: float = 100
 #     timestepsize: float = 1.0
+
+
+######
+
+# Das sind parameter für orderd movement:
+
+# @dataclass
+# class SimulationConfig:
+#     # particles
+#     n_particles: int = 300
+#     # repulsion_radius: float = 0.5
+#     alignment_radius: float = 1
+
+#     # field
+#     x_axis = 25
+#     y_axis = 25
+
+#     # simulation
+#     velocity: float = 0.03
+#     noisestrength: float = 0.1
+
+#     endtime: float = 100
+#     timestepsize: float = 1.0
