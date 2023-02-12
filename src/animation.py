@@ -29,7 +29,7 @@ class VicsekAnimation():
     # initialize plot
     def set_axis(self, ax: Axes, title: str):
         ax.set_xlim(-self.config.boundary, self.simulation.config.x_axis+self.config.boundary)
-        ax.set_ylim(-self.config.boundary, self.simulation.config.x_axis+self.config.boundary)
+        ax.set_ylim(-self.config.boundary, self.simulation.config.y_axis+self.config.boundary)
         ax.set_title(title)
         ax.set_aspect('equal', 'box')
         ax.grid(alpha=0.25)

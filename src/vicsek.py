@@ -32,7 +32,7 @@ class ViszecSimulation:
 
         # Enforce boundaries
         distances[:,:,0] = np.mod(distances[:,:,0], self.config.x_axis)
-        distances[:,:,1] = np.mod(distances[:,:,1], self.config.x_axis)
+        distances[:,:,1] = np.mod(distances[:,:,1], self.config.y_axis)
         return distances
         
         
