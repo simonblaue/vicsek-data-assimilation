@@ -28,7 +28,7 @@ class ViszecSimulation:
 
         for i,walker in enumerate(walker_pos):
  
-            distances[i,:,:] =walker_pos - walker 
+            distances[i,:,:] = walker_pos - walker 
 
         # Enforce boundaries
         distances[:,:,0] = np.mod(distances[:,:,0], self.config.x_axis)
