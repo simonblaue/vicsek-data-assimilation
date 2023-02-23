@@ -41,7 +41,8 @@ class ViszecSimulation:
         dists = self.distances()
         d =  np.linalg.norm(dists, axis=2)
         # Ignore itself
-        d[d == 0] = np.Inf
+        # d[d == 0] = np.Inf
+        
         aligner = d < self.config.alignment_radius
         
         # calculate mean angles

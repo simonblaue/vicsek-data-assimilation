@@ -11,7 +11,6 @@ class Test():
 
 @dataclass
 class TestData:
-
     exec_ref = Test
     h = 'hallo'
 

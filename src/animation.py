@@ -18,7 +18,7 @@ class VicsekAnimation():
         # initializing the Simulation
         self.simulation = RandomSimulationConfig.exec_ref(RandomSimulationConfig)
 
-        self.fig, (self.axis_simulation, self.axis_tracking) = plt.subplots(1, 2,)
+        self.fig, (self.axis_simulation, self.axis_tracking) = plt.subplots(1, 2, figsize=(10,7))
         self.set_axis(self.axis_simulation, 'Model')
         self.set_axis(self.axis_tracking, 'Tracking')
 
