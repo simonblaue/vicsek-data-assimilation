@@ -94,10 +94,10 @@ class VicsekAnimation():
             # frames=np.arange(1, 10, 0.05), 
             frames=self.config.frames, 
             interval=self.config.plot_interval, 
-            blit=True
+            # blit=True
         )
         plt.show()
-
+        anim.save("saves/test.gif")
         self.return_metrics()
 
 
@@ -115,7 +115,7 @@ class VicsekAnimationConfig:
     sample_frequency: int = 1
 
     # delay between frames in ms
-    plot_interval = 20
+    plot_interval = 40
 
     # frames per simulation
     frames = 100
