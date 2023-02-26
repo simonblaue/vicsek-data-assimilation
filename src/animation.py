@@ -96,8 +96,8 @@ class VicsekAnimation():
             interval=self.config.plot_interval, 
             # blit=True
         )
-        plt.show()
         anim.save("saves/test.gif")
+        # plt.show()
         self.return_metrics()
 
 

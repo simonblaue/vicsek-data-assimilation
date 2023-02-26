@@ -115,7 +115,7 @@ class BaseSimulationConfig:
     velocity: float = 0.03
     noisestrength: float = 0.1
 
-    endtime: float = 100
+    endtime: float = 200
     timestepsize: float = 1.0
 
 
@@ -129,9 +129,10 @@ class RandomSimulationConfig(BaseSimulationConfig):
     y_axis = 7
 
     # simulation
-    velocity: float = 0.03
-    noisestrength: float = 2.0
+    velocity: float = 0.08
+    noisestrength: float = 4.0
 
+    # alignment_radius: float = 0.5
 
 ######
 
