@@ -45,7 +45,7 @@ class VicsekAnimation():
 
     # initialization function: plot the background of each frame
     def init_function(self):
-        return self.vicsek_polygons
+        return self.vicsek_polygons, self.kalman_polygons
 
 
     def init_vicsek(self):
@@ -87,7 +87,8 @@ class VicsekAnimation():
 
     # TODO:
     def return_metrics(self):
-        print(self.filter.state - self.simulation.walkers)
+        # print(self.filter.state - self.simulation.walkers)
+        pass
 
 
 
@@ -131,7 +132,7 @@ class VicsekAnimationConfig:
     exec_ref = VicsekAnimation
 
     # simulation steps before plotting
-    simulation_frequency: int = 2
+    simulation_frequency: int = 1
     
     # simulation steps before sampling
     sample_frequency: int = 1
