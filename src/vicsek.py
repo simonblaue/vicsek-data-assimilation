@@ -78,8 +78,8 @@ class ViszecSimulation:
         walkers[:,0:2] +=  self.config.velocity * self.config.timestepsize * new_directions 
         
         # Apply boundaries
-        walkers[:,0] = np.mod(self.walkers[:,0], self.config.x_axis)
-        walkers[:,1] = np.mod(self.walkers[:,1], self.config.y_axis)
+        walkers[:,0] = np.mod(walkers[:,0], self.config.x_axis)
+        walkers[:,1] = np.mod(walkers[:,1], self.config.y_axis)
     
         return walkers
     
