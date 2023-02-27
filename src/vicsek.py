@@ -54,29 +54,6 @@ class ViszecSimulation:
             
         return av_phi_per_walker
     
-    # def step(self):
-    #     """
-    #     Does one timestep in the visceck model
-
-    #     """
-    #     av_phi_per_walker = self.av_directions()
-        
-    #     # noise for new angle
-    #     # noise_old = (np.random.rand(self.config.n_particles) - 0.5) * self.config.noisestrength
-    #     noise = np.random.randn(self.config.n_particles) * self.config.noisestrength
-    #     # set the new direction
-    #     self.walkers[:,2] = self.config.xi*(self.walkers[:,2])+(1-self.config.xi)*av_phi_per_walker + noise 
-        
-    #     # Calculate and set new positions
-    #     new_directions = np.array([np.cos(self.walkers[:,2]), np.sin(self.walkers[:,2])]).transpose()
-    #     self.walkers[:,0:2] +=  self.config.velocity * self.config.timestepsize * new_directions 
-        
-    #     # Apply boundaries
-    #     self.walkers[:,0] = np.mod(self.walkers[:,0], self.config.x_axis)
-    #     self.walkers[:,1] = np.mod(self.walkers[:,1], self.config.y_axis)
-    
-    #     self.time += self.config.timestepsize
-    #     return self.walkers
     
     def update(self) -> np.ndarray:
         """
