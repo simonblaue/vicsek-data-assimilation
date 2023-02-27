@@ -60,7 +60,7 @@ class ViszecSimulation:
         Does one timestep in the visceck model
         """
         self.walkers = self._step(self.walkers)
-        return self.walkers
+        # return self.walkers
         
         
     def _step(self, state: np.ndarray) -> np.ndarray:
@@ -74,9 +74,9 @@ class ViszecSimulation:
         walkers[:,2] = self.config.xi*(walkers[:,2])+(1-self.config.xi)*av_phi_per_walker + noise 
         
         # Calculate and set new positions
-        new_directions = np.array([np.cos(self.walkers[:,2]), np.sin(self.walkers[:,2])]).transpose()
+        new_directions = np.array([np.cos(walkers[:,2]), np.sin(walkers[:,2])]).transpose()
         walkers[:,0:2] +=  self.config.velocity * self.config.timestepsize * new_directions 
-
+        
         # Apply boundaries
         walkers[:,0] = np.mod(self.walkers[:,0], self.config.x_axis)
         walkers[:,1] = np.mod(self.walkers[:,1], self.config.y_axis)
