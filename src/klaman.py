@@ -40,3 +40,10 @@ class EnsembleKalman():
     def update(self):
         pass
         update_ensemble = 
+
+
+
+###### CONFIG ######
+
+@dataclass
+class KalmanFilterConfig:
