@@ -50,9 +50,6 @@ class ViszecSimulation:
         all_phi = self.walkers[:,2]
         av_phi_per_walker = np.zeros(self.config.n_particles)
         for i in range(self.config.n_particles):
-            if np.all(aligner[i] == False):
-                av_phi_per_walker[i] = all_phi[i]
-                continue
             av_phi_per_walker[i] = np.mean(all_phi[aligner[i]])
             
         return av_phi_per_walker
