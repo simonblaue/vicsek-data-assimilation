@@ -3,13 +3,21 @@ from vicsek import RandomSimulationConfig, ViszecSimulation
 from dataclasses import dataclass
 
 class EnsembleKalman():
-    def __init__(self, config, model_forecast):
+    def __init__(
+        self,
+        config,
+        model_forecast,
+        x_axis,
+        y_axis,
+        n_particles,
+    ):
 
             self.config = config
+            self.n_particles = n_particles
 
-            self.state = np.random.rand(100, 3)
-            self.state[:,0] *= 10
-            self.state[:,1] *= 10
+            self.state = np.random.rand(self.n_particles, 3)
+            self.state[:,0] *= x_axis
+            self.state[:,1] *= y_axis
             self.state[:,2] *= 2*np.pi
             # ensemble size
             self.N = self.config.n_ensembles
@@ -17,7 +25,7 @@ class EnsembleKalman():
             self.r = self.config.r
             
             self.model_forecast = model_forecast
-            self.epsilon = np.ones((100, 100))*1e-11
+            self.epsilon = np.ones((self.n_particles, self.n_particles))*1e-11
             
     def update(self, measurement: np.ndarray) -> np.ndarray:
         #generating ensamples
@@ -25,7 +33,7 @@ class EnsembleKalman():
             self.model_forecast(self.state) for _ in range(self.N)
         ]
         measurement_ensemble = np.array([measurement for _ in range(self.N)])
-        noise = np.random.normal(size=(100, 3), scale=self.r)
+        noise = np.random.normal(size=(self.n_particles, 3), scale=self.r)
         virtual_observations = measurement_ensemble+noise
         
         # forecast matrix
@@ -36,7 +44,7 @@ class EnsembleKalman():
             axis = 0
         )
         
-        R = np.diag(np.ones(RandomSimulationConfig.n_particles))*self.r
+        R = np.diag(np.ones(self.n_particles))*self.r
         
         K = pf*np.linalg.inv(pf+R+self.epsilon)
         # update

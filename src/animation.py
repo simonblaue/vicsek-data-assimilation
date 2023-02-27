@@ -15,11 +15,14 @@ class VicsekAnimation():
     def __init__(self, animation_config, simulation_config=OrderedSimulationConfig):
 
         self.config = animation_config
-        
         # initializing the Simulation
         self.simulation = RandomSimulationConfig.exec_ref(simulation_config)
         self.filter = EnsembleKalmanConfig.exec_ref(
-            EnsembleKalmanConfig, self.simulation._step
+            EnsembleKalmanConfig,
+            self.simulation._step,
+            simulation_config.x_axis,
+            simulation_config.y_axis,
+            self.simulation.config.n_particles,
         )
 
         self.fig, (self.axis_simulation, self.axis_tracking) = plt.subplots(1, 2, figsize=(10,7))
