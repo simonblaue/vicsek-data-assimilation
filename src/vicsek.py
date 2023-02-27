@@ -143,7 +143,7 @@ class OrderedSimulationConfig(BaseSimulationConfig):
     y_axis = 7
 
     # simulation
-    noisestrength: float = 2.0
+    noisestrength: float = 0.5
     
     
     

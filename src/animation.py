@@ -127,13 +127,13 @@ class VicsekAnimationConfig:
     exec_ref = VicsekAnimation
 
     # simulation steps before plotting
-    simulation_frequency: int = 2
+    simulation_frequency: int = 1
     
     # simulation steps before sampling
     sample_frequency: int = 1
 
     # delay between frames in ms
-    plot_interval: int = 40
+    plot_interval: int = 10
 
     # frames per simulation
     frames: int = 100

@@ -38,7 +38,15 @@ class EnsembleKalman():
         
         # forecast matrix
         mean_forecast = np.mean(forecast_ensemble, axis = 0)
-        errors = [f-mean_forecast for f in forecast_ensemble]
+        errors = np.array([f-mean_forecast for f in forecast_ensemble])
+        #boundaries 
+        errors[:,:,:,0] = np.where(errors[:,:,:,0]>self.config.x_axis/2,errors[:,:,:,0]-self.config.x_axis,errors[:,:,:,0])
+        errors[:,:,:,0] = np.where(errors[:,:,:,0]<-self.config.x_axis/2,errors[:,:,:,0]+self.config.x_axis,errors[:,:,:,0])
+        
+        errors[:,:,:,1] = np.where(errors[:,:,:,1]>self.config.y_axis/2,errors[:,:,:,1]-self.config.y_axis,errors[:,:,:,1])
+        errors[:,:,:,1] = np.where(errors[:,:,:,1]<-self.config.y_axis/2,errors[:,:,:,1]+self.config.y_axis,errors[:,:,:,1])
+        
+        
         pf = 1/(self.N-1) * np.sum(
             [e @ e.T for e in errors],
             axis = 0
@@ -46,13 +54,16 @@ class EnsembleKalman():
         
         R = np.diag(np.ones(self.n_particles))*self.r
         
-        K = pf*np.linalg.inv(pf+R+self.epsilon)
+        K = pf*np.linalg.pinv(pf+R+self.epsilon)
         # update
         ensemble_update = [
             x + K @ (z-x) for x, z in zip(forecast_ensemble, virtual_observations)
         ]
         
         self.state = np.mean(ensemble_update, axis = 0)
+        
+        self.state[:,0] = np.mod(self.state[:,0], 10)
+        self.state[:,1] = np.mod(self.state[:,1], 10)
         
         return self.state
 
@@ -64,5 +75,5 @@ class EnsembleKalmanConfig:
     
     n_ensembles: int = 5
     
-    r: float = 0.01
+    r: float = 0.00001
  
