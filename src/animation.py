@@ -26,12 +26,13 @@ class VicsekAnimation():
             self.simulation.walkers
         )
 
-        self.fig, (self.axis_simulation, self.axis_tracking) = plt.subplots(1, 2, figsize=(10,7))
-        self.set_axis(self.axis_simulation, 'Model')
-        self.set_axis(self.axis_tracking, 'Tracking')
+        self.fig, self.axes = plt.subplots(2, 2, figsize=(10,7))
+        self.set_axis(self.axes[0][0], 'Model')
+        self.set_axis(self.axes[0][1], 'Tracking')
 
-        self.init_vicsek()
-        self.init_kalman()
+        self.init_vicsek_plot()
+        self.init_kalman_plot()
+        self.init_metrics_plot()
 
 
     # initialize plot
@@ -45,10 +46,10 @@ class VicsekAnimation():
 
     # initialization function: plot the background of each frame
     def init_function(self):
-        return self.vicsek_polygons, self.kalman_polygons
+        return self.vicsek_polygons, self.kalman_polygons, self.mean_errline
 
 
-    def init_vicsek(self):
+    def init_vicsek_plot(self):
         '''initializes polygons in vicsek plot'''
         self.vicsek_colors = n_colors(self.simulation.config.n_particles)
         vicsek_polygon_coors = [
@@ -58,9 +59,9 @@ class VicsekAnimation():
             Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(vicsek_polygon_coors, self.vicsek_colors)
         ]
         for p in self.vicsek_polygons:
-            self.axis_simulation.add_patch(p)
+            self.axes[0][0].add_patch(p)
 
-    def init_kalman(self):
+    def init_kalman_plot(self):
         '''initializes polygons in vicsek plot'''
         self.kalman_colors = n_colors(self.simulation.config.n_particles)
         kalman_polygon_coors = [
@@ -70,7 +71,14 @@ class VicsekAnimation():
             Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(kalman_polygon_coors, self.kalman_colors)
         ]
         for p in self.kalman_polygons:
-            self.axis_tracking.add_patch(p)
+            self.axes[0][1].add_patch(p)
+            
+    def init_metrics_plot(self):
+        self.error = []
+        self.time = 1
+        self.axes[1][0].grid()
+        # self.max_errline, = self.axes[1][0].plot([], [], lw=2)
+        self.mean_errline, = self.axes[1][0].plot([], [], lw=2)
 
     def update_vicsek_plot(self):
         '''updates polygons in vicsek plot'''
@@ -84,11 +92,14 @@ class VicsekAnimation():
         for w, p in zip(self.filter.state, self.kalman_polygons):
             t = xyphi_to_abc(w[0], w[1], w[2])
             p.set_xy(t)
+    
 
     # TODO:
-    def return_metrics(self):
-        # print(self.filter.state - self.simulation.walkers)
-        pass
+    def update_metrics(self):
+        diff = np.abs(self.filter.state - self.simulation.walkers)
+        self.error.append(np.mean(diff))
+        self.time += 1
+        self.mean_errline.set_data(np.arange(0, self.time-1, 1), self.error)
 
 
 
@@ -101,9 +112,9 @@ class VicsekAnimation():
             self.update_vicsek_plot()
             self.update_kalmann_plot()
             
-            self.return_metrics()
+            self.update_metrics()
 
-            return self.vicsek_polygons, self.kalman_polygons
+            return self.vicsek_polygons, self.kalman_polygons, self.mean_errline
 
 
     def __call__(self, save_name=False):
