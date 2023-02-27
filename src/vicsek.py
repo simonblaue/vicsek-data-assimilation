@@ -51,8 +51,7 @@ class ViszecSimulation:
         av_phi_per_walker = np.zeros(self.config.n_particles)
         for i in range(self.config.n_particles):
             if np.all(aligner[i] == False):
-                #TODO nimm dich selbst
-                av_phi_per_walker[i] = 0
+                av_phi_per_walker[i] = all_phi[i]
                 continue
             av_phi_per_walker[i] = np.mean(all_phi[aligner[i]])
             
@@ -115,7 +114,7 @@ class BaseSimulationConfig:
 
     # simulation
     velocity: float = 0.03
-    noisestrength: float = 0.1
+    noisestrength: float = 2.0
 
     endtime: float = 200
     timestepsize: float = 1.0
@@ -141,7 +140,7 @@ class RandomSimulationConfig(BaseSimulationConfig):
 # Das sind parameter für orderd movement:
 
 @dataclass
-class OrderedSimulationConfig(BaseSimulationConfig):
+class GroupingSimulationConfig(BaseSimulationConfig):
 
     # field
     x_axis = 25
@@ -150,6 +149,18 @@ class OrderedSimulationConfig(BaseSimulationConfig):
     # simulation
     velocity: float = 0.03
     noisestrength: float = 0.1
+    
+    
+@dataclass
+class OrderedSimulationConfig(BaseSimulationConfig):
+
+    # field
+    x_axis = 7
+    y_axis = 7
+
+    # simulation
+    velocity: float = 0.03
+    noisestrength: float = 2.0
     
     
     
