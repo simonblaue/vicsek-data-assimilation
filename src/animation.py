@@ -8,6 +8,7 @@ from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.patches import Polygon
 from vicsek import OrderedSimulationConfig, RandomSimulationConfig
+from kalman import EnsembleKalmanConfig
 
 
 class VicsekAnimation():
@@ -17,13 +18,16 @@ class VicsekAnimation():
         
         # initializing the Simulation
         self.simulation = RandomSimulationConfig.exec_ref(simulation_config)
+        self.filter = EnsembleKalmanConfig.exec_ref(
+            EnsembleKalmanConfig, self.simulation._step
+        )
 
         self.fig, (self.axis_simulation, self.axis_tracking) = plt.subplots(1, 2, figsize=(10,7))
         self.set_axis(self.axis_simulation, 'Model')
         self.set_axis(self.axis_tracking, 'Tracking')
 
         self.init_vicsek()
-        # TODO: init kalman
+        self.init_kalman()
 
 
     # initialize plot
@@ -52,21 +56,30 @@ class VicsekAnimation():
         for p in self.vicsek_polygons:
             self.axis_simulation.add_patch(p)
 
-    def update_vicsek(self):
+    def init_kalman(self):
+        '''initializes polygons in vicsek plot'''
+        self.kalman_colors = n_colors(self.simulation.config.n_particles)
+        kalman_polygon_coors = [
+            xyphi_to_abc(w[0],w[1], w[2]) for w in self.filter.state
+        ]
+        self.kalman_polygons = [
+            Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(kalman_polygon_coors, self.kalman_colors)
+        ]
+        for p in self.kalman_polygons:
+            self.axis_tracking.add_patch(p)
+
+    def update_vicsek_plot(self):
         '''updates polygons in vicsek plot'''
         for w, p in zip(self.simulation.walkers, self.vicsek_polygons):
             t = xyphi_to_abc(w[0], w[1], w[2])
             p.set_xy(t)
 
-    def init_kalmann(self):
-        '''initializes polygons in kalmann plot'''
-        # colors green red
-        pass
 
-    def update_kalmann(self):
+    def update_kalmann_plot(self):
         '''updates polygons in kalmann plot'''
-        # change color of filter if filter is assigned to other particle
-        pass
+        for w, p in zip(self.filter.state, self.kalman_polygons):
+            t = xyphi_to_abc(w[0], w[1], w[2])
+            p.set_xy(t)
 
     # TODO:
     def return_metrics(self):
@@ -78,11 +91,11 @@ class VicsekAnimation():
             for _ in range(self.config.simulation_frequency):
                 self.simulation.update()
 
-            self.update_vicsek()
+            self.filter.update(self.simulation.walkers)
+            self.update_vicsek_plot()
+            self.update_kalmann_plot()
 
-            # TODO: update kalmann
-
-            return self.vicsek_polygons
+            return self.vicsek_polygons, self.kalman_polygons
 
 
     def __call__(self, save_name=False):
@@ -124,3 +137,8 @@ class VicsekAnimationConfig:
 
     # boundary around plots
     boundary: float = 0.5
+
+
+if __name__ =="__main__":
+    anim = VicsekAnimationConfig.exec_ref(VicsekAnimationConfig, RandomSimulationConfig)
+    anim(save_name=False)

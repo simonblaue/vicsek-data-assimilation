@@ -90,7 +90,7 @@ class BaseSimulationConfig:
     exec_ref = ViszecSimulation
 
     # particles
-    n_particles: int = 300
+    n_particles: int = 100
     # repulsion_radius: float = 0.5
     alignment_radius: float = 1.0
 
