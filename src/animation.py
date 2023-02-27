@@ -11,12 +11,12 @@ from vicsek import OrderedSimulationConfig, RandomSimulationConfig
 
 
 class VicsekAnimation():
-    def __init__(self, config):
+    def __init__(self, animation_config, simulation_config=OrderedSimulationConfig):
 
-        self.config = config
-
+        self.config = animation_config
+        
         # initializing the Simulation
-        self.simulation = RandomSimulationConfig.exec_ref(RandomSimulationConfig)
+        self.simulation = RandomSimulationConfig.exec_ref(simulation_config)
 
         self.fig, (self.axis_simulation, self.axis_tracking) = plt.subplots(1, 2, figsize=(10,7))
         self.set_axis(self.axis_simulation, 'Model')
@@ -85,7 +85,7 @@ class VicsekAnimation():
             return self.vicsek_polygons
 
 
-    def __call__(self):
+    def __call__(self, save_name=False):
         # call the animator.  blit=True means only re-draw the parts that have changed.
         anim = animation.FuncAnimation(
             self.fig, 
@@ -94,11 +94,12 @@ class VicsekAnimation():
             # frames=np.arange(1, 10, 0.05), 
             frames=self.config.frames, 
             interval=self.config.plot_interval, 
-            # blit=True
+            blit=False
         )
-        # anim.save("saves/test.gif")
+        if save_name:
+            anim.save(f"saves/{save_name}.gif")
         plt.show()
-        self.return_metrics()
+        # self.return_metrics()
         return anim
 
 

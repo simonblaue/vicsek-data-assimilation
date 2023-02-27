@@ -31,6 +31,7 @@ class ViszecSimulation:
             distances[i,:,:] = walker_pos - walker
 
         # Enforce boundaries
+        #TODO mod über hälfte? oder schnelleres mod
         distances[:,:,0] = np.mod(distances[:,:,0], self.config.x_axis)
         distances[:,:,1] = np.mod(distances[:,:,1], self.config.y_axis)
         return distances
@@ -50,6 +51,7 @@ class ViszecSimulation:
         av_phi_per_walker = np.zeros(self.config.n_particles)
         for i in range(self.config.n_particles):
             if np.all(aligner[i] == False):
+                #TODO nimm dich selbst
                 av_phi_per_walker[i] = 0
                 continue
             av_phi_per_walker[i] = np.mean(all_phi[aligner[i]])
@@ -148,3 +150,7 @@ class OrderedSimulationConfig(BaseSimulationConfig):
     # simulation
     velocity: float = 0.03
     noisestrength: float = 0.1
+    
+    
+    
+#### weigh own direction much stronger too still get individual agents and long trajectories
