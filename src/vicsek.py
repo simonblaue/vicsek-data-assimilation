@@ -31,14 +31,11 @@ class ViszecSimulation:
             distances[i,:,:] = walker_pos - walker
 
         # Enforce boundaries
-        #TODO mod über hälfte? oder schnelleres mod
         distances[:,:,0] = np.where(distances[:,:,0]>self.config.x_axis/2,distances[:,:,0]-self.config.x_axis,distances[:,:,0])
         distances[:,:,0] = np.where(distances[:,:,0]<-self.config.x_axis/2,distances[:,:,0]+self.config.x_axis,distances[:,:,0])
         
         distances[:,:,1] = np.where(distances[:,:,1]>self.config.y_axis/2,distances[:,:,1]-self.config.y_axis,distances[:,:,1])
         distances[:,:,1] = np.where(distances[:,:,1]<-self.config.y_axis/2,distances[:,:,1]+self.config.y_axis,distances[:,:,1])
-        #distances[:,:,0] = np.mod(distances[:,:,0], self.config.x_axis)
-        #distances[:,:,1] = np.mod(distances[:,:,1], self.config.y_axis)
         return distances
         
         
@@ -46,8 +43,6 @@ class ViszecSimulation:
          # get which are neighbors 
         dists = self.distances()
         d =  np.linalg.norm(dists, axis=2)
-        # Ignore itself
-        # d[d == 0] = np.Inf
         
         aligner = d < self.config.alignment_radius
         
