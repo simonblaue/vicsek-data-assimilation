@@ -76,7 +76,7 @@ class VicsekAnimation():
     def animate_step(self, i: int):
             # run simulation for <FREQUENCY steps>
             for _ in range(self.config.simulation_frequency):
-                self.simulation.step()
+                self.simulation.update()
 
             self.update_vicsek()
 
