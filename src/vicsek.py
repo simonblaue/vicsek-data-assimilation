@@ -124,16 +124,11 @@ class BaseSimulationConfig:
 class RandomSimulationConfig(BaseSimulationConfig):
 
     # field
-    x_axis = 7
-    y_axis = 7
-    
-    xi =0.5
+    x_axis = 10
+    y_axis = 10
 
     # simulation
-    velocity: float = 0.08
-    noisestrength: float = 4.0
-
-    # alignment_radius: float = 0.5
+    noisestrength: float = 3.0
 
 ######
 
@@ -159,9 +154,8 @@ class OrderedSimulationConfig(BaseSimulationConfig):
     y_axis = 7
 
     # simulation
-    velocity: float = 0.03
     noisestrength: float = 2.0
     
     
     
-#### weigh own direction much stronger too still get individual agents and long trajectories
+

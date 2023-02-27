@@ -21,3 +21,7 @@ $N = 300$
 $\eta = 2.0$
 
 
+## ToDOs
+
+- weigh own direction much stronger too still get individual agents and long trajectories
+- maybe gaussian noise instead of uniform in viscek 
