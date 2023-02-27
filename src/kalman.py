@@ -10,15 +10,14 @@ class EnsembleKalman():
         x_axis,
         y_axis,
         n_particles,
+        init_state
     ):
 
             self.config = config
             self.n_particles = n_particles
 
-            self.state = np.random.rand(self.n_particles, 3)
-            self.state[:,0] *= x_axis
-            self.state[:,1] *= y_axis
-            self.state[:,2] *= 2*np.pi
+            self.state = init_state
+
             # ensemble size
             self.N = self.config.n_ensembles
             # noise parameter
@@ -26,6 +25,8 @@ class EnsembleKalman():
             
             self.model_forecast = model_forecast
             self.epsilon = np.ones((self.n_particles, self.n_particles))*1e-11
+            self.x_axis = x_axis
+            self.y_axis = y_axis
             
     def update(self, measurement: np.ndarray) -> np.ndarray:
         #generating ensamples
@@ -38,23 +39,28 @@ class EnsembleKalman():
         
         # forecast matrix
         mean_forecast = np.mean(forecast_ensemble, axis = 0)
+        
+    
+        # self.state = (mean_forecast + np.mean(virtual_observations, axis = 0)) / 2
+        # return self.state
         errors = np.array([f-mean_forecast for f in forecast_ensemble])
+
         #boundaries 
-        errors[:,:,:,0] = np.where(errors[:,:,:,0]>self.config.x_axis/2,errors[:,:,:,0]-self.config.x_axis,errors[:,:,:,0])
-        errors[:,:,:,0] = np.where(errors[:,:,:,0]<-self.config.x_axis/2,errors[:,:,:,0]+self.config.x_axis,errors[:,:,:,0])
+        errors[:,:,0] = np.where(errors[:,:,0]>self.x_axis/2,errors[:,:,0]-self.x_axis,errors[:,:,0])
+        errors[:,:,0] = np.where(errors[:,:,0]<-self.x_axis/2,errors[:,:,0]+self.x_axis,errors[:,:,0])
         
-        errors[:,:,:,1] = np.where(errors[:,:,:,1]>self.config.y_axis/2,errors[:,:,:,1]-self.config.y_axis,errors[:,:,:,1])
-        errors[:,:,:,1] = np.where(errors[:,:,:,1]<-self.config.y_axis/2,errors[:,:,:,1]+self.config.y_axis,errors[:,:,:,1])
+        errors[:,:,1] = np.where(errors[:,:,1]>self.y_axis/2,errors[:,:,1]-self.y_axis,errors[:,:,1])
+        errors[:,:,1] = np.where(errors[:,:,1]<-self.y_axis/2,errors[:,:,1]+self.y_axis,errors[:,:,1])
         
-        
+        print(errors)
         pf = 1/(self.N-1) * np.sum(
             [e @ e.T for e in errors],
             axis = 0
         )
         
         R = np.diag(np.ones(self.n_particles))*self.r
-        
-        K = pf*np.linalg.pinv(pf+R+self.epsilon)
+        K = pf*np.linalg.pinv(pf+R)
+        # print(K)
         # update
         ensemble_update = [
             x + K @ (z-x) for x, z in zip(forecast_ensemble, virtual_observations)
@@ -73,7 +79,14 @@ class EnsembleKalmanConfig:
     
     exec_ref = EnsembleKalman
     
-    n_ensembles: int = 5
+    n_ensembles: int = 50
     
-    r: float = 0.00001
- 
+    r: float = 0.0
+    
+    
+    
+if __name__ =="__main__":
+    import animation
+    import vicsek
+    anim = animation.VicsekAnimationConfig.exec_ref(animation.VicsekAnimationConfig,vicsek.OrderedSimulationConfig)
+    anim(save_name=False)

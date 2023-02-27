@@ -23,6 +23,7 @@ class VicsekAnimation():
             simulation_config.x_axis,
             simulation_config.y_axis,
             self.simulation.config.n_particles,
+            self.simulation.walkers
         )
 
         self.fig, (self.axis_simulation, self.axis_tracking) = plt.subplots(1, 2, figsize=(10,7))
@@ -86,7 +87,8 @@ class VicsekAnimation():
 
     # TODO:
     def return_metrics(self):
-        pass
+        print(self.filter.state - self.simulation.walkers)
+
 
 
     def animate_step(self, i: int):
@@ -97,6 +99,8 @@ class VicsekAnimation():
             self.filter.update(self.simulation.walkers)
             self.update_vicsek_plot()
             self.update_kalmann_plot()
+            
+            self.return_metrics()
 
             return self.vicsek_polygons, self.kalman_polygons
 
@@ -127,7 +131,7 @@ class VicsekAnimationConfig:
     exec_ref = VicsekAnimation
 
     # simulation steps before plotting
-    simulation_frequency: int = 1
+    simulation_frequency: int = 2
     
     # simulation steps before sampling
     sample_frequency: int = 1
