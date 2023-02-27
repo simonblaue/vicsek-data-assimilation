@@ -124,12 +124,3 @@ class VicsekAnimationConfig:
 
     # boundary around plots
     boundary: float = 0.5
-    
-
-
-
-
-if __name__ == "__main__":
-    anim = VicsekAnimationConfig.exec_ref(VicsekAnimationConfig)
-    anim()
-

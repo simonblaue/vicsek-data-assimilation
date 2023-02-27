@@ -78,11 +78,12 @@ class ViszecSimulation:
     #     self.time += self.config.timestepsize
     #     return self.walkers
     
-    def update(self):
+    def update(self) -> np.ndarray:
         """
         Does one timestep in the visceck model
         """
         self.walkers = self._step(self.walkers)
+        return self.walkers
         
         
     def _step(self, state: np.ndarray) -> np.ndarray:
@@ -98,27 +99,13 @@ class ViszecSimulation:
         # Calculate and set new positions
         new_directions = np.array([np.cos(self.walkers[:,2]), np.sin(self.walkers[:,2])]).transpose()
         walkers[:,0:2] +=  self.config.velocity * self.config.timestepsize * new_directions 
-        
+
         # Apply boundaries
         walkers[:,0] = np.mod(self.walkers[:,0], self.config.x_axis)
         walkers[:,1] = np.mod(self.walkers[:,1], self.config.y_axis)
     
         return walkers
     
-    # TODO
-    def run(self, write=False):
-        tend = self.config.timestepsize * self.config.runtimesteps
-        if write:
-            # TODO write initial pos to file 
-            pass
-        while self.time < tend:
-            self.step()
-            if write:
-            # TODO write pos to file 
-                pass
-            
-        print(f"Reached time t: {self.time} in simulation. Run for {self.time/self.config.timestepsize} steps in total.")
-
 
 @dataclass
 class BaseSimulationConfig:
