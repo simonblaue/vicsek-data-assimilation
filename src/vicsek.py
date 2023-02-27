@@ -28,7 +28,7 @@ class ViszecSimulation:
 
         for i,walker in enumerate(walker_pos):
  
-            distances[i,:,:] = walker_pos - walker 
+            distances[i,:,:] = walker_pos - walker
 
         # Enforce boundaries
         distances[:,:,0] = np.mod(distances[:,:,0], self.config.x_axis)
@@ -66,7 +66,7 @@ class ViszecSimulation:
         av_phi_per_walker = self.av_directions()
         
         # noise for new angle
-        noise = (np.random.rand(self.config.n_particles) -0.5) * self.config.noisestrength
+        noise = (np.random.rand(self.config.n_particles) - 0.5) * self.config.noisestrength
         
         # set the new direction
         self.walkers[:,2] = av_phi_per_walker + noise 
