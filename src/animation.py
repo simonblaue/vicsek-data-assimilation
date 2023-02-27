@@ -97,8 +97,9 @@ class VicsekAnimation():
             # blit=True
         )
         # anim.save("saves/test.gif")
-        # plt.show()
+        plt.show()
         self.return_metrics()
+        return anim
 
 
 
