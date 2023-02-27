@@ -80,6 +80,26 @@ class ViszecSimulation:
         self.time += self.config.timestepsize
         return self.walkers
     
+    def _step(self, state: np.ndarray) -> np.ndarray:
+        walkers = state.copy()
+        av_phi_per_walker = self.av_directions()
+        
+        # noise for new angle
+        noise = (np.random.rand(self.config.n_particles) -0.5) * self.config.noisestrength
+        
+        # set the new direction
+        walkers[:,2] = av_phi_per_walker + noise 
+        
+        # Calculate and set new positions
+        new_directions = np.array([np.cos(self.walkers[:,2]), np.sin(self.walkers[:,2])]).transpose()
+        walkers[:,0:2] +=  self.config.velocity * self.config.timestepsize * new_directions 
+        
+        # Apply boundaries
+        walkers[:,0] = np.mod(self.walkers[:,0], self.config.x_axis)
+        walkers[:,1] = np.mod(self.walkers[:,1], self.config.y_axis)
+    
+        return walkers
+    
     # TODO
     def run(self, write=False):
         tend = self.config.timestepsize * self.config.runtimesteps
