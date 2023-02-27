@@ -115,7 +115,7 @@ class RandomSimulationConfig(BaseSimulationConfig):
     # field
     x_axis = 10
     y_axis = 10
-    xi = 0.5
+    xi = 0.8
     # simulation
     noisestrength: float = 0.5
 
