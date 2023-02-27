@@ -67,7 +67,7 @@ class ViszecSimulation:
         noise = (np.random.rand(self.config.n_particles) - 0.5) * self.config.noisestrength
         
         # set the new direction
-        self.walkers[:,2] = av_phi_per_walker + noise 
+        self.walkers[:,2] = self.config.xi*(self.walkers[:,2])+(1-self.config.xi)*av_phi_per_walker + noise 
         
         # Calculate and set new positions
         new_directions = np.array([np.cos(self.walkers[:,2]), np.sin(self.walkers[:,2])]).transpose()
@@ -112,6 +112,7 @@ class BaseSimulationConfig:
     # simulation
     velocity: float = 0.03
     noisestrength: float = 2.0
+    xi = 0
 
     endtime: float = 200
     timestepsize: float = 1.0
@@ -125,6 +126,8 @@ class RandomSimulationConfig(BaseSimulationConfig):
     # field
     x_axis = 7
     y_axis = 7
+    
+    xi =0.5
 
     # simulation
     velocity: float = 0.08
