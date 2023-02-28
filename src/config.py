@@ -4,6 +4,7 @@ import numpy as np
 from vicsek import ViszecSimulation
 from animation import VicsekAnimation
 from kalman import EnsembleKalman
+import scipy
 
 @dataclass
 class BaseSimulationConfig:
@@ -89,7 +90,7 @@ class VicsekAnimationConfig:
 
 
 @dataclass
-class EnsembleKalmanConfig:
+class EnsembleKalmanConfig():
     
     exec_ref = EnsembleKalman
     
@@ -98,11 +99,14 @@ class EnsembleKalmanConfig:
     noise_ratio: float = 0.0001
     
     n_ensembles: int = 50
-    n_particles: int = 100
+    n_particles: int = 50
+    
     x_axis: int = 25
     y_axis: int = 25
     
     state: np.ndarray = np.random.rand(n_particles, 3)
+    
+    observable_axis = [True,True,True]
     
     model_forecast: callable = None
     epsilon: np.ndarray = np.ones((n_particles, n_particles))*1e-11
