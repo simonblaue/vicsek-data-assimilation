@@ -78,9 +78,9 @@ class EnsembleKalmanConfig:
     
     exec_ref = EnsembleKalman
     
-    n_ensembles: int = 100
+    n_ensembles: int = 20
     
-    r: float = 0.001
+    r: float = 0.000
     
     
     
