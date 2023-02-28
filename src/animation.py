@@ -110,11 +110,10 @@ class VicsekAnimation():
             p.set_xy(t)
     
 
-    # TODO:
     def update_metrics(self):
         diff = np.abs(self.filter.state - self.simulation.walkers)
-        self.error_mean.append(np.mean(diff[:,0:1]))
-        self.error_max.append(np.max(diff[:,0:1]))
+        self.error_mean.append(np.mean(diff[:,0:2]))
+        self.error_max.append(np.max(diff[:,0:2]))
         self.step += self.config.steps_per_metrics_update
         self.errline_mean.set_data(np.arange(0, self.step-1, self.config.steps_per_metrics_update), self.error_mean)
         self.errline_max.set_data(np.arange(0, self.step-1, self.config.steps_per_metrics_update), self.error_max)
