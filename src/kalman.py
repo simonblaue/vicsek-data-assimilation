@@ -9,7 +9,7 @@ class EnsembleKalman():
             self.config = config
             self.state = self.config.state
             self.model_forecast = self.config.model_forecast
-            print(self.config.x_axis)
+
             
     def update(self, measurement: np.ndarray) -> np.ndarray:
         t = time.time()
@@ -17,22 +17,16 @@ class EnsembleKalman():
         forecast_ensemble = [
             self.model_forecast(self.state) for _ in range(self.config.n_ensembles)
         ]
-        measurement_ensemble = np.tile(measurement, (self.config.n_ensembles, 1, 1))
-        noise = np.random.normal(size=(self.config.n_particles, 3), scale=self.config.noise_ratio)
-        virtual_observations = measurement_ensemble+noise
 
-        # speed advantage??
-        # virtual_observations = (
-        #     np.tile(measurement, (self.config.n_ensembles, 1, 1)) + 
-        #     np.random.normal(size=(self.config.n_particles, 3), scale=self.config.noise_ratio)
-        # )
+        virtual_observations = (
+            np.tile(measurement, (self.config.n_ensembles, 1, 1)) + 
+            np.random.normal(size=(self.config.n_particles, 3), scale=self.config.noise_ratio)
+        )
         
         # forecast matrix
         mean_forecast = np.mean(forecast_ensemble, axis = 0)
         
-        errors = np.array([f-mean_forecast for f in forecast_ensemble])
-        # speed advantage?
-        # errors = forecast_ensemble - np.tile(mean_forecast, (self.config.n_ensembles, 1, 1))
+        errors = forecast_ensemble - np.tile(mean_forecast, (self.config.n_ensembles, 1, 1))
 
         # #boundaries 
         errors[:,:,0] = np.where(errors[:,:,0]>self.config.x_axis/2,errors[:,:,0]-self.config.x_axis,errors[:,:,0])
@@ -41,28 +35,19 @@ class EnsembleKalman():
         errors[:,:,1] = np.where(errors[:,:,1]>self.config.y_axis/2,errors[:,:,1]-self.config.y_axis,errors[:,:,1])
         errors[:,:,1] = np.where(errors[:,:,1]<-self.config.y_axis/2,errors[:,:,1]+self.config.y_axis,errors[:,:,1])
         
-
-        # print(errors)
-        # python map
-        print(self.config.n_ensembles)
+        # Forecast ensamble covariance
         pf = 1/(self.config.n_ensembles-1) * np.sum(
-            # [np.matmul(e, e.T) for e in errors],
-            [ e @ e.T for e in errors],
+            [np.matmul(e, e.T) for e in errors],
             axis = 0
         )
         
-        # print(np.max(pf))
-        
+        # Virtual observation covariance
         R = np.diag(np.ones(self.config.n_particles)) * self.config.noise_ratio
-        # K = np.matmul(pf, np.linalg.pinv(pf+R))
-        print(np.all(np.isfinite(pf)))
+
         K = np.matmul(pf, scipy.linalg.pinv(pf+R))
-        print(K)
-        # K = np.eye(K.shape[0])
-        # K = np.zeros(K.shape[0])
+
         # update
         ensemble_update = [
-            # x + np.matmul(K, (z-x)) for x, z in zip(forecast_ensemble, virtual_observations)
              x + (K @ (z-x)) for x, z in zip(forecast_ensemble, virtual_observations)
         ]
         
