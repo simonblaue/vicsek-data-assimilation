@@ -12,18 +12,19 @@ from kalman import EnsembleKalmanConfig
 
 
 class VicsekAnimation():
-    def __init__(self, animation_config, simulation_config=OrderedSimulationConfig):
+    def __init__(self, animation_config, simulation_config = OrderedSimulationConfig):
 
         self.config = animation_config
         # initializing the Simulation
         self.simulation = RandomSimulationConfig.exec_ref(simulation_config)
         self.filter = EnsembleKalmanConfig.exec_ref(
-            EnsembleKalmanConfig,
-            self.simulation._step,
-            simulation_config.x_axis,
-            simulation_config.y_axis,
-            self.simulation.config.n_particles,
-            self.simulation.walkers
+            EnsembleKalmanConfig(
+                n_particles=self.simulation.config.n_particles,
+                state=self.simulation.walkers,
+                model_forecast=self.simulation._step,
+                x_axis=simulation_config.x_axis,
+                y_axis=simulation_config.y_axis,
+            )
         )
 
         self.fig, self.axes = plt.subplots(2, 2, figsize=(10,7))
@@ -117,7 +118,7 @@ class VicsekAnimation():
             return self.vicsek_polygons, self.kalman_polygons, self.mean_errline
 
 
-    def __call__(self, save_name=False):
+    def __call__(self, save_name: bool = False):
         # call the animator.  blit=True means only re-draw the parts that have changed.
         anim = animation.FuncAnimation(
             self.fig, 
