@@ -92,7 +92,7 @@ class EnsembleKalmanConfig:
     
     n_ensembles: int = 100
     
-    noise_ratio: float = 0.00000001
+    noise_ratio: float = 0.0001
     
     n_ensembles: int = 50
     n_particles: int = 100
@@ -103,3 +103,13 @@ class EnsembleKalmanConfig:
     
     model_forecast: callable = None
     epsilon: np.ndarray = np.ones((n_particles, n_particles))*1e-11
+    
+    
+    
+if __name__ =="__main__":
+    anim = VicsekAnimationConfig.exec_ref(
+        animation_config=VicsekAnimationConfig,
+        simulation_config=RandomSimulationConfig,
+        kalman_config=EnsembleKalmanConfig
+    )
+    anim(save_name=False)
