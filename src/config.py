@@ -12,8 +12,9 @@ class SharedConfig:
     n_particles: int = 50
     
     # field
-    x_axis = 25
-    y_axis = 25
+    x_axis = 10
+    y_axis = 10
+
 
 @dataclass
 class BaseSimulationConfig(SharedConfig):
@@ -34,39 +35,14 @@ class BaseSimulationConfig(SharedConfig):
 
 @dataclass
 class RandomSimulationConfig(BaseSimulationConfig):
-
+    
     # field
-    x_axis = 10
-    y_axis = 10
     xi = 0.8
     # simulation
     noisestrength: float = 0.5
 
 
-@dataclass
-class GroupingSimulationConfig(BaseSimulationConfig):
-
-    # field
-    x_axis = 25
-    y_axis = 25
-
-    # simulation
-    velocity: float = 0.03
-    noisestrength: float = 0.1
     
-    
-@dataclass
-class OrderedSimulationConfig(BaseSimulationConfig):
-
-    # field
-    x_axis = 7
-    y_axis = 7
-
-    # simulation
-    noisestrength: float = 0.5
-    
-    
-
 @dataclass
 class VicsekAnimationConfig:
 
@@ -99,16 +75,19 @@ class EnsembleKalmanConfig(SharedConfig):
     
     noise_ratio: float = 0.0001
     # noise_ratio: float = 0.05
-    
     n_ensembles: int = 50
-    
-    state: np.ndarray = np.random.rand(SharedConfig.n_particles, 3)
     
     # At the moment only the last to False is possible and can only have False beginning from the left to the right
     observable_axis = [True,True,False]
     
     model_forecast: callable = None
     epsilon: np.ndarray = np.ones((SharedConfig.n_particles, SharedConfig.n_particles))*1e-11
+    
+    ### Need to be overwritten on call when overwritten in another config
+    n_particles = SharedConfig.n_particles
+    x_axis = SharedConfig.x_axis
+    y_axis = SharedConfig.y_axis
+    state: np.ndarray = np.random.rand(SharedConfig.n_particles, 3)
     
     
     
@@ -119,3 +98,29 @@ if __name__ =="__main__":
         kalman_config=EnsembleKalmanConfig
     )
     anim(save_name=False)
+
+
+############# DO NOT USE THIS WAY ! #####
+
+
+# @dataclass
+# class GroupingSimulationConfig(BaseSimulationConfig):
+
+#     # field
+#     x_axis = 25
+#     y_axis = 25
+
+#     # simulation
+#     velocity: float = 0.03
+#     noisestrength: float = 0.1
+    
+    
+# @dataclass
+# class OrderedSimulationConfig(BaseSimulationConfig):
+
+#     # field
+#     x_axis = 7
+#     y_axis = 7
+
+#     # simulation
+#     noisestrength: float = 0.5
