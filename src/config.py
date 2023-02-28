@@ -96,7 +96,7 @@ class EnsembleKalmanConfig():
     
     n_ensembles: int = 100
     
-    noise_ratio: float = 0.0001
+    noise_ratio: float = 0.001
     
     n_ensembles: int = 50
     n_particles: int = 50
@@ -106,7 +106,7 @@ class EnsembleKalmanConfig():
     
     state: np.ndarray = np.random.rand(n_particles, 3)
     
-    observable_axis = [True,True,True]
+    observable_axis = [True,True,False]
     
     model_forecast: callable = None
     epsilon: np.ndarray = np.ones((n_particles, n_particles))*1e-11
