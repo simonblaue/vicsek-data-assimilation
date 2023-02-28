@@ -46,7 +46,7 @@ class VicsekAnimation():
 
     # initialization function: plot the background of each frame
     def init_function(self):
-        return self.vicsek_polygons, self.kalman_polygons, self.mean_errline
+        return self.vicsek_polygons, self.kalman_polygons, self.errline_mean, self.errline_max
 
 
     def init_vicsek_plot(self):
@@ -74,11 +74,16 @@ class VicsekAnimation():
             self.axes[0][1].add_patch(p)
             
     def init_metrics_plot(self):
-        self.error = []
-        self.time = 1
+        self.step = 1
+        self.error_mean = []
+        self.error_max = []
+        
         self.axes[1][0].grid()
-        # self.max_errline, = self.axes[1][0].plot([], [], lw=2)
-        self.mean_errline, = self.axes[1][0].plot([0], [0], lw=2)
+        self.errline_max, = self.axes[1][0].plot([0], [0], lw=2, c='blue', label='errline_max')
+        self.errline_mean, = self.axes[1][0].plot([0], [0], lw=2, c='orange', label='mean error')
+        self.axes[1][0].legend()
+        
+        
 
     def update_vicsek_plot(self):
         '''updates polygons in vicsek plot'''
@@ -96,11 +101,14 @@ class VicsekAnimation():
 
     # TODO:
     def update_metrics(self):
-        diff = np.mean(np.abs(self.filter.state - self.simulation.walkers))
-        # print(diff)
-        self.error.append(diff)
-        self.time += 1
-        self.mean_errline.set_data(np.arange(0, self.time-1, 1), self.error)
+        diff = np.abs(self.filter.state - self.simulation.walkers)
+        self.error_mean.append(np.mean(diff))
+        self.error_max.append(np.max(diff))
+        self.step += 1
+        self.errline_mean.set_data(np.arange(0, self.step-1, 1), self.error_mean)
+        self.errline_max.set_data(np.arange(0, self.step-1, 1), self.error_max)
+        self.axes[1][0].set_xlim(0, self.step+1)
+        self.axes[1][0].set_ylim(0, np.max(self.error_max))
 
 
 
@@ -113,11 +121,12 @@ class VicsekAnimation():
             self.update_vicsek_plot()
             self.update_kalmann_plot()
             
-            self.update_metrics()
+            if i %10  == 0: 
+                self.update_metrics()
             
             
 
-            return self.vicsek_polygons, self.kalman_polygons, self.mean_errline
+            return self.vicsek_polygons, self.kalman_polygons, self.errline_mean, self.errline_max
 
 
     def __call__(self, save_name: bool = False):
