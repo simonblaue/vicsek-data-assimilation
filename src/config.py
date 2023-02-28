@@ -106,6 +106,7 @@ class EnsembleKalmanConfig():
     
     state: np.ndarray = np.random.rand(n_particles, 3)
     
+    # At the moment only the last is possible and can only have False beginning from the left to the right
     observable_axis = [True,True,False]
     
     model_forecast: callable = None
