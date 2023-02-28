@@ -77,10 +77,12 @@ class VicsekAnimation():
         self.step = 1
         self.error_mean = []
         self.error_max = []
-        
+        # self.axes[1][0].set_title('Error')
+        self.axes[1][0].set_xlabel('Steps')
+        self.axes[1][0].set_ylabel('Error')
         self.axes[1][0].grid()
-        self.errline_max, = self.axes[1][0].plot([0], [0], lw=2, c='blue', label='errline_max')
-        self.errline_mean, = self.axes[1][0].plot([0], [0], lw=2, c='orange', label='mean error')
+        self.errline_max, = self.axes[1][0].plot([0], [0], lw=1, c='blue', label='Maximum')
+        self.errline_mean, = self.axes[1][0].plot([0], [0], lw=1, c='orange', label='Mean')
         self.axes[1][0].legend()
         
         
@@ -104,9 +106,9 @@ class VicsekAnimation():
         diff = np.abs(self.filter.state - self.simulation.walkers)
         self.error_mean.append(np.mean(diff))
         self.error_max.append(np.max(diff))
-        self.step += 1
-        self.errline_mean.set_data(np.arange(0, self.step-1, 1), self.error_mean)
-        self.errline_max.set_data(np.arange(0, self.step-1, 1), self.error_max)
+        self.step += self.config.steps_per_metrics_update
+        self.errline_mean.set_data(np.arange(0, self.step-1, self.config.steps_per_metrics_update), self.error_mean)
+        self.errline_max.set_data(np.arange(0, self.step-1, self.config.steps_per_metrics_update), self.error_max)
         self.axes[1][0].set_xlim(0, self.step+1)
         self.axes[1][0].set_ylim(0, np.max(self.error_max))
 
@@ -121,7 +123,7 @@ class VicsekAnimation():
             self.update_vicsek_plot()
             self.update_kalmann_plot()
             
-            if i %10  == 0: 
+            if i % self.config.steps_per_metrics_update  == 0: 
                 self.update_metrics()
             
             
@@ -152,7 +154,7 @@ if __name__ =="__main__":
     import config 
     anim = config.VicsekAnimationConfig.exec_ref(
         animation_config=config.VicsekAnimationConfig,
-        simulation_config=config.RandomSimulationConfig,
+        simulation_config=config.RandomSimulationConfig(n_particles=10),
         kalman_config=config.EnsembleKalmanConfig
     )
     anim(save_name=False)

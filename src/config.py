@@ -82,6 +82,9 @@ class VicsekAnimationConfig:
 
     # boundary around plots
     boundary: float = 0.5
+    
+    # steps per metrics update
+    steps_per_metrics_update: int = 10
 
 
 
