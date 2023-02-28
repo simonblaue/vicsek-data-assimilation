@@ -11,7 +11,7 @@ class BaseSimulationConfig:
     exec_ref = ViszecSimulation
 
     # particles
-    n_particles: int = 100
+    n_particles: int = 50
     # repulsion_radius: float = 0.5
     alignment_radius: float = 1.0
 
@@ -69,7 +69,7 @@ class VicsekAnimationConfig:
     exec_ref = VicsekAnimation
 
     # simulation steps before plotting
-    simulation_frequency: int = 1
+    simulation_frequency: int = 3
     
     # simulation steps before sampling
     sample_frequency: int = 1

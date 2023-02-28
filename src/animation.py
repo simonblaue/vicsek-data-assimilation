@@ -127,7 +127,7 @@ class VicsekAnimation():
             for _ in range(self.config.simulation_frequency):
                 self.simulation.update()
 
-            self.filter.update(self.simulation.walkers)
+            self.filter.update(self.simulation.walkers, np.eye(self.simulation.config.n_particles))
             self.update_vicsek_plot()
             self.update_kalmann_plot()
             
