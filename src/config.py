@@ -1,6 +1,9 @@
 
-
-
+from dataclasses import dataclass
+import numpy as np
+from vicsek import ViszecSimulation
+from animation import VicsekAnimation
+from kalman import EnsembleKalman
 
 @dataclass
 class BaseSimulationConfig:
@@ -25,8 +28,6 @@ class BaseSimulationConfig:
     timestepsize: float = 1.0
 
 
-# Das sind base parameter für random movement:
-
 @dataclass
 class RandomSimulationConfig(BaseSimulationConfig):
 
@@ -37,9 +38,6 @@ class RandomSimulationConfig(BaseSimulationConfig):
     # simulation
     noisestrength: float = 0.5
 
-######
-
-# Das sind parameter für orderd movement:
 
 @dataclass
 class GroupingSimulationConfig(BaseSimulationConfig):

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-
 import numpy as np
 
 
@@ -82,69 +81,5 @@ class ViszecSimulation:
         walkers[:,1] = np.mod(walkers[:,1], self.config.y_axis)
     
         return walkers
-    
-
-@dataclass
-class BaseSimulationConfig:
-
-    exec_ref = ViszecSimulation
-
-    # particles
-    n_particles: int = 100
-    # repulsion_radius: float = 0.5
-    alignment_radius: float = 1.0
-
-    # field
-    x_axis = 25
-    y_axis = 25
-
-    # simulation
-    velocity: float = 0.03
-    noisestrength: float = 2.0
-    xi = 0
-
-    endtime: float = 200
-    timestepsize: float = 1.0
-
-
-# Das sind base parameter für random movement:
-
-@dataclass
-class RandomSimulationConfig(BaseSimulationConfig):
-
-    # field
-    x_axis = 10
-    y_axis = 10
-    xi = 0.8
-    # simulation
-    noisestrength: float = 0.5
-
-######
-
-# Das sind parameter für orderd movement:
-
-@dataclass
-class GroupingSimulationConfig(BaseSimulationConfig):
-
-    # field
-    x_axis = 25
-    y_axis = 25
-
-    # simulation
-    velocity: float = 0.03
-    noisestrength: float = 0.1
-    
-    
-@dataclass
-class OrderedSimulationConfig(BaseSimulationConfig):
-
-    # field
-    x_axis = 7
-    y_axis = 7
-
-    # simulation
-    noisestrength: float = 0.5
-    
-    
     
 

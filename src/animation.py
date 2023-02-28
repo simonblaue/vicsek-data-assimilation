@@ -1,4 +1,3 @@
-from dataclasses import dataclass, field
 from typing import List, Tuple
 
 import numpy as np
@@ -7,18 +6,18 @@ from matplotlib import animation
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.patches import Polygon
-from vicsek import OrderedSimulationConfig, RandomSimulationConfig
-from kalman import EnsembleKalmanConfig
+
+
 
 
 class VicsekAnimation():
-    def __init__(self, animation_config, simulation_config = OrderedSimulationConfig):
+    def __init__(self, animation_config, simulation_config, kalman_config):
 
         self.config = animation_config
         # initializing the Simulation
         self.simulation = simulation_config.exec_ref(simulation_config)
-        self.filter = EnsembleKalmanConfig.exec_ref(
-            EnsembleKalmanConfig(
+        self.filter = kalman_config.exec_ref(
+            kalman_config(
                 n_particles=self.simulation.config.n_particles,
                 state=self.simulation.walkers,
                 model_forecast=self.simulation._step,
@@ -140,31 +139,11 @@ class VicsekAnimation():
 
 
 
-
-@dataclass
-class VicsekAnimationConfig:
-
-    exec_ref = VicsekAnimation
-
-    # simulation steps before plotting
-    simulation_frequency: int = 1
-    
-    # simulation steps before sampling
-    sample_frequency: int = 1
-
-    # delay between frames in ms
-    plot_interval: int = 10
-
-    # frames per simulation
-    frames: int = 100
-
-    # boundary around plots
-    boundary: float = 0.5
-
-
 if __name__ =="__main__":
-    anim = VicsekAnimationConfig.exec_ref(
-        animation_config=VicsekAnimationConfig,
-        simulation_config=RandomSimulationConfig
+    import config 
+    anim = config.VicsekAnimationConfig.exec_ref(
+        animation_config=config.VicsekAnimationConfig,
+        simulation_config=config.RandomSimulationConfig,
+        kalman_config=config.EnsembleKalmanConfig
     )
     anim(save_name=False)
