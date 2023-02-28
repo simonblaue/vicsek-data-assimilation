@@ -3,12 +3,13 @@ import time
 import scipy
 
 class EnsembleKalman():
-    def __init__(self, config,):
+    def __init__(self, config):
             self.config = config
             self.state = self.config.state
+            # print(self.state.shape)
             self.model_forecast = self.config.model_forecast
 
-    def update(self, measurement: np.ndarray, ob_axis) -> np.ndarray:
+    def update(self, measurement: np.ndarray, ) -> np.ndarray:
             t = time.time()
             #generating ensamples
             forecast_ensemble = np.array([
@@ -18,13 +19,13 @@ class EnsembleKalman():
             virtual_observations = (
                 np.tile(measurement, (self.config.n_ensembles, 1, 1)) + 
                 np.random.normal(size=(self.config.n_particles, 3), scale=self.config.noise_ratio)
-            )[:,:,ob_axis]
+            )[:,:,self.config.observable_axis]
             
 
             # forecast matrix
-            mean_forecast = np.mean(forecast_ensemble[:,:,ob_axis], axis = 0)
+            mean_forecast = np.mean(forecast_ensemble[:,:,self.config.observable_axis], axis = 0)
             
-            errors = forecast_ensemble[:,:,ob_axis] - np.tile(mean_forecast, (self.config.n_ensembles, 1, 1))
+            errors = forecast_ensemble[:,:,self.config.observable_axis] - np.tile(mean_forecast, (self.config.n_ensembles, 1, 1))
 
             # #boundaries 
             errors[:,:,0] = np.where(errors[:,:,0]>self.config.x_axis/2,errors[:,:,0]-self.config.x_axis,errors[:,:,0])
@@ -46,7 +47,7 @@ class EnsembleKalman():
 
             # update
             ensemble_update = [
-                x + np.hstack(((K @ (z-x[:,ob_axis])),np.zeros((self.config.n_particles, np.size(ob_axis)-np.count_nonzero(ob_axis))))) for x, z in zip(forecast_ensemble, virtual_observations)
+                x + np.hstack(((K @ (z-x[:,self.config.observable_axis])),np.zeros((self.config.n_particles, np.size(self.config.observable_axis)-np.count_nonzero(self.config.observable_axis))))) for x, z in zip(forecast_ensemble, virtual_observations)
             ]
             
             

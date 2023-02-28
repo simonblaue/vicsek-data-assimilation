@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 import numpy as np
+from typing import Tuple, List
 from vicsek import ViszecSimulation
-from animation import VicsekAnimation
+from animation import Animation
 from kalman import EnsembleKalman
 
 
@@ -21,13 +22,19 @@ class BaseSimulationConfig(SharedConfig):
 
     exec_ref = ViszecSimulation
 
+    # particles
+    n_particles: int = 50
     # repulsion_radius: float = 0.5
     alignment_radius: float = 1.0
+
+    # field
+    x_axis: float = 25
+    y_axis: float = 25
 
     # simulation
     velocity: float = 0.03
     noisestrength: float = 2.0
-    xi = 0
+    xi: float = 0
 
     endtime: float = 200
     timestepsize: float = 1.0
@@ -37,16 +44,42 @@ class BaseSimulationConfig(SharedConfig):
 class RandomSimulationConfig(BaseSimulationConfig):
     
     # field
-    xi = 0.8
+    x_axis: float = 10
+    y_axis: float = 10
+    xi: float = 0.8
     # simulation
     noisestrength: float = 0.5
 
 
+@dataclass
+class GroupingSimulationConfig(BaseSimulationConfig):
+
+    # field
+    x_axis: float = 25
+    y_axis: float = 25
+
+    # simulation
+    velocity: float = 0.03
+    noisestrength: float = 0.1
+    
     
 @dataclass
-class VicsekAnimationConfig:
+class OrderedSimulationConfig(BaseSimulationConfig):
 
-    exec_ref = VicsekAnimation
+    # field
+    x_axis: float = 7
+    y_axis: float = 7
+
+    # simulation
+    noisestrength: float = 0.5
+    
+@dataclass 
+class AnimationConfig:
+
+    exec_ref = Animation
+    
+    viscecmodel: ViszecSimulation = None
+    filtermodel: EnsembleKalman = None
 
     # simulation steps before plotting
     simulation_frequency: int = 1
@@ -65,6 +98,14 @@ class VicsekAnimationConfig:
     
     # steps per metrics update
     steps_per_metrics_update: int = 10
+    
+    experimentname: str = 'None'
+    
+    save_name: str = 'None'
+    
+# @dataclass
+# class VicsekAnimationConfig(AnimationConfig):
+#     exec_ref = VicsekAnimation
 
 
 
@@ -73,12 +114,22 @@ class EnsembleKalmanConfig(SharedConfig):
     
     exec_ref = EnsembleKalman
     
-    noise_ratio: float = 0.0001
-    # noise_ratio: float = 0.05
+    seed: int = 1
+    
     n_ensembles: int = 100
     
+    noise_ratio: float = 0.0001
+    # noise_ratio: float = 0.05
+    
+    n_particles: int = 50
+    
+    x_axis: int = 25
+    y_axis: int = 25
+    
+    state: np.ndarray = np.random.rand(n_particles, 3)
+    
     # At the moment only the last to False is possible and can only have False beginning from the left to the right
-    observable_axis = [True,True,False]
+    observable_axis: Tuple[bool, bool, bool] = (True,True,False)
     
     model_forecast: callable = None
     epsilon: np.ndarray = np.ones((SharedConfig.n_particles, SharedConfig.n_particles))*1e-11
@@ -98,29 +149,3 @@ if __name__ =="__main__":
         kalman_config=EnsembleKalmanConfig
     )
     anim(save_name=False)
-
-
-############# DO NOT USE THIS WAY ! #####
-
-
-# @dataclass
-# class GroupingSimulationConfig(BaseSimulationConfig):
-
-#     # field
-#     x_axis = 25
-#     y_axis = 25
-
-#     # simulation
-#     velocity: float = 0.03
-#     noisestrength: float = 0.1
-    
-    
-# @dataclass
-# class OrderedSimulationConfig(BaseSimulationConfig):
-
-#     # field
-#     x_axis = 7
-#     y_axis = 7
-
-#     # simulation
-#     noisestrength: float = 0.5
