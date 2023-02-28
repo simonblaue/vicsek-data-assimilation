@@ -6,18 +6,22 @@ from kalman import EnsembleKalman
 
 
 @dataclass
-class BaseSimulationConfig:
-
-    exec_ref = ViszecSimulation
-
-    # particles
+class SharedConfig:
+    
+    # particles number
     n_particles: int = 50
-    # repulsion_radius: float = 0.5
-    alignment_radius: float = 1.0
-
+    
     # field
     x_axis = 25
     y_axis = 25
+
+@dataclass
+class BaseSimulationConfig(SharedConfig):
+
+    exec_ref = ViszecSimulation
+
+    # repulsion_radius: float = 0.5
+    alignment_radius: float = 1.0
 
     # simulation
     velocity: float = 0.03
@@ -89,28 +93,22 @@ class VicsekAnimationConfig:
 
 
 @dataclass
-class EnsembleKalmanConfig():
+class EnsembleKalmanConfig(SharedConfig):
     
     exec_ref = EnsembleKalman
-    
-    n_ensembles: int = 100
     
     noise_ratio: float = 0.0001
     # noise_ratio: float = 0.05
     
     n_ensembles: int = 50
-    n_particles: int = 50
     
-    x_axis: int = 25
-    y_axis: int = 25
-    
-    state: np.ndarray = np.random.rand(n_particles, 3)
+    state: np.ndarray = np.random.rand(SharedConfig.n_particles, 3)
     
     # At the moment only the last to False is possible and can only have False beginning from the left to the right
     observable_axis = [True,True,False]
     
     model_forecast: callable = None
-    epsilon: np.ndarray = np.ones((n_particles, n_particles))*1e-11
+    epsilon: np.ndarray = np.ones((SharedConfig.n_particles, SharedConfig.n_particles))*1e-11
     
     
     

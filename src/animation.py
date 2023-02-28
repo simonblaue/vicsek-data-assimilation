@@ -19,11 +19,8 @@ class VicsekAnimation():
         self.simulation = simulation_config.exec_ref(simulation_config)
         self.filter = kalman_config.exec_ref(
             kalman_config(
-                n_particles=self.simulation.config.n_particles,
                 state=self.simulation.walkers,
                 model_forecast=self.simulation._step,
-                x_axis=simulation_config.x_axis,
-                y_axis=simulation_config.y_axis,
             )
         )
 
