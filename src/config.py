@@ -75,7 +75,7 @@ class EnsembleKalmanConfig(SharedConfig):
     
     noise_ratio: float = 0.0001
     # noise_ratio: float = 0.05
-    n_ensembles: int = 50
+    n_ensembles: int = 100
     
     # At the moment only the last to False is possible and can only have False beginning from the left to the right
     observable_axis = [True,True,False]
