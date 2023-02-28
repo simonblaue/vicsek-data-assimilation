@@ -4,7 +4,7 @@ import numpy as np
 from vicsek import ViszecSimulation
 from animation import VicsekAnimation
 from kalman import EnsembleKalman
-import scipy
+
 
 @dataclass
 class BaseSimulationConfig:
@@ -70,7 +70,7 @@ class VicsekAnimationConfig:
     exec_ref = VicsekAnimation
 
     # simulation steps before plotting
-    simulation_frequency: int = 3
+    simulation_frequency: int = 1
     
     # simulation steps before sampling
     sample_frequency: int = 1
@@ -96,7 +96,7 @@ class EnsembleKalmanConfig():
     
     n_ensembles: int = 100
     
-    noise_ratio: float = 0.001
+    noise_ratio: float = 0.005
     
     n_ensembles: int = 50
     n_particles: int = 50
