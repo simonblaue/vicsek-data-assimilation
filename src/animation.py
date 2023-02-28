@@ -1,5 +1,5 @@
 from typing import List, Tuple
-
+import matplotlib.gridspec as gridspec
 import numpy as np
 from misc import n_colors, xyphi_to_abc
 from matplotlib import animation
@@ -26,15 +26,23 @@ class VicsekAnimation():
             )
         )
 
-        self.fig, self.axes = plt.subplots(2, 2, figsize=(10,7))
-        self.set_axis(self.axes[0][0], 'Model')
-        self.set_axis(self.axes[0][1], 'Tracking')
+        self.init_figure()
+        self.set_axis(self.axes[0], 'Model')
+        self.set_axis(self.axes[1], 'Kalman')
 
         self.init_vicsek_plot()
         self.init_kalman_plot()
         self.init_metrics_plot()
 
 
+    def init_figure(self):
+        self.fig = plt.figure(figsize=(10,7),)
+        self.gs = gridspec.GridSpec(nrows=2, ncols=2, wspace=0.5,hspace=0.6, height_ratios=[2,1])
+        self.axes = [0]*3
+        self.axes[0]=self.fig.add_subplot(self.gs[0,0])
+        self.axes[1]=self.fig.add_subplot(self.gs[0,1])
+        self.axes[2]=self.fig.add_subplot(self.gs[1,:])
+        
     # initialize plot
     def set_axis(self, ax: Axes, title: str):
         ax.set_xlim(-self.config.boundary, self.simulation.config.x_axis+self.config.boundary)
@@ -59,7 +67,7 @@ class VicsekAnimation():
             Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(vicsek_polygon_coors, self.vicsek_colors)
         ]
         for p in self.vicsek_polygons:
-            self.axes[0][0].add_patch(p)
+            self.axes[0].add_patch(p)
 
     def init_kalman_plot(self):
         '''initializes polygons in vicsek plot'''
@@ -71,19 +79,19 @@ class VicsekAnimation():
             Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(kalman_polygon_coors, self.kalman_colors)
         ]
         for p in self.kalman_polygons:
-            self.axes[0][1].add_patch(p)
+            self.axes[1].add_patch(p)
             
     def init_metrics_plot(self):
         self.step = 1
         self.error_mean = []
         self.error_max = []
         # self.axes[1][0].set_title('Error')
-        self.axes[1][0].set_xlabel('Steps')
-        self.axes[1][0].set_ylabel('Error')
-        self.axes[1][0].grid()
-        self.errline_max, = self.axes[1][0].plot([0], [0], lw=1, c='blue', label='Maximum')
-        self.errline_mean, = self.axes[1][0].plot([0], [0], lw=1, c='orange', label='Mean')
-        self.axes[1][0].legend()
+        self.axes[2].set_xlabel('Steps')
+        self.axes[2].set_ylabel('Error')
+        self.axes[2].grid()
+        self.errline_max, = self.axes[2].plot([0], [0], lw=1, c='blue', label='Maximum')
+        self.errline_mean, = self.axes[2].plot([0], [0], lw=1, c='orange', label='Mean')
+        self.axes[2].legend()
         
         
 
@@ -109,8 +117,8 @@ class VicsekAnimation():
         self.step += self.config.steps_per_metrics_update
         self.errline_mean.set_data(np.arange(0, self.step-1, self.config.steps_per_metrics_update), self.error_mean)
         self.errline_max.set_data(np.arange(0, self.step-1, self.config.steps_per_metrics_update), self.error_max)
-        self.axes[1][0].set_xlim(0, self.step+1)
-        self.axes[1][0].set_ylim(0, np.max(self.error_max))
+        self.axes[2].set_xlim(0, self.step+1)
+        self.axes[2].set_ylim(0, np.max(self.error_max))
 
 
 
