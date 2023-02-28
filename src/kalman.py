@@ -33,7 +33,7 @@ class EnsembleKalman():
         errors[:,:,1] = np.where(errors[:,:,1]>self.config.y_axis/2,errors[:,:,1]-self.config.y_axis,errors[:,:,1])
         errors[:,:,1] = np.where(errors[:,:,1]<-self.config.y_axis/2,errors[:,:,1]+self.config.y_axis,errors[:,:,1])
         
-        # Forecast ensamble covariance
+        # Forecast ensemble covariance
         pf = 1/(self.config.n_ensembles-1) * np.sum(
             [np.matmul(e, e.T) for e in errors],
             axis = 0
