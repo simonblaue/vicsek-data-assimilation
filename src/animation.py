@@ -98,7 +98,7 @@ class VicsekAnimation():
     # TODO:
     def update_metrics(self):
         diff = np.mean(np.abs(self.filter.state - self.simulation.walkers))
-        print(diff)
+        # print(diff)
         self.error.append(diff)
         self.time += 1
         self.mean_errline.set_data(np.arange(0, self.time-1, 1), self.error)
@@ -115,6 +115,8 @@ class VicsekAnimation():
             self.update_kalmann_plot()
             
             self.update_metrics()
+            
+            
 
             return self.vicsek_polygons, self.kalman_polygons, self.mean_errline
 
