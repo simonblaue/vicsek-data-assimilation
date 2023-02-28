@@ -2,6 +2,7 @@ from matplotlib.colors import Colormap
 import matplotlib.pyplot as plt
 import numpy as np
 from typing import List
+from decimal import Decimal
 
 # polygon angle
 THETA = 2*np.pi/360*150
@@ -33,3 +34,6 @@ def xyphi_to_abc(x: float, y: float, phi: float) -> np.ndarray:
 
     triangle = np.array([[ax, ay], [bx, by], [cx, cy]])
     return triangle
+
+def format_e(n):
+    return "{:.2E}".format(Decimal(n))

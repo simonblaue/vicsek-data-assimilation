@@ -1,11 +1,12 @@
 from typing import List, Tuple
 import matplotlib.gridspec as gridspec
 import numpy as np
-from misc import n_colors, xyphi_to_abc
+from misc import n_colors, xyphi_to_abc, format_e
 from matplotlib import animation
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.patches import Polygon
+from decimal import Decimal
 
 
 
@@ -89,8 +90,8 @@ class VicsekAnimation():
         self.axes[2].set_xlabel('Steps')
         self.axes[2].set_ylabel('Error')
         self.axes[2].grid()
-        self.errline_max, = self.axes[2].plot([0], [0], lw=1, c='blue', label='Maximum')
-        self.errline_mean, = self.axes[2].plot([0], [0], lw=1, c='orange', label='Mean')
+        self.errline_max, = self.axes[2].plot([0], [0], lw=1, c='blue', label=f'Maximum')
+        self.errline_mean, = self.axes[2].plot([0], [0], lw=1, c='orange', label=f'Mean')
         self.axes[2].legend()
         
         
@@ -119,7 +120,9 @@ class VicsekAnimation():
         self.errline_max.set_data(np.arange(0, self.step-1, self.config.steps_per_metrics_update), self.error_max)
         self.axes[2].set_xlim(0, self.step+1)
         self.axes[2].set_ylim(0, np.max(self.error_max))
-
+        self.axes[2].set_xlabel(
+            f'Steps,  Total Max: {format_e(np.max(self.error_max))},  Mean avg: {format_e(np.mean(self.error_mean))}'
+        )
 
 
     def animate_step(self, i: int):
