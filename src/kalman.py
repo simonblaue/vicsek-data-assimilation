@@ -6,6 +6,9 @@ import time
 class EnsembleKalman():
     def __init__(self, config,):
             self.config = config
+            self.state = self.config.state
+            self.model_forecast = self.config.model_forecast
+            # print(self.config.x_axis)
             
     def update(self, measurement: np.ndarray) -> np.ndarray:
         t = time.time()
@@ -27,7 +30,7 @@ class EnsembleKalman():
         
         # errors = np.array([f-mean_forecast for f in forecast_ensemble])
         # speed advantage?
-        errors = forecast_ensemble - np.tile(mean_forecast, (self.config.n_ensembles))
+        errors = forecast_ensemble - np.tile(mean_forecast, (self.config.n_ensembles, 1, 1))
 
         #boundaries 
         errors[:,:,0] = np.where(errors[:,:,0]>self.config.x_axis/2,
@@ -58,7 +61,7 @@ class EnsembleKalman():
         self.state[:,0] = np.mod(self.state[:,0], 10)
         self.state[:,1] = np.mod(self.state[:,1], 10)
         
-        print(f'Update time:\t{time.time()-t}')
+        # print(f'Update time:\t{time.time()-t}')
         
         return self.state
 
@@ -81,11 +84,3 @@ class EnsembleKalmanConfig:
     
     model_forecast: callable = None
     epsilon: np.ndarray = np.ones((n_particles, n_particles))*1e-11
-    
-    
-    
-if __name__ =="__main__":
-    import animation
-    import vicsek
-    anim = animation.VicsekAnimationConfig.exec_ref(animation.VicsekAnimationConfig,vicsek.OrderedSimulationConfig)
-    anim(save_name=False)

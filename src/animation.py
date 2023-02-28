@@ -16,7 +16,7 @@ class VicsekAnimation():
 
         self.config = animation_config
         # initializing the Simulation
-        self.simulation = RandomSimulationConfig.exec_ref(simulation_config)
+        self.simulation = simulation_config.exec_ref(simulation_config)
         self.filter = EnsembleKalmanConfig.exec_ref(
             EnsembleKalmanConfig(
                 n_particles=self.simulation.config.n_particles,
@@ -79,7 +79,7 @@ class VicsekAnimation():
         self.time = 1
         self.axes[1][0].grid()
         # self.max_errline, = self.axes[1][0].plot([], [], lw=2)
-        self.mean_errline, = self.axes[1][0].plot([], [], lw=2)
+        self.mean_errline, = self.axes[1][0].plot([0], [0], lw=2)
 
     def update_vicsek_plot(self):
         '''updates polygons in vicsek plot'''
@@ -97,8 +97,9 @@ class VicsekAnimation():
 
     # TODO:
     def update_metrics(self):
-        diff = np.abs(self.filter.state - self.simulation.walkers)
-        self.error.append(np.mean(diff))
+        diff = np.mean(np.abs(self.filter.state - self.simulation.walkers))
+        print(diff)
+        self.error.append(diff)
         self.time += 1
         self.mean_errline.set_data(np.arange(0, self.time-1, 1), self.error)
 
@@ -160,5 +161,8 @@ class VicsekAnimationConfig:
 
 
 if __name__ =="__main__":
-    anim = VicsekAnimationConfig.exec_ref(VicsekAnimationConfig, RandomSimulationConfig)
+    anim = VicsekAnimationConfig.exec_ref(
+        animation_config=VicsekAnimationConfig,
+        simulation_config=RandomSimulationConfig
+    )
     anim(save_name=False)
