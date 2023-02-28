@@ -1,7 +1,7 @@
 from typing import List, Tuple
 import matplotlib.gridspec as gridspec
 import numpy as np
-from misc import n_colors, xyphi_to_abc, format_e
+from misc import n_colors, xyphi_to_abc, format_e, hungarian_error
 from matplotlib import animation
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
@@ -38,7 +38,7 @@ class VicsekAnimation():
 
     def init_figure(self):
         self.fig = plt.figure(figsize=(10,7),)
-        self.gs = gridspec.GridSpec(nrows=2, ncols=2, wspace=0.5,hspace=0.6, height_ratios=[2,1])
+        self.gs = gridspec.GridSpec(nrows=2, ncols=2, wspace=0.25,hspace=0.6, height_ratios=[2,1])
         self.axes = [0]*3
         self.axes[0]=self.fig.add_subplot(self.gs[0,0])
         self.axes[1]=self.fig.add_subplot(self.gs[0,1])
@@ -55,7 +55,7 @@ class VicsekAnimation():
 
     # initialization function: plot the background of each frame
     def init_function(self):
-        return self.vicsek_polygons, self.kalman_polygons, self.errline_mean, self.errline_max
+        return self.vicsek_polygons, self.kalman_polygons, self.errline_mean, self.errline_hungarian
 
 
     def init_vicsek_plot(self):
@@ -85,14 +85,15 @@ class VicsekAnimation():
     def init_metrics_plot(self):
         self.step = 1
         self.error_mean = []
-        self.error_max = []
+        self.error_hungarian = []
         # self.axes[1][0].set_title('Error')
         self.axes[2].set_xlabel('Steps')
         self.axes[2].set_ylabel('Error')
         self.axes[2].grid()
-        self.errline_max, = self.axes[2].plot([0], [0], lw=1, c='blue', label=f'Maximum')
+        self.errline_hungarian, = self.axes[2].plot([0], [0], lw=1, c='blue', label=f'Hungarian')
         self.errline_mean, = self.axes[2].plot([0], [0], lw=1, c='orange', label=f'Mean')
         self.axes[2].legend()
+        self.axes[2].set_title('Metrics')
         
         
 
@@ -110,17 +111,19 @@ class VicsekAnimation():
             p.set_xy(t)
     
 
+    # TODO: Recall Precisison
     def update_metrics(self):
+        h_error = hungarian_error(self.simulation.walkers, self.filter.state, self.simulation.config.n_particles)
         diff = np.abs(self.filter.state - self.simulation.walkers)
-        self.error_mean.append(np.mean(diff[:,0:2]))
-        self.error_max.append(np.max(diff[:,0:2]))
+        self.error_mean.append(np.mean(diff))
+        self.error_hungarian.append(np.max(h_error))
         self.step += self.config.steps_per_metrics_update
-        self.errline_mean.set_data(np.arange(0, self.step-1, self.config.steps_per_metrics_update), self.error_mean)
-        self.errline_max.set_data(np.arange(0, self.step-1, self.config.steps_per_metrics_update), self.error_max)
+        # self.errline_mean.set_data(np.arange(0, self.step-1, self.config.steps_per_metrics_update), self.error_mean)
+        self.errline_hungarian.set_data(np.arange(0, self.step-1, self.config.steps_per_metrics_update), self.error_hungarian)
         self.axes[2].set_xlim(0, self.step+1)
-        self.axes[2].set_ylim(0, np.max(self.error_max))
+        self.axes[2].set_ylim(0, np.max(self.error_hungarian))
         self.axes[2].set_xlabel(
-            f'Steps,  Total Max: {format_e(np.max(self.error_max))},  Mean avg: {format_e(np.mean(self.error_mean))}'
+            f'Steps,  Hungarian Error: {format_e(np.mean(self.error_hungarian))},  Mean avg: {format_e(np.mean(self.error_mean))}'
         )
 
 
@@ -138,7 +141,7 @@ class VicsekAnimation():
             
             
 
-            return self.vicsek_polygons, self.kalman_polygons, self.errline_mean, self.errline_max
+            return self.vicsek_polygons, self.kalman_polygons, self.errline_mean, self.errline_hungarian
 
 
     def __call__(self, save_name: bool = False):
@@ -164,7 +167,7 @@ if __name__ =="__main__":
     import config 
     anim = config.VicsekAnimationConfig.exec_ref(
         animation_config=config.VicsekAnimationConfig,
-        simulation_config=config.RandomSimulationConfig(n_particles=10),
+        simulation_config=config.RandomSimulationConfig(n_particles=50),
         kalman_config=config.EnsembleKalmanConfig
     )
     anim(save_name=False)

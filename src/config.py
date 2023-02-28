@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass
 import numpy as np
 from vicsek import ViszecSimulation
@@ -96,7 +95,8 @@ class EnsembleKalmanConfig():
     
     n_ensembles: int = 100
     
-    noise_ratio: float = 0.005
+    noise_ratio: float = 0.0001
+    # noise_ratio: float = 0.05
     
     n_ensembles: int = 50
     n_particles: int = 50
