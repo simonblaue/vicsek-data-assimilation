@@ -19,7 +19,8 @@ def visualize_experiment(experiment_name):
     seed = int(parameters['seeds'][seed_number])
     parameters['experimentid'] = f'{experiment}{seed}'
     parameters['loadexperiment'] = f'experiment'
-    parameters['frames'] = 100
+    parameters['frames'] = parameters['steps']
+
     parameters['plot_interval'] = 10
     parameters['boundary'] = 0.5
     

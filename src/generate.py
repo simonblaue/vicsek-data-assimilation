@@ -4,6 +4,7 @@ import numpy as np
 from pathlib import Path
 import json
 import os
+from alive_progress import alive_bar
 
 from vicsek import ViszecSimulation
 from kalman import EnsembleKalman
@@ -20,12 +21,14 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     viscecstates = []
     filterstates = []
    
-    for t in range(parameters['steps']):
-        viscecmodel.update()
-        viscecstates.append(viscecmodel.agents)
-        if t % parameters['sampling_rate'] == 0:
-            filtermodel.update(viscecmodel.agents)
-            filterstates.append(filtermodel.agents)
+    with alive_bar(parameters['steps']) as bar:
+        for t in range(parameters['steps']):
+            viscecmodel.update()
+            viscecstates.append(viscecmodel.agents)
+            if t % parameters['sampling_rate'] == 0:
+                filtermodel.agents = filtermodel.update(viscecmodel.agents)
+                filterstates.append(filtermodel.agents)
+            bar()
     
     return viscecstates, filterstates
 

@@ -19,7 +19,6 @@ class EnsembleKalman():
         self.model_forecast = forecast_func
 
     def update(self, measurement: np.ndarray, ) -> np.ndarray:
-            t = time.time()
             
             #generating forecast ensamples
             forecast_ensemble = np.array([
@@ -65,13 +64,13 @@ class EnsembleKalman():
             
             
             # Updated state is mean over the updated ensemble members 
-            self.state = np.mean(ensemble_update, axis = 0)
+            self.agents = np.mean(ensemble_update, axis = 0)
             
             self.agents[:,0] = np.mod(self.agents[:,0], self.config["x_axis"])
             self.agents[:,1] = np.mod(self.agents[:,1], self.config["y_axis"])
             
             # print(f'Update time:\t{time.time()-t}')
-        
+
             return self.agents
 
 
