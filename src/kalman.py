@@ -13,10 +13,10 @@ class EnsembleKalman():
         Receives model_forecast which is the Vicsek step 
         
         """
-            self.config = config
-            self.agents = self.config.agents
-            # print(self.agents.shape)
-            self.model_forecast = self.config.model_forecast
+        self.config = config
+        self.agents = self.config.agents
+        # print(self.agents.shape)
+        self.model_forecast = self.config.model_forecast
 
     def update(self, measurement: np.ndarray, ) -> np.ndarray:
             t = time.time()

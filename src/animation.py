@@ -26,12 +26,10 @@ class Animation():
             self.animate_step = self._step_visualize           
         
         else:
-            viscecmodel = self.config.viscecmodel
-            filtermodel = self.config.filtermodel
-            self.viscecmodel = viscecmodel
-            self.filtermodel = filtermodel
-            self.modelagents = viscecmodel.agents
-            self.filteragents = filtermodel.agents
+            self.model = self.config.viscecmodel
+            self.filter = self.config.filtermodel
+            self.modelagents = self.model.agents
+            self.filteragents = self.filter.agents
             self.animate_step = self._step_test
             self.metrics = {'Hungarian Precision': []}
             
@@ -101,9 +99,9 @@ class Animation():
     
     def update_metrics(self):
         precision = metric_hungarian_precision(
-            self.viscecmodel.agents,
-            self.filtermodel.agents,
-            self.viscecmodel.config.n_particles
+            self.model.agents,
+            self.filter.agents,
+            self.model.config.n_particles
         )
         
         self.metrics['Hungarian Precision'].append(precision)
@@ -123,11 +121,11 @@ class Animation():
     def _step_test(self, i: int):
             # run simulation for <FREQUENCY steps>
             for _ in range(self.config.simulation_frequency):
-                self.viscecmodel.update()
-                self.modelagents = self.viscecmodel.agents
+                self.model.update()
+                self.modelagents = self.model.agents
 
-            self.filtermodel.update(self.modelagents)
-            self.filteragents = self.viscecmodel.agents
+            self.filter.update(self.modelagents)
+            self.filteragents = self.model.agents
             self.update_polygons(self.modelagents, self.model_polygons)
             self.update_polygons(self.filteragents, self.filter_polygons)
             
