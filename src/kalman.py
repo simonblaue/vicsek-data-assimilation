@@ -8,6 +8,11 @@ This file contains the Kalman filterclass
 
 class EnsembleKalman():
     def __init__(self, config):
+        """
+        Receives parameters for the Kalman filter (e.g. Ensemble size) via the config
+        Receives model_forecast which is the Vicsek step 
+        
+        """
             self.config = config
             self.state = self.config.state
             # print(self.state.shape)
@@ -15,23 +20,26 @@ class EnsembleKalman():
 
     def update(self, measurement: np.ndarray, ) -> np.ndarray:
             t = time.time()
-            #generating ensamples
+            
+            #generating forecast ensamples
             forecast_ensemble = np.array([
                 self.model_forecast(self.state) for _ in range(self.config.n_ensembles)
             ])
 
+            # Virtual observation = Measurement + Noise 
             virtual_observations = (
                 np.tile(measurement, (self.config.n_ensembles, 1, 1)) + 
                 np.random.normal(size=(self.config.n_particles, 3), scale=self.config.noise_ratio)
             )[:,:,self.config.observable_axis]
             
 
-            # forecast matrix
+            # Mean forecast over ensembles 
             mean_forecast = np.mean(forecast_ensemble[:,:,self.config.observable_axis], axis = 0)
             
+            # Errors within the ensemble = distance between ensemble members and the mean ensemble 
             errors = forecast_ensemble[:,:,self.config.observable_axis] - np.tile(mean_forecast, (self.config.n_ensembles, 1, 1))
 
-            # #boundaries 
+            # #boundaries
             errors[:,:,0] = np.where(errors[:,:,0]>self.config.x_axis/2,errors[:,:,0]-self.config.x_axis,errors[:,:,0])
             errors[:,:,0] = np.where(errors[:,:,0]<-self.config.x_axis/2,errors[:,:,0]+self.config.x_axis,errors[:,:,0])
             
@@ -47,15 +55,16 @@ class EnsembleKalman():
             # Virtual observation covariance
             R = np.diag(np.ones(self.config.n_particles)) * self.config.noise_ratio
 
+            # Kalman Gain is calculated using the pseudo inverse 
             K = np.matmul(pf, scipy.linalg.pinv(pf+R))
 
-            # update
+            # Update the forecasts
             ensemble_update = [
                 x + np.hstack(((K @ (z-x[:,self.config.observable_axis])),np.zeros((self.config.n_particles, np.size(self.config.observable_axis)-np.count_nonzero(self.config.observable_axis))))) for x, z in zip(forecast_ensemble, virtual_observations)
             ]
             
             
-            
+            # Updated state is mean over the updated ensemble members 
             self.state = np.mean(ensemble_update, axis = 0)
             
             self.state[:,0] = np.mod(self.state[:,0], self.config.x_axis)
