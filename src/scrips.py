@@ -7,6 +7,8 @@ from config import (
     BaseSimulationConfig,
 )
 
+from misc import metric_hungarian_precision, metric_lost_particles
+
 def get_models(parameters: Dict):
     viscecmodelconfig = RandomSimulationConfig(
         n_particles=parameters['particles'],
@@ -65,6 +67,7 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     filterstates = []
     metrics = {
         'Hungarian Precision':[],
+        'Lost Particle Precison':[],
     }
     
     for t in range(parameters['steps']):
@@ -74,7 +77,10 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
             filtermodel.update(viscecmodel.walkers)
             filterstates.append(filtermodel.state)
             # metrics['Hungarian Precision'].append(
-                
+            #     metric_hungarian_precision(viscecmodel.walkers[:,0:2] ,filtermodel.state[:,0:2], )
+            # )
+            # metrics['Lost Particle Precison'].append(
+            #     metric_lost_particles(viscecmodel.walkers[:,0:2] ,filtermodel.state[:,0:2])
             # )
     
     # TODO: end metric
