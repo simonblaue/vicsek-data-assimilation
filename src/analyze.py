@@ -34,21 +34,22 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
     
     measure_steps = int(experiment_params['steps']/measure_freq)
     
+    average_hung = np.zeros(measure_steps)
+    average_lpp = np.zeros(measure_steps)
+
     for seed in range(len(seeds)):
-        model_pos = model_states[seed][::measure_freq, 0:2]
-        filter_pos = filter_states[seed][:,0:2]
+        model_pos = model_states[seed][::measure_freq,:, 0:2]
+        
+        filter_pos = filter_states[seed][:,:,0:2]
         
         metrics['Hungarian Precision']
         
         hung_metric = []
         lpp_metric = []
         
-        average_hung = np.zeros(measure_steps)
-        average_lpp = np.zeros(measure_steps)
-        
         for i in range(measure_steps) :
             m_hung = metric_hungarian_precision(model_pos[i], filter_pos[i], experiment_params['particles'])
-            m_lpp = metric_lost_particles(model_pos[i], filter_pos[i], experiment_params['particles'], experiment_params['alignment_radius']*100)
+            m_lpp = metric_lost_particles(model_pos[i], filter_pos[i], experiment_params['particles'], experiment_params['alignment_radius']/5)
             hung_metric.append(m_hung)
             lpp_metric.append(m_lpp)
             
