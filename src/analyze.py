@@ -10,8 +10,8 @@ def read_experiment(experiment_name : str):
     states = []
     for seed in seeds:
         states.append(
-            np.load(f"folder{seed}.model.npy"), 
-            np.load(f"folder{seed}.filter.npy")
+            np.load(f"folder{seed}_model.npy"), 
+            np.load(f"folder{seed}_filter.npy")
         )
     return states, experiment_params
 
