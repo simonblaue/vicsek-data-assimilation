@@ -74,7 +74,7 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
         
         
 if __name__ == "__main__":
-    read_and_eval('Baseline')
+    read_and_eval('Obsv_noise_0.1')
         
         
         
