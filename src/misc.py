@@ -10,6 +10,15 @@ from scipy.spatial import distance_matrix
 This script contains all kinds of functions
 """
 
+def bools2str(x):
+    obaxes = ''
+    for i in(x):
+        if i:
+            obaxes+='1'
+        else:
+            obaxes+='0'
+    return obaxes
+
 # polygon angle
 THETA = 2*np.pi/360*150
 # POLYGONSIZE/size of polygons
