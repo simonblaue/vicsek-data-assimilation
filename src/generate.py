@@ -40,7 +40,7 @@ def execute_experiment():
         'timestepsize': 1,
         'n_particles': 100,
         'n_ensembles': 50,
-        'observation_noise': 0.0001,
+        'observation_noise': 0.01,
         'viscec_noise': 0.5,
         'xi' : 0.8,
         'noisestrength':0.5,
