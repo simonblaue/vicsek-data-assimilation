@@ -24,8 +24,8 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
     
     metrics = {
         'Hungarian Precision':[],
-        'Lost Particle Precison':[],
-        'Average Hungarian': [],
+        'Lost Particle Precision':[],
+        'Average Hungarian Precision': [],
         'Average LPP': []
     }
     
@@ -57,12 +57,12 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
             average_lpp[i] += m_lpp
             
         metrics['Hungarian Precision'].append(hung_metric)
-        metrics['Lost Particle Precison'].append(lpp_metric)
+        metrics['Lost Particle Precision'].append(lpp_metric)
         
     average_hung /= len(seeds)
     average_lpp /= len(seeds)
     
-    metrics['Average Hungarian'] = average_hung.tolist()
+    metrics['Average Hungarian Precision'] = average_hung.tolist()
     metrics['Average LPP'] = average_lpp.tolist()
     
     experiment_name = experiment_params['name']

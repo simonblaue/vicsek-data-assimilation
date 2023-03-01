@@ -18,6 +18,7 @@ def get_models(parameters: Dict):
         timestepsize=parameters['timestepsize'],
         x_axis=parameters['x_axis'],
         y_axis=parameters['y_axis'],
+        xi = parameters['xi'],
     )
     viscecmodel = viscecmodelconfig.exec_ref(viscecmodelconfig)
     initfilteragents = np.random.rand(parameters['particles'], 3)
