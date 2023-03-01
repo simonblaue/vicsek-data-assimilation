@@ -29,8 +29,8 @@ def execute_experiment(seeds):
         'y_axis': 10,
     }
 
-    # experiment_time = datetime.now().strftime("%d-%m-%Y--%H:%M:%S")
-    experiment_id = parameters['name']+'/' + str(parameters['seed'])
+
+    experiment_id = parameters['name']+'/' + str(parameters['seed']) + '.'
     # TODO
     savepath = f'saves/{experiment_id}/'
     if not os.path.exists(savepath):
