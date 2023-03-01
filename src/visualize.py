@@ -10,9 +10,9 @@ It can also be used to animate simulation data when it is given a filepath.
 The animations can be saved.
 """
 
-def visualize_experiment():
+def visualize_experiment(experiment_name):
 
-    experiment = 'saves/Baseline/'
+    experiment = 'saves/{experiment_name}/'
     parameters = json.load(open(f'{experiment}params.json'))
     parameters['save_name'] = 'None'
     seed_number = 0
@@ -27,4 +27,4 @@ def visualize_experiment():
     animation()
     
 if __name__ =="__main__":
-    visualize_experiment()
+    visualize_experiment("Baseline")
