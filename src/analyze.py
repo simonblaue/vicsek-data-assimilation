@@ -30,15 +30,15 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
     }
     
     seeds = experiment_params['seeds']
-    measure_freq  = experiment_params['sampling_rate']
+    sampling_rate  = experiment_params['sampling_rate']
     
-    measure_steps = int(experiment_params['steps']/measure_freq)
+    measure_steps = int(experiment_params['steps']/sampling_rate)
     
     average_hung = np.zeros(measure_steps)
     average_lpp = np.zeros(measure_steps)
 
     for seed in range(len(seeds)):
-        model_pos = model_states[seed][::measure_freq,:, 0:2]
+        model_pos = model_states[seed][::sampling_rate,:, 0:2]
         
         filter_pos = filter_states[seed][:,:,0:2]
         

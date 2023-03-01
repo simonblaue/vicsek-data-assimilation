@@ -26,7 +26,6 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
         if t % parameters['sampling_rate'] == 0:
             filtermodel.update(viscecmodel.agents)
             filterstates.append(filtermodel.agents)
-
     
     return viscecstates, filterstates
 
