@@ -73,9 +73,9 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
         if t % parameters['sampling_rate'] == 0:
             filtermodel.update(viscecmodel.walkers)
             filterstates.append(filtermodel.state)
-            metrics['Hungarian Precision'].append(
+            # metrics['Hungarian Precision'].append(
                 
-            )
+            # )
     
     # TODO: end metric
     # avg tracking interval

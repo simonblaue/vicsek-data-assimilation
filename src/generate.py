@@ -6,6 +6,7 @@ import numpy as np
 from pathlib import Path
 import json
 from scrips import simulate
+import os
 
 def execute_experiment():
     parameters = {
@@ -25,10 +26,12 @@ def execute_experiment():
         'y_axis': 10,
     }
 
-    experiment_time = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-    experiment_id = parameters['name']+'_'+parameters['seed']+'_'+experiment_time
+    experiment_time = datetime.now().strftime("%d-%m-%Y--%H:%M:%S")
+    experiment_id = parameters['name']+ '_' +str(parameters['seed'])+ '_'+ experiment_time
     # TODO
-    savepath = f'/{experiment_id}/'
+    savepath = f'saves/{experiment_id}/'
+    if not os.path.exists(savepath):
+        os.makedirs(savepath)
         
     # TODO: set seed
 
@@ -48,7 +51,7 @@ def execute_experiment():
     report_data['runtime'] = runtime
 
     # saving parameters
-    with open(f'{savepath}/{experiment_id}.json', 'w') as fp:
+    with open(f'{savepath}params.json', 'w') as fp:
         json.dump(report_data, fp, indent=4)
     
 
