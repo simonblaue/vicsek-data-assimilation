@@ -26,7 +26,9 @@ class Animation():
         self.modelagents = self.viscecdata[0]
         self.filteragents = self.filterdata[0]
         
-        self.simulation_frequency = self.viscecdata.shape[0] // self.filterdata.shape[0]
+        print(config['sampling_rate'])
+        print(self.viscecdata.shape)
+        print(self.filterdata.shape)
             
         self.metrics = {'Hungarian Precision': []}
             
@@ -41,7 +43,7 @@ class Animation():
 
     def loadexperiment(self, experimentid):
         self.viscecdata = np.load(f'{experimentid}_model.npy')
-        self.filterdata = np.load(f'{experimentid}_model.npy')
+        self.filterdata = np.load(f'{experimentid}_filter.npy')
 
     def init_figure(self):
         self.fig = plt.figure(figsize=(10,7),)
@@ -63,7 +65,7 @@ class Animation():
         return self.model_polygons, self.filter_polygons, self.hungarian_precision_line
 
     def init_polygon_plot(self, agents, axis):
-        self.agent_colors = n_colors(self.config['particles'])
+        self.agent_colors = n_colors(self.config['n_particles'])
         polygon_coors = [
             xyphi_to_abc(w[0],w[1], w[2]) for w in agents
         ]
@@ -104,7 +106,7 @@ class Animation():
         
         
         self.hungarian_precision_line.set_data(
-            np.arange(0, self.step, 1),
+            np.arange(0, self.step, self.config['sampling_rate']),
             self.metrics['Hungarian Precision'],
         )
         self.axes[2].set_xlim(0, self.step+1)
@@ -118,7 +120,7 @@ class Animation():
     def _step_visualize(self, i: int):
         self.modelagents = self.viscecdata[i]
         self.update_polygons(self.modelagents, self.model_polygons)
-        if i % self.simulation_frequency == 0:
+        if i % self.config['sampling_rate'] == 0:
             self.filteragents = self.filterdata[i]
             self.update_polygons(self.filteragents, self.filter_polygons)
             self.update_metrics(i)
