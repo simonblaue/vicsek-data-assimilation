@@ -47,3 +47,7 @@ $\eta = 2.0$
 - optional: observable axis (all vs x,y only)
 - 2, 4
 
+## tmux
+
+https://gist.github.com/henrik/1967800
+
