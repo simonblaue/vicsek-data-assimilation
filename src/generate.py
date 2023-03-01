@@ -5,6 +5,7 @@ from pathlib import Path
 import json
 import os
 from alive_progress import alive_bar
+from tqdm.auto import tqdm
 
 from vicsek import ViszecSimulation
 from kalman import EnsembleKalman
@@ -21,14 +22,14 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     viscecstates = []
     filterstates = []
    
-    with alive_bar(parameters['steps']) as bar:
-        for t in range(parameters['steps']):
-            viscecmodel.update()
-            viscecstates.append(viscecmodel.agents)
-            if t % parameters['sampling_rate'] == 0:
-                filtermodel.agents = filtermodel.update(viscecmodel.agents)
-                filterstates.append(filtermodel.agents)
-            bar()
+    # with alive_bar(parameters['steps']) as bar:
+    for t in tqdm(range(parameters['steps']), position=5, leave=False):
+        viscecmodel.update()
+        viscecstates.append(viscecmodel.agents)
+        if t % parameters['sampling_rate'] == 0:
+            filtermodel.agents = filtermodel.update(viscecmodel.agents)
+            filterstates.append(filtermodel.agents)
+
     
     return viscecstates, filterstates
 
@@ -54,7 +55,7 @@ def execute_experiment(
     t0 = time.time()
     for seed in parameters['seeds']:
         experimentname = parameters['name']
-        print(f'Running experiment {experimentname} with seed {seed}')
+        # print(f'Running experiment {experimentname} with seed {seed}')
 
         experiment_path = f'saves/{experimentname}/'
         if not os.path.exists(experiment_path):
@@ -67,7 +68,7 @@ def execute_experiment(
         viscecstates, filterstates = simulate(parameters)
         
         runtime = time.time()-t
-        print(f'Runtime: \t {runtime}, \t Saving to {experiment_path}')
+        # print(f'Runtime: \t {runtime}, \t Saving to {experiment_path}')
         
         np.save(experiment_path+f'{seed}_model.npy', viscecstates)
         np.save(experiment_path+f'{seed}_filter.npy', filterstates)

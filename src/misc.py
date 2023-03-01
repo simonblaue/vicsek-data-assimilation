@@ -6,6 +6,7 @@ from decimal import Decimal
 from scipy.optimize import linear_sum_assignment
 from scipy.spatial import distance_matrix
 
+
 """
 This script contains all kinds of functions
 """
