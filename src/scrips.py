@@ -20,10 +20,10 @@ def get_models(parameters: Dict):
         y_axis=parameters['y_axis'],
     )
     viscecmodel = viscecmodelconfig.exec_ref(viscecmodelconfig)
-    initfilterstate = np.random.rand(parameters['particles'], 3)
-    initfilterstate[:,0] *= parameters['x_axis']
-    initfilterstate[:,1] *= parameters['y_axis']
-    initfilterstate[:,2] *= 2*np.pi
+    initfilteragents = np.random.rand(parameters['particles'], 3)
+    initfilteragents[:,0] *= parameters['x_axis']
+    initfilteragents[:,1] *= parameters['y_axis']
+    initfilteragents[:,2] *= 2*np.pi
     filterconfig = EnsembleKalmanConfig(
         n_ensembles=parameters['ensembles'],
         noise_ratio=parameters['observation_noise'],
@@ -32,7 +32,7 @@ def get_models(parameters: Dict):
         y_axis=parameters['y_axis'],
         observable_axis=parameters['observable_axis'],
         model_forecast=viscecmodel._step,
-        state=initfilterstate
+        agents=initfilteragents
     )
     
     velocities = parameters['velocities']
@@ -57,6 +57,10 @@ def get_animation(parameters: Dict):
         steps_per_metrics_update=parameters['steps_per_metrics_update'],
         experimentname=parameters['loadexperiment'],
         save_name=parameters['save_name'],
+        seed=parameters['seed'],
+        x_axis=parameters['x_axis'],
+        y_axis=parameters['y_axis'],
+        n_particles=parameters['particles'],
     )
     
     return animationconfig.exec_ref(animationconfig)
@@ -72,15 +76,15 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     
     for t in range(parameters['steps']):
         viscecmodel.update()
-        viscecstates.append(viscecmodel.walkers)
+        viscecstates.append(viscecmodel.agents)
         if t % parameters['sampling_rate'] == 0:
-            filtermodel.update(viscecmodel.walkers)
-            filterstates.append(filtermodel.state)
+            filtermodel.update(viscecmodel.agents)
+            filterstates.append(filtermodel.agents)
             # metrics['Hungarian Precision'].append(
-            #     metric_hungarian_precision(viscecmodel.walkers[:,0:2] ,filtermodel.state[:,0:2], )
+            #     metric_hungarian_precision(viscecmodel.agents[:,0:2] ,filtermodel.state[:,0:2], )
             # )
             # metrics['Lost Particle Precison'].append(
-            #     metric_lost_particles(viscecmodel.walkers[:,0:2] ,filtermodel.state[:,0:2])
+            #     metric_lost_particles(viscecmodel.agents[:,0:2] ,filtermodel.state[:,0:2])
             # )
     
     # TODO: end metric

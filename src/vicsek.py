@@ -15,11 +15,11 @@ class ViszecSimulation:
         """
         # Init Config
         self.config = config
-        # Array with posx, posy, orientation as rad for n walkers (chosen randomly)
-        self.walkers = np.random.rand(self.config.n_particles, 3)
-        self.walkers[:,0] *= self.config.x_axis
-        self.walkers[:,1] *= self.config.y_axis
-        self.walkers[:,2] *= 2*np.pi
+        # Array with posx, posy, orientation as rad for n agents
+        self.agents = np.random.rand(self.config.n_particles, 3)
+        self.agents[:,0] *= self.config.x_axis
+        self.agents[:,1] *= self.config.y_axis
+        self.agents[:,2] *= 2*np.pi
         self.time = 0
         
 
@@ -31,7 +31,7 @@ class ViszecSimulation:
             numpy Array(n,n): distances from every walker to every walker
         """
         distances = np.zeros((self.config.n_particles, self.config.n_particles, 2)) 
-        walker_pos = self.walkers[:,0:2]
+        walker_pos = self.agents[:,0:2]
 
         for i,walker in enumerate(walker_pos):
  
@@ -59,7 +59,7 @@ class ViszecSimulation:
         aligner = d < self.config.alignment_radius
         
         # calculate mean angles
-        all_phi = self.walkers[:,2]
+        all_phi = self.agents[:,2]
         av_phi_per_walker = np.zeros(self.config.n_particles)
         for i in range(self.config.n_particles):
             av_phi_per_walker[i] = np.mean(all_phi[aligner[i]])
@@ -71,28 +71,28 @@ class ViszecSimulation:
         """
         Does one timestep in the visceck model
         """
-        self.walkers = self._step(self.walkers)
-        # return self.walkers
+        self.agents = self._step(self.agents)
+        # return self.agents
         
         
     def _step(self, state: np.ndarray) -> np.ndarray:
-        walkers = state.copy()
+        agents = state.copy()
         av_phi_per_walker = self.av_directions()
         
         # noise for new angle
         noise = np.random.normal(0,self.config.noisestrength, self.config.n_particles)
         
         # set the new direction 
-        walkers[:,2] = self.config.xi*(walkers[:,2])+(1-self.config.xi)*av_phi_per_walker + noise 
+        agents[:,2] = self.config.xi*(agents[:,2])+(1-self.config.xi)*av_phi_per_walker + noise 
         
         # Calculate and set new positions
-        new_directions = np.array([np.cos(walkers[:,2]), np.sin(walkers[:,2])]).transpose()
-        walkers[:,0:2] +=  self.config.velocity * self.config.timestepsize * new_directions 
+        new_directions = np.array([np.cos(agents[:,2]), np.sin(agents[:,2])]).transpose()
+        agents[:,0:2] +=  self.config.velocity * self.config.timestepsize * new_directions 
         
         # Apply boundaries
-        walkers[:,0] = np.mod(walkers[:,0], self.config.x_axis)
-        walkers[:,1] = np.mod(walkers[:,1], self.config.y_axis)
+        agents[:,0] = np.mod(agents[:,0], self.config.x_axis)
+        agents[:,1] = np.mod(agents[:,1], self.config.y_axis)
     
-        return walkers
+        return agents
     
 

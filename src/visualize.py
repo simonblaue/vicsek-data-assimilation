@@ -12,9 +12,10 @@ The animations can be saved.
 
 def visualize_experiment():
     parameters = {
+        # 'loadexperiment': 'saves/Baseline/',
         'loadexperiment': 'None',
         'save_name': 'None',
-        'seed': 1, # TODO: set seed in random functions!!
+        'seed': 1,
         'steps': 100,
         'timestepsize': 1,
         'particles': 100,

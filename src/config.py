@@ -106,6 +106,12 @@ class AnimationConfig:
     
     save_name: str = 'None'
     
+    seed: int = 1
+    
+    x_axis: int = 10
+    y_axis: int = 10
+    n_particles: int = 100
+    
 # @dataclass
 # class VicsekAnimationConfig(AnimationConfig):
 #     exec_ref = VicsekAnimation
@@ -129,7 +135,7 @@ class EnsembleKalmanConfig(SharedConfig):
     x_axis: int = 25
     y_axis: int = 25
     
-    state: np.ndarray = np.random.rand(n_particles, 3)
+    agents: np.ndarray = np.random.rand(n_particles, 3)
     
     # At the moment only the last to False is possible and can only have False beginning from the left to the right
     observable_axis: Tuple[bool, bool, bool] = (True,True,False)
@@ -141,5 +147,5 @@ class EnsembleKalmanConfig(SharedConfig):
     n_particles = SharedConfig.n_particles
     x_axis = SharedConfig.x_axis
     y_axis = SharedConfig.y_axis
-    state: np.ndarray = np.random.rand(SharedConfig.n_particles, 3)
+    agents: np.ndarray = np.random.rand(SharedConfig.n_particles, 3)
 

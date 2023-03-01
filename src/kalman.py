@@ -14,8 +14,8 @@ class EnsembleKalman():
         
         """
             self.config = config
-            self.state = self.config.state
-            # print(self.state.shape)
+            self.agents = self.config.agents
+            # print(self.agents.shape)
             self.model_forecast = self.config.model_forecast
 
     def update(self, measurement: np.ndarray, ) -> np.ndarray:
@@ -23,7 +23,7 @@ class EnsembleKalman():
             
             #generating forecast ensamples
             forecast_ensemble = np.array([
-                self.model_forecast(self.state) for _ in range(self.config.n_ensembles)
+                self.model_forecast(self.agents) for _ in range(self.config.n_ensembles)
             ])
 
             # Virtual observation = Measurement + Noise 
@@ -67,11 +67,11 @@ class EnsembleKalman():
             # Updated state is mean over the updated ensemble members 
             self.state = np.mean(ensemble_update, axis = 0)
             
-            self.state[:,0] = np.mod(self.state[:,0], self.config.x_axis)
-            self.state[:,1] = np.mod(self.state[:,1], self.config.y_axis)
+            self.agents[:,0] = np.mod(self.agents[:,0], self.config.x_axis)
+            self.agents[:,1] = np.mod(self.agents[:,1], self.config.y_axis)
             
             # print(f'Update time:\t{time.time()-t}')
         
-            return self.state
+            return self.agents
 
 
