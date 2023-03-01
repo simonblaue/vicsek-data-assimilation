@@ -23,9 +23,6 @@ def visualize_experiment():
     parameters['plot_interval'] = 10
     parameters['boundary'] = 0.5
     
-    
-    # np.random.seed(int(parameters['seeds'][seed_number]))
-    
     animation = Animation(parameters)
     animation()
     
