@@ -23,5 +23,18 @@ $\eta = 2.0$
 
 ## ToDOs
 
-- weigh own direction much stronger too still get individual agents and long trajectories
-- maybe gaussian noise instead of uniform in viscek 
+- ~~weigh own direction much stronger too still get individual agents and long trajectories~~
+- ~~maybe gaussian noise instead of uniform in viscek~~
+- Measure Kalman does it equilibrate?, if so average over error after equilibration to compare against different config 
+- velocity variations
+- shuffled observations
+- 
+
+
+## What to Test:
+
+-  Ensemble size
+-  measurement noise
+-  with vs without angel observation
+-  
+

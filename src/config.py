@@ -42,7 +42,6 @@ class BaseSimulationConfig(SharedConfig):
 
 @dataclass
 class RandomSimulationConfig(BaseSimulationConfig):
-    
     # field
     x_axis: float = 10
     y_axis: float = 10
