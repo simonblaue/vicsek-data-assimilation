@@ -11,10 +11,10 @@ This is a script to run generate experiment data without visualization
 The simulation parameters and results will be saved under a given directory
 """
 
-def execute_experiment(seeds):
+def execute_experiment():
     parameters = {
         'name': 'Baseline',
-        'seed': 1,
+        'seeds': [1, 2],
         'steps': 100,
         'timestepsize': 1,
         'particles': 100,
@@ -27,35 +27,34 @@ def execute_experiment(seeds):
         'observable_axis': (True,True,False),
         'x_axis': 10,
         'y_axis': 10,
+        'total_runtime': 0.0
     }
+    t0 = time.time()
+    for seed in parameters['seeds']:
+        experimentname = parameters['name']
+        print(f'Running experiment {experimentname} with seed {seed}')
 
-
-    experiment_id = parameters['name']+'/' + str(parameters['seed']) + '.'
-    # TODO
-    savepath = f'saves/{experiment_id}/'
-    if not os.path.exists(savepath):
-        os.makedirs(savepath)
+        experiment_path = f'saves/{experimentname}/'
+        if not os.path.exists(experiment_path):
+            os.makedirs(experiment_path)
         
-    np.random.seed(int(parameters['seed']))
+        np.random.seed(int(seed))
 
-    t = time.time()
+        t = time.time()
         
-    viscecstates, filterstates, metrics = simulate(parameters)
+        viscecstates, filterstates = simulate(parameters)
         
-    runtime = time.time()-t
-    print(f'Runtime for {experiment_id}: \t {runtime}')
-    print(f'Saving report and result to {savepath}')
-    print()
+        runtime = time.time()-t
+        print(f'Runtime: \t {runtime}, \t Saving to {experiment_path}')
         
-    np.save(savepath+'model.npy', viscecstates)
-    np.save(savepath+'filter.npy', filterstates)
+        np.save(experiment_path+'model.npy', viscecstates)
+        np.save(experiment_path+'filter.npy', filterstates)
 
-    report_data = {**metrics, **parameters}
-    report_data['runtime'] = runtime
-
+    parameters['total_runtime'] = time.time() - t0
+        
     # saving parameters
-    with open(f'{savepath}params.json', 'w') as fp:
-        json.dump(report_data, fp, indent=4)
+    with open(f'{experiment_path}params.json', 'w') as fp:
+        json.dump(parameters, fp, indent=4)
     
 
 if __name__ =="__main__":

@@ -65,10 +65,10 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     viscecmodel, filtermodel = get_models(parameters=parameters)
     viscecstates = []
     filterstates = []
-    metrics = {
-        'Hungarian Precision':[],
-        'Lost Particle Precison':[],
-    }
+    # metrics = {
+    #     'Hungarian Precision':[],
+    #     'Lost Particle Precison':[],
+    # }
     
     for t in range(parameters['steps']):
         viscecmodel.update()
@@ -89,4 +89,4 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     # metrics['tracking_interval'] = tracking_interval
     # metrics['tracking_steps'] = tracking_steps
     
-    return viscecstates, filterstates, metrics
+    return viscecstates, filterstates
