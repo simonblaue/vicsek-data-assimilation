@@ -1,5 +1,6 @@
 from generate import execute_experiment
 from analyze import read_and_eval
+from misc import bools2str
 
 parameters = {
         'name': 'Baseline',
@@ -26,19 +27,22 @@ parameters = {
 def grid_search():
     test_observable_axis = [(True,True,True),(True,True,False)]
     test_agents = [50,100]
+    test_ensembles = [50,100,150,200,250]
     test_observation_noise = [0.0001 ,0.001, 0.01, 0.1, 1]
     test_sampling_rate = [1,2,4]
 
     for observable_axis in test_observable_axis:
         for agents in test_agents:
-            for observation_noise in test_observation_noise:
-                for sampling_rate in test_sampling_rate:
-                    name = f"{observable_axis}_{agents}_{observation_noise}_{sampling_rate}"
-                    parameters['observable_axis'] = observable_axis
-                    parameters['agents'] = agents
-                    parameters['observation_noise'] = observation_noise
-                    parameters['sampling_rate']  = sampling_rate
-                    parameters['name'] = name
+            for ensembles in test_ensembles:
+                for observation_noise in test_observation_noise:
+                    for sampling_rate in test_sampling_rate:
+                        name = f"{bools2str(observable_axis)}_{agents}_{ensembles}_{observation_noise}_{sampling_rate}"
+                        parameters['observable_axis'] = observable_axis
+                        parameters['agents'] = agents
+                        parameters['observation_noise'] = observation_noise
+                        parameters['sampling_rate']  = sampling_rate
+                        parameters['name'] = name
+                        print(name)
                     execute_experiment(parameters)
                     read_and_eval(name)
 
