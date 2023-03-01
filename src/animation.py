@@ -40,6 +40,8 @@ class Animation():
         self.filter_polygons = self.init_polygon_plot(self.filteragents, self.axes[1])
 
         self.init_metrics_plot()
+        
+        print(np.var(self.filterdata, axis = 0)[0][0])
 
     def loadexperiment(self, experimentid):
         self.viscecdata = np.load(f'{experimentid}_model.npy')
@@ -121,7 +123,9 @@ class Animation():
         self.modelagents = self.viscecdata[i]
         self.update_polygons(self.modelagents, self.model_polygons)
         if i % self.config['sampling_rate'] == 0:
-            self.filteragents = self.filterdata[i]
+            filter_idx = i // self.config['sampling_rate']
+            # print(filter_idx)
+            self.filteragents = self.filterdata[filter_idx]
             self.update_polygons(self.filteragents, self.filter_polygons)
             self.update_metrics(i)
             
