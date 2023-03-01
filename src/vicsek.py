@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 import numpy as np
 
+"""
+This script contains the Viscec Model
+"""
 
 class ViszecSimulation:
 

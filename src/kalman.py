@@ -2,6 +2,10 @@ import numpy as np
 import time
 import scipy
 
+"""
+This file contains the Kalman filterclass
+"""
+
 class EnsembleKalman():
     def __init__(self, config):
             self.config = config

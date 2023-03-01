@@ -5,6 +5,10 @@ from vicsek import ViszecSimulation
 from animation import Animation
 from kalman import EnsembleKalman
 
+"""
+This script contains all config dataclasses
+"""
+
 
 @dataclass
 class SharedConfig:
@@ -138,13 +142,4 @@ class EnsembleKalmanConfig(SharedConfig):
     x_axis = SharedConfig.x_axis
     y_axis = SharedConfig.y_axis
     state: np.ndarray = np.random.rand(SharedConfig.n_particles, 3)
-    
-    
-    
-if __name__ =="__main__":
-    anim = VicsekAnimationConfig.exec_ref(
-        animation_config=VicsekAnimationConfig,
-        simulation_config=RandomSimulationConfig,
-        kalman_config=EnsembleKalmanConfig
-    )
-    anim(save_name=False)
+

@@ -6,7 +6,11 @@ from matplotlib import animation
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.patches import Polygon
-from decimal import Decimal
+
+"""
+This script contains the animation class for visualization
+"""
+
 
 
 class Animation():
@@ -142,7 +146,7 @@ class Animation():
             
             return self.vicsek_polygons, self.filter_polygons, self.hungarian_precision_line
 
-    
+    # TODO:
     def _step_visualize(self, i: int):
         pass
 

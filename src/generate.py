@@ -1,5 +1,3 @@
-# generate an experiment with optional visualization
-# parameters as dict
 import time
 from datetime import datetime
 import numpy as np
@@ -7,6 +5,11 @@ from pathlib import Path
 import json
 from scrips import simulate
 import os
+
+"""
+This is a script to run generate experiment data without visualization
+The simulation parameters and results will be saved under a given directory
+"""
 
 def execute_experiment():
     parameters = {

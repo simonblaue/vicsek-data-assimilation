@@ -4,6 +4,12 @@ from pathlib import Path
 import json
 from scrips import get_animation
 
+"""
+This script is called to animate the simulation with a given set of parameters.
+It can also be used to animate simulation data when it is given a filepath.
+The animations can be saved.
+"""
+
 def visualize_experiment():
     parameters = {
         'loadexperiment': 'None',
