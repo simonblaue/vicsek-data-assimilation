@@ -23,7 +23,11 @@ class Animation():
         # TODO: improve none cases
         if self.config.experimentname != 'None':
             self.loadexperiment()
-            self.animate_step = self._step_visualize           
+            self.animate_step = self._step_visualize
+            
+            self.modelagents = self.viscecdata[0]
+            self.filteragents = self.filterdata[0]
+            self.config.simulation_frequency = self.modelagents.shape[0] // self.filteragents.shape[0]
         
         else:
             self.model = self.config.viscecmodel
@@ -31,7 +35,8 @@ class Animation():
             self.modelagents = self.model.agents
             self.filteragents = self.filter.agents
             self.animate_step = self._step_test
-            self.metrics = {'Hungarian Precision': []}
+            
+        self.metrics = {'Hungarian Precision': []}
             
         self.init_figure()
         self.set_axis(self.axes[0], 'Model')
@@ -99,9 +104,9 @@ class Animation():
     
     def update_metrics(self):
         precision = metric_hungarian_precision(
-            self.model.agents,
-            self.filter.agents,
-            self.model.config.n_particles
+            self.modelagents,
+            self.filteragents,
+            self.config.n_particles
         )
         
         self.metrics['Hungarian Precision'].append(precision)
@@ -136,7 +141,13 @@ class Animation():
 
     # TODO:
     def _step_visualize(self, i: int):
-        pass
+        self.modelagents = self.viscecdata[i]
+        self.update_polygons(self.modelagents, self.model_polygons)
+        if i % self.config.simulation_frequency == 0:
+            self.filteragents = self.filterdata[i]
+            self.update_polygons(self.filteragents, self.filter_polygons)
+            self.update_metrics()
+            
 
 
     def __call__(self):

@@ -12,8 +12,8 @@ The animations can be saved.
 
 def visualize_experiment():
     parameters = {
-        # 'loadexperiment': 'saves/Baseline/',
-        'loadexperiment': 'None',
+        'loadexperiment': 'saves/Baseline/',
+        # 'loadexperiment': 'None',
         'save_name': 'None',
         'seed': 1,
         'steps': 100,
