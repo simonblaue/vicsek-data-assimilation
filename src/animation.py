@@ -106,7 +106,6 @@ class Animation():
         precision = metric_hungarian_precision(
             self.modelagents,
             self.filteragents,
-            self.config.n_particles
         )
         
         self.metrics['Hungarian Precision'].append(precision)
@@ -117,7 +116,7 @@ class Animation():
             self.metrics['Hungarian Precision'],
         )
         self.axes[2].set_xlim(0, self.step+1)
-        self.axes[2].set_ylim(0, np.max(self.metrics['Hungarian Precision']))
+        self.axes[2].set_ylim(0, np.max(self.metrics['Hungarian Precision'])+0.05)
         p = format_e(np.mean(self.metrics['Hungarian Precision']))
         self.axes[2].set_xlabel(
             f'Steps,  Mean Hungarian Precision: {p}'

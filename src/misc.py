@@ -44,7 +44,8 @@ def xyphi_to_abc(x: float, y: float, phi: float) -> np.ndarray:
 def format_e(n):
     return "{:.2E}".format(Decimal(n))
 
-def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: np.ndarray, n_particles: int) -> float:
+def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: np.ndarray,) -> float:
+    n_particles = np.shape(viscek_positions)[0]
     cost_matrix = distance_matrix(viscek_positions, kalman_positions)
     rowid, col_id = linear_sum_assignment(cost_matrix)
     precision = 1/n_particles*sum(np.diag(np.ones(n_particles))[rowid, col_id])
