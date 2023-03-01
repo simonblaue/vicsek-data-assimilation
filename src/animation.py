@@ -16,25 +16,17 @@ This script contains the animation class for visualization
 class Animation():
     def __init__(
         self,
-        animation_config,
+        config,
     ):
-        self.config = animation_config
+        self.config = config
+
+        self.loadexperiment(self.config['experimentid'])
+        self.animate_step = self._step_visualize
         
-        # TODO: improve none cases
-        if self.config.experimentname != 'None':
-            self.loadexperiment()
-            self.animate_step = self._step_visualize
-            
-            self.modelagents = self.viscecdata[0]
-            self.filteragents = self.filterdata[0]
-            self.config.simulation_frequency = self.modelagents.shape[0] // self.filteragents.shape[0]
+        self.modelagents = self.viscecdata[0]
+        self.filteragents = self.filterdata[0]
         
-        else:
-            self.model = self.config.viscecmodel
-            self.filter = self.config.filtermodel
-            self.modelagents = self.model.agents
-            self.filteragents = self.filter.agents
-            self.animate_step = self._step_test
+        self.simulation_frequency = self.viscecdata.shape[0] // self.filterdata.shape[0]
             
         self.metrics = {'Hungarian Precision': []}
             
@@ -44,15 +36,12 @@ class Animation():
 
         self.model_polygons = self.init_polygon_plot(self.modelagents, self.axes[0])
         self.filter_polygons = self.init_polygon_plot(self.filteragents, self.axes[1])
-        
-        # self.init_filter_plot()
+
         self.init_metrics_plot()
 
-    def loadexperiment(self):
-        self.viscecdata = np.load(f'{self.config.experimentname}{self.config.seed}_model.npy')
-        self.filterdata = np.load(f'{self.config.experimentname}{self.config.seed}_model.npy')
-        print(self.viscecdata.shape)
-        print(self.filterdata.shape)
+    def loadexperiment(self, experimentid):
+        self.viscecdata = np.load(f'{experimentid}_model.npy')
+        self.filterdata = np.load(f'{experimentid}_model.npy')
 
     def init_figure(self):
         self.fig = plt.figure(figsize=(10,7),)
@@ -63,8 +52,8 @@ class Animation():
         self.axes[2]=self.fig.add_subplot(self.gs[1,:])
         
     def set_axis(self, ax: Axes, title: str):
-        ax.set_xlim(-self.config.boundary, self.config.x_axis+self.config.boundary)
-        ax.set_ylim(-self.config.boundary, self.config.y_axis+self.config.boundary)
+        ax.set_xlim(-self.config['boundary'], self.config['x_axis']+self.config['boundary'])
+        ax.set_ylim(-self.config['boundary'], self.config['y_axis']+self.config['boundary'])
         ax.set_title(title)
         ax.set_aspect('equal', 'box')
         ax.grid(alpha=0.25)
@@ -74,7 +63,7 @@ class Animation():
         return self.model_polygons, self.filter_polygons, self.hungarian_precision_line
 
     def init_polygon_plot(self, agents, axis):
-        self.agent_colors = n_colors(self.config.n_particles)
+        self.agent_colors = n_colors(self.config['particles'])
         polygon_coors = [
             xyphi_to_abc(w[0],w[1], w[2]) for w in agents
         ]
@@ -123,33 +112,18 @@ class Animation():
         p = format_e(np.mean(self.metrics['Hungarian Precision']))
         self.axes[2].set_xlabel(
             f'Steps,  Mean Hungarian Precision: {p}'
-        )
-
-    def _step_test(self, i: int):
-            # run simulation for <FREQUENCY steps>
-            for _ in range(self.config.simulation_frequency):
-                self.model.update()
-                self.modelagents = self.model.agents
-
-            self.filter.update(self.modelagents)
-            self.filteragents = self.model.agents
-            self.update_polygons(self.modelagents, self.model_polygons)
-            self.update_polygons(self.filteragents, self.filter_polygons)
-            
-            if i % self.config.steps_per_metrics_update  == 0: 
-                self.update_metrics(i)
-            
-            return self.model_polygons, self.filter_polygons, self.hungarian_precision_line
+        )     
 
     # TODO:
     def _step_visualize(self, i: int):
         self.modelagents = self.viscecdata[i]
         self.update_polygons(self.modelagents, self.model_polygons)
-        if i % self.config.simulation_frequency == 0:
+        if i % self.simulation_frequency == 0:
             self.filteragents = self.filterdata[i]
             self.update_polygons(self.filteragents, self.filter_polygons)
             self.update_metrics(i)
             
+        return self.model_polygons, self.filter_polygons, self.hungarian_precision_line
 
 
     def __call__(self):
@@ -159,13 +133,13 @@ class Animation():
             self.animate_step, 
             init_func=self.init_function,
             # frames=np.arange(1, 10, 0.05), 
-            frames=self.config.frames, 
+            frames=self.config['frames'], 
             # interval=100, 
-            interval=self.config.plot_interval, 
+            interval=self.config['plot_interval'], 
             blit=False
         )
         # TODO: cover none cases
-        if self.config.save_name != 'None':
-            anim.save(f"saves/{self.config.save_name}.gif")
+        if self.config['save_name'] != 'None':
+            anim.save(f"saves/{self.config['save_name']}.gif")
         plt.show()
         return anim

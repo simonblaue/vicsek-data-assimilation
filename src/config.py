@@ -80,9 +80,6 @@ class OrderedSimulationConfig(BaseSimulationConfig):
 class AnimationConfig:
 
     exec_ref = Animation
-    
-    viscecmodel: ViszecSimulation = None
-    filtermodel: EnsembleKalman = None
 
     # simulation steps before plotting
     simulation_frequency: int = 1

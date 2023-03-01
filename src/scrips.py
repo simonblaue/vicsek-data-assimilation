@@ -46,16 +46,13 @@ def get_models(parameters: Dict):
     return viscecmodel, filtermodel
 
 def get_animation(parameters: Dict):
-    viscecmodel, filtermodel = get_models(parameters)
     animationconfig = AnimationConfig(
-        viscecmodel=viscecmodel,
-        filtermodel=filtermodel,
-        simulation_frequency=parameters['simulation_frequency'],
-        sample_frequency=parameters['sample_frequency'],
-        plot_interval=parameters['plot_interval'],
-        frames=parameters['frames'],
-        boundary=parameters['boundary'],
-        steps_per_metrics_update=parameters['steps_per_metrics_update'],
+        # simulation_frequency=parameters['simulation_frequency'],
+        # sample_frequency=parameters['sample_frequency'],
+        # plot_interval=parameters['plot_interval'],
+        # frames=parameters['frames'],
+        # boundary=parameters['boundary'],
+        # steps_per_metrics_update=parameters['steps_per_metrics_update'],
         experimentname=parameters['loadexperiment'],
         save_name=parameters['save_name'],
         seed=parameters['seed'],
