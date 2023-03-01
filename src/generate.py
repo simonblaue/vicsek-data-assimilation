@@ -11,7 +11,7 @@ This is a script to run generate experiment data without visualization
 The simulation parameters and results will be saved under a given directory
 """
 
-def execute_experiment():
+def execute_experiment(seeds):
     parameters = {
         'name': 'Baseline',
         'seed': 1,
@@ -36,7 +36,7 @@ def execute_experiment():
     if not os.path.exists(savepath):
         os.makedirs(savepath)
         
-    # TODO: set seed
+    np.random.seed(int(parameters['seed']))
 
     t = time.time()
         

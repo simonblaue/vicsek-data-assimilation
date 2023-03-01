@@ -35,7 +35,7 @@ def visualize_experiment():
         'steps_per_metrics_update': 10,
     }
     
-    # TODO: set seeds
+    np.random.seed(int(parameters['seed']))
     
     animation = get_animation(parameters)
     animation()
