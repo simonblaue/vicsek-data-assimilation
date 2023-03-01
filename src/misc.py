@@ -51,7 +51,8 @@ def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: n
     precision = 1/n_particles*sum(np.diag(np.ones(n_particles))[rowid, col_id])
     return precision
 
-def metric_lost_particles(viscek_positions: np.ndarray, kalman_positions: np.ndarray, n_particles: int, dist_thresh: float) -> float:
+def metric_lost_particles(viscek_positions: np.ndarray, kalman_positions: np.ndarray, dist_thresh: float) -> float:
+    n_particles = np.shape(viscek_positions)[0]
     abs_distances = np.linalg.norm(kalman_positions - viscek_positions, axis=1)
     right_particles =  sum(abs_distances <= dist_thresh)
     return right_particles/n_particles
