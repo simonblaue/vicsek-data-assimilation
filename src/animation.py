@@ -102,17 +102,20 @@ class Animation():
             t = xyphi_to_abc(a[0], a[1], a[2])
             p.set_xy(t)
     
-    def update_metrics(self):
+    def update_metrics(self, step):
         precision = metric_hungarian_precision(
             self.modelagents,
             self.filteragents,
         )
+        if step == 0:
+            self.metrics['Hungarian Precision'] = [precision]
+        else:
+            self.step = step+1
+            self.metrics['Hungarian Precision'].append(precision)
         
-        self.metrics['Hungarian Precision'].append(precision)
-        self.step += self.config.steps_per_metrics_update
         
         self.hungarian_precision_line.set_data(
-            np.arange(0, self.step-1, self.config.steps_per_metrics_update),
+            np.arange(0, self.step, 1),
             self.metrics['Hungarian Precision'],
         )
         self.axes[2].set_xlim(0, self.step+1)
@@ -134,7 +137,7 @@ class Animation():
             self.update_polygons(self.filteragents, self.filter_polygons)
             
             if i % self.config.steps_per_metrics_update  == 0: 
-                self.update_metrics()
+                self.update_metrics(i)
             
             return self.model_polygons, self.filter_polygons, self.hungarian_precision_line
 
@@ -145,7 +148,7 @@ class Animation():
         if i % self.config.simulation_frequency == 0:
             self.filteragents = self.filterdata[i]
             self.update_polygons(self.filteragents, self.filter_polygons)
-            self.update_metrics()
+            self.update_metrics(i)
             
 
 
