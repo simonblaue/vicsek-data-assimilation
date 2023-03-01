@@ -29,4 +29,4 @@ def visualize_experiment(experiment_name):
     animation()
     
 if __name__ =="__main__":
-    visualize_experiment("Obsv_noise_0.1")
+    visualize_experiment("ensamble_size_10")
