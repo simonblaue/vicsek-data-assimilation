@@ -3,6 +3,11 @@ import json
 import numpy as np 
 from misc import metric_lost_particles, metric_hungarian_precision
 
+
+def read_and_eval(experiment_name):
+    filter_states, model_states, params = read_experiment(experiment_name)
+    evaluate_experiment(filter_states, model_states, params)
+
 def read_experiment(experiment_name : str):
     folder = "saves/"+ experiment_name + "/"
     experiment_params  = json.load(open(folder + "params.json"))
@@ -68,8 +73,7 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
         
         
 if __name__ == "__main__":
-    filter_states, model_states, params = read_experiment('Baseline')
-    evaluate_experiment(filter_states, model_states, params)
+    read_and_eval('Baseline')
         
         
         
