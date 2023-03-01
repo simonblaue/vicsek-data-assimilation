@@ -8,9 +8,14 @@ This script contains the Viscec Model
 class ViszecSimulation:
 
     def __init__(self, config):
+        """
+        Receives a Config file with simulation parameters.
+        Sets up the initial coditions (positions and angles of all walkers in the box) 
+        
+        """
         # Init Config
         self.config = config
-        # Array with posx, posy, orientation as rad for n walkers
+        # Array with posx, posy, orientation as rad for n walkers (chosen randomly)
         self.walkers = np.random.rand(self.config.n_particles, 3)
         self.walkers[:,0] *= self.config.x_axis
         self.walkers[:,1] *= self.config.y_axis
@@ -32,7 +37,7 @@ class ViszecSimulation:
  
             distances[i,:,:] = walker_pos - walker
 
-        # Enforce boundaries
+        # Enforce boundaries, use nearest image convention 
         distances[:,:,0] = np.where(distances[:,:,0]>self.config.x_axis/2,distances[:,:,0]-self.config.x_axis,distances[:,:,0])
         distances[:,:,0] = np.where(distances[:,:,0]<-self.config.x_axis/2,distances[:,:,0]+self.config.x_axis,distances[:,:,0])
         
@@ -42,6 +47,11 @@ class ViszecSimulation:
         
         
     def av_directions(self) -> np.ndarray:
+        """
+        Calculates the new angle for each particle, calculated as the average angle over neighbouring particles.
+        Returns: 
+            numpy Array(n): averaged angle from neighbours for each particle 
+        """
          # get which are neighbors 
         dists = self.distances()
         d =  np.linalg.norm(dists, axis=2)
