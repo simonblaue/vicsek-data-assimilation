@@ -32,10 +32,10 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     
     return viscecstates, filterstates
 
-def execute_experiment():
+def execute_experiment(
     parameters = {
         'name': 'Baseline',
-        'seeds': [1, 2],
+        'seeds': [1],
         'steps': 100,
         'timestepsize': 1,
         'n_particles': 50,
@@ -50,8 +50,7 @@ def execute_experiment():
         'observable_axis': (True,True,False),
         'x_axis': 10,
         'y_axis': 10,
-        'total_runtime': 0.0
-    }
+        }):
     t0 = time.time()
     for seed in parameters['seeds']:
         experimentname = parameters['name']
