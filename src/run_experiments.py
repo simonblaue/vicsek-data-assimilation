@@ -1,9 +1,10 @@
 from generate import execute_experiment
+from analyze import read_and_eval
 
 parameters = {
         'name': 'Baseline',
         'seeds': [1,2,3,4,5,6,7,8,9,10],
-        'steps': 100,
+        'steps': 200,
         'timestepsize': 1,
         'n_particles': 50,
         'n_ensembles': 100,
@@ -30,7 +31,19 @@ def observation_noise_exp():
         parameters['observation_noise'] = test_value
         parameters['name'] = name
         execute_experiment(parameters)
+        read_and_eval(name)
     
+    
+    
+def ensemble_size_exp():
+    test_values = [10,50,100,150,200]
+    names = [f"ensamble_size_{v}" for v in test_values]
+    
+    for name, test_value in zip(names,test_values):
+        parameters['n_ensambles'] = test_value
+        parameters['name'] = name
+        execute_experiment(parameters)
+        read_and_eval(name)
         
 if __name__ == "__main__":
-    observation_noise_exp()
+    ensemble_size_exp()

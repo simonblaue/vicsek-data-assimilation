@@ -26,7 +26,9 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
         'Hungarian Precision':[],
         'Lost Particle Precision':[],
         'Average Hungarian Precision': [],
-        'Average LPP': []
+        'Average LPP': [],
+        'Var Hungarian Precision': [],
+        'Var LPP': []
     }
     
     seeds = experiment_params['seeds']
@@ -36,6 +38,9 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
     
     average_hung = np.zeros(measure_steps)
     average_lpp = np.zeros(measure_steps)
+    
+    std_hung = np.zeros(measure_steps)
+    std_lpp = np.zeros(measure_steps)
 
     for seed in range(len(seeds)):
         model_pos = model_states[seed][::sampling_rate,:, 0:2]
@@ -56,14 +61,25 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
             average_hung[i] += m_hung
             average_lpp[i] += m_lpp
             
+            std_hung[i] += m_hung**2
+            std_lpp[i] += m_lpp**2
+            
         metrics['Hungarian Precision'].append(hung_metric)
         metrics['Lost Particle Precision'].append(lpp_metric)
+        
+    std_hung -=   (average_hung * average_hung)/len(seeds)
+    std_hung /= len(seeds)    
+    
+    std_lpp -=   (average_lpp * average_lpp)/len(seeds)
+    std_lpp /= len(seeds)    
         
     average_hung /= len(seeds)
     average_lpp /= len(seeds)
     
     metrics['Average Hungarian Precision'] = average_hung.tolist()
     metrics['Average LPP'] = average_lpp.tolist()
+    metrics['Var Hungarian Precision'] = std_hung.tolist()
+    metrics['Var LPP'] = std_lpp.tolist()
     
     experiment_name = experiment_params['name']
     experiment_path = f'saves/{experiment_name}/'

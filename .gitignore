@@ -1,5 +1,4 @@
 src/tests.py
 src/scratch_henrik.ipynb
 src/test.py
-saves/**
-saves/**/**
+src/__pycache__/**

@@ -45,7 +45,7 @@ $\eta = 2.0$
 - ensembles: 10, 50, 100, 200
 - observation noise 0.0001 - 1, 5 values logspace
 - optional: observable axis (all vs x,y only)
-- 2, 4
+- step frequenzy: 2, 4
 
 ## tmux
 

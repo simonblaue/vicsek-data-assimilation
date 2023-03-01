@@ -1,0 +1,25 @@
+{
+    "name": "Baseline",
+    "seeds": [
+        1
+    ],
+    "steps": 100,
+    "timestepsize": 1,
+    "n_particles": 50,
+    "n_ensembles": 100,
+    "observation_noise": 0.01,
+    "viscec_noise": 0.5,
+    "xi": 0.8,
+    "noisestrength": 0.5,
+    "velocity": 0.03,
+    "sampling_rate": 2,
+    "alignment_radius": 1.0,
+    "observable_axis": [
+        true,
+        true,
+        false
+    ],
+    "x_axis": 10,
+    "y_axis": 10,
+    "total_runtime": 2.3218328952789307
+}
