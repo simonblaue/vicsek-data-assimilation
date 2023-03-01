@@ -3,13 +3,32 @@ from datetime import datetime
 import numpy as np
 from pathlib import Path
 import json
-from scrips import simulate
 import os
+
+from vicsek import ViszecSimulation
+from kalman import EnsembleKalman
+from typing import Dict, Tuple, List
 
 """
 This is a script to run generate experiment data without visualization
 The simulation parameters and results will be saved under a given directory
 """
+
+def simulate(parameters: Dict) -> Tuple[List, List, Dict]:    
+    viscecmodel = ViszecSimulation(parameters)
+    filtermodel = EnsembleKalman(parameters, viscecmodel.agents, viscecmodel._step)
+    viscecstates = []
+    filterstates = []
+   
+    for t in range(parameters['steps']):
+        viscecmodel.update()
+        viscecstates.append(viscecmodel.agents)
+        if t % parameters['sampling_rate'] == 0:
+            filtermodel.update(viscecmodel.agents)
+            filterstates.append(filtermodel.agents)
+
+    
+    return viscecstates, filterstates
 
 def execute_experiment():
     parameters = {
@@ -17,12 +36,13 @@ def execute_experiment():
         'seeds': [1, 2],
         'steps': 100,
         'timestepsize': 1,
-        'particles': 100,
-        'ensembles': 50,
+        'n_particles': 100,
+        'n_ensembles': 50,
         'observation_noise': 0.0001,
         'viscec_noise': 0.5,
         'xi' : 0.8,
-        'velocities': [0.03],
+        'noisestrength':0.5,
+        'velocity': 0.03,
         'sampling_rate': 2,
         'alignment_radius': 1.,
         'observable_axis': (True,True,False),

@@ -16,9 +16,9 @@ class ViszecSimulation:
         # Init Config
         self.config = config
         # Array with posx, posy, orientation as rad for n agents
-        self.agents = np.random.rand(self.config.n_particles, 3)
-        self.agents[:,0] *= self.config.x_axis
-        self.agents[:,1] *= self.config.y_axis
+        self.agents = np.random.rand(self.config["n_particles"], 3)
+        self.agents[:,0] *= self.config["x_axis"]
+        self.agents[:,1] *= self.config["y_axis"]
         self.agents[:,2] *= 2*np.pi
         self.time = 0
         
@@ -30,7 +30,7 @@ class ViszecSimulation:
         Returns:
             numpy Array(n,n): distances from every walker to every walker
         """
-        distances = np.zeros((self.config.n_particles, self.config.n_particles, 2)) 
+        distances = np.zeros((self.config["n_particles"], self.config["n_particles"], 2)) 
         walker_pos = self.agents[:,0:2]
 
         for i,walker in enumerate(walker_pos):
@@ -38,11 +38,11 @@ class ViszecSimulation:
             distances[i,:,:] = walker_pos - walker
 
         # Enforce boundaries, use nearest image convention 
-        distances[:,:,0] = np.where(distances[:,:,0]>self.config.x_axis/2,distances[:,:,0]-self.config.x_axis,distances[:,:,0])
-        distances[:,:,0] = np.where(distances[:,:,0]<-self.config.x_axis/2,distances[:,:,0]+self.config.x_axis,distances[:,:,0])
+        distances[:,:,0] = np.where(distances[:,:,0]>self.config["x_axis"]/2,distances[:,:,0]-self.config["x_axis"],distances[:,:,0])
+        distances[:,:,0] = np.where(distances[:,:,0]<-self.config["x_axis"]/2,distances[:,:,0]+self.config["x_axis"],distances[:,:,0])
         
-        distances[:,:,1] = np.where(distances[:,:,1]>self.config.y_axis/2,distances[:,:,1]-self.config.y_axis,distances[:,:,1])
-        distances[:,:,1] = np.where(distances[:,:,1]<-self.config.y_axis/2,distances[:,:,1]+self.config.y_axis,distances[:,:,1])
+        distances[:,:,1] = np.where(distances[:,:,1]>self.config["y_axis"]/2,distances[:,:,1]-self.config["y_axis"],distances[:,:,1])
+        distances[:,:,1] = np.where(distances[:,:,1]<-self.config["y_axis"]/2,distances[:,:,1]+self.config["y_axis"],distances[:,:,1])
         return distances
         
         
@@ -56,12 +56,12 @@ class ViszecSimulation:
         dists = self.distances()
         d =  np.linalg.norm(dists, axis=2)
         
-        aligner = d < self.config.alignment_radius
+        aligner = d < self.config["alignment_radius"]
         
         # calculate mean angles
         all_phi = self.agents[:,2]
-        av_phi_per_walker = np.zeros(self.config.n_particles)
-        for i in range(self.config.n_particles):
+        av_phi_per_walker = np.zeros(self.config["n_particles"])
+        for i in range(self.config["n_particles"]):
             av_phi_per_walker[i] = np.mean(all_phi[aligner[i]])
             
         return av_phi_per_walker
@@ -80,18 +80,18 @@ class ViszecSimulation:
         av_phi_per_walker = self.av_directions()
         
         # noise for new angle
-        noise = np.random.normal(0,self.config.noisestrength, self.config.n_particles)
+        noise = np.random.normal(0,self.config["noisestrength"], self.config["n_particles"])
         
         # set the new direction 
-        agents[:,2] = self.config.xi*(agents[:,2])+(1-self.config.xi)*av_phi_per_walker + noise 
+        agents[:,2] = self.config["xi"]*(agents[:,2])+(1-self.config["xi"])*av_phi_per_walker + noise 
         
         # Calculate and set new positions
         new_directions = np.array([np.cos(agents[:,2]), np.sin(agents[:,2])]).transpose()
-        agents[:,0:2] +=  self.config.velocity * self.config.timestepsize * new_directions 
+        agents[:,0:2] +=  self.config["velocity"] * self.config["timestepsize"] * new_directions 
         
         # Apply boundaries
-        agents[:,0] = np.mod(agents[:,0], self.config.x_axis)
-        agents[:,1] = np.mod(agents[:,1], self.config.y_axis)
+        agents[:,0] = np.mod(agents[:,0], self.config["x_axis"])
+        agents[:,1] = np.mod(agents[:,1], self.config["y_axis"])
     
         return agents
     

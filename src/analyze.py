@@ -49,7 +49,7 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
         
         for i in range(measure_steps) :
             m_hung = metric_hungarian_precision(model_pos[i], filter_pos[i])
-            m_lpp = metric_lost_particles(model_pos[i], filter_pos[i], experiment_params['alignment_radius']/5)
+            m_lpp = metric_lost_particles(model_pos[i], filter_pos[i], experiment_params['alignment_radius']/2)
             hung_metric.append(m_hung)
             lpp_metric.append(m_lpp)
             
