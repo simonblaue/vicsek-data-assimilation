@@ -1,7 +1,7 @@
 from typing import List, Tuple
 import matplotlib.gridspec as gridspec
 import numpy as np
-from misc import n_colors, xyphi_to_abc, format_e, metric_hungarian_precision
+from misc import n_colors, xyphi_to_abc, format_e, metric_hungarian_precision, metric_lost_particles
 from matplotlib import animation
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
@@ -25,12 +25,11 @@ class Animation():
         
         self.modelagents = self.viscecdata[0]
         self.filteragents = self.filterdata[0]
-        
-        print(config['sampling_rate'])
-        print(self.viscecdata.shape)
-        print(self.filterdata.shape)
             
-        self.metrics = {'Hungarian Precision': []}
+        self.metrics = {
+            'Hungarian Precision': [],
+            'LPP': [],
+        }
             
         self.init_figure()
         self.set_axis(self.axes[0], 'Model')
@@ -40,8 +39,6 @@ class Animation():
         self.filter_polygons = self.init_polygon_plot(self.filteragents, self.axes[1])
 
         self.init_metrics_plot()
-        
-        print(np.var(self.filterdata, axis = 0)[0][0])
 
     def loadexperiment(self, experimentid):
         self.viscecdata = np.load(f'{experimentid}_model.npy')
@@ -64,7 +61,7 @@ class Animation():
 
     # initialization function: plot the background of each frame
     def init_function(self):
-        return self.model_polygons, self.filter_polygons, self.hungarian_precision_line
+        return self.model_polygons, self.filter_polygons, self.hungarian_precision_line, self.lpp_line
 
     def init_polygon_plot(self, agents, axis):
         self.agent_colors = n_colors(self.config['n_particles'])
@@ -83,10 +80,11 @@ class Animation():
         self.error_mean = []
         self.error_hungarian = []
         self.axes[2].set_xlabel('Steps')
-        self.axes[2].set_ylabel('Precision')
+        self.axes[2].set_ylabel('')
         self.axes[2].set_title('Metrics')
         self.axes[2].grid()
         self.hungarian_precision_line, = self.axes[2].plot([0], [0], lw=1, c='blue', label=f'Hungarian Precision')
+        self.lpp_line, = self.axes[2].plot([0], [0], lw=1, c='orange', label=f'LPP')
         self.axes[2].legend()
         
 
@@ -100,16 +98,22 @@ class Animation():
             self.modelagents,
             self.filteragents,
         )
+        lpp = metric_lost_particles(self.modelagents, self.filteragents, self.config['lpp_thres'])
         if step == 0:
             self.metrics['Hungarian Precision'] = [precision]
+            self.metrics['LPP'] = [lpp]
         else:
             self.step = step+1
             self.metrics['Hungarian Precision'].append(precision)
-        
+            self.metrics['LPP'].append(lpp)
         
         self.hungarian_precision_line.set_data(
             np.arange(0, self.step, self.config['sampling_rate']),
             self.metrics['Hungarian Precision'],
+        )
+        self.lpp_line.set_data(
+            np.arange(0, self.step, self.config['sampling_rate']),
+            self.metrics['LPP'],
         )
         self.axes[2].set_xlim(0, self.step+1)
         self.axes[2].set_ylim(0, np.max(self.metrics['Hungarian Precision'])+0.05)
@@ -129,7 +133,7 @@ class Animation():
             self.update_polygons(self.filteragents, self.filter_polygons)
             self.update_metrics(i)
             
-        return self.model_polygons, self.filter_polygons, self.hungarian_precision_line
+        return self.model_polygons, self.filter_polygons, self.hungarian_precision_line, self.lpp_line
 
 
     def __call__(self):

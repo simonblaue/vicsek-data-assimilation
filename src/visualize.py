@@ -21,8 +21,9 @@ def visualize_experiment(experiment_name):
     parameters['loadexperiment'] = f'experiment'
     parameters['frames'] = parameters['steps']
 
-    parameters['plot_interval'] = 10
+    parameters['plot_interval'] = 20
     parameters['boundary'] = 0.5
+    parameters['lpp_thres'] = parameters['alignment_radius']/2
     
     animation = Animation(parameters)
     animation()
