@@ -47,8 +47,8 @@ def execute_experiment():
         runtime = time.time()-t
         print(f'Runtime: \t {runtime}, \t Saving to {experiment_path}')
         
-        np.save(experiment_path+'model.npy', viscecstates)
-        np.save(experiment_path+'filter.npy', filterstates)
+        np.save(experiment_path+f'{seed}_model.npy', viscecstates)
+        np.save(experiment_path+f'{seed}_filter.npy', filterstates)
 
     parameters['total_runtime'] = time.time() - t0
         
