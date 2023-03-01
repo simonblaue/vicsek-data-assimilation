@@ -35,8 +35,8 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
 def execute_experiment(
     parameters = {
         'name': 'Baseline',
-        'seeds': [1],
-        'steps': 100,
+        'seeds': [i for i in range(1, 11)],
+        'steps': 200,
         'timestepsize': 1,
         'n_particles': 50,
         'n_ensembles': 100,
