@@ -1,7 +1,7 @@
 from generate import execute_experiment
 from analyze import read_and_eval
 from misc import bools2str
-
+import os
 from tqdm import tqdm
 
 
@@ -46,8 +46,8 @@ def grid_search():
                         parameters['sampling_rate']  = sampling_rate
                         parameters['name'] = name
                         # print(name)
-                    execute_experiment(parameters)
-                    read_and_eval(name)
+                        execute_experiment(parameters)
+                        read_and_eval(name)
 
 ####### Experiment for Observation Noise ######## 
 

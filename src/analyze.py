@@ -2,14 +2,14 @@
 import json
 import numpy as np 
 from misc import metric_lost_particles, metric_hungarian_precision
-
+import os
 
 def read_and_eval(experiment_name):
     filter_states, model_states, params = read_experiment(experiment_name)
     evaluate_experiment(filter_states, model_states, params)
 
 def read_experiment(experiment_name : str):
-    folder = "saves/"+ experiment_name + "/"
+    folder = "../saves/"+ experiment_name + "/"
     experiment_params  = json.load(open(folder + "params.json"))
     seeds = experiment_params['seeds']
     model_states = []
@@ -21,6 +21,11 @@ def read_experiment(experiment_name : str):
 
 
 def evaluate_experiment(model_states, filter_states, experiment_params):
+    
+    experiment_name = experiment_params['name']
+    experiment_path = f'../saves/{experiment_name}/'
+    if os.path.exists(f'{experiment_path}metrics.json'):
+        return
     
     metrics = {
         'Hungarian Precision':[],
@@ -81,8 +86,7 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
     metrics['Var Hungarian Precision'] = std_hung.tolist()
     metrics['Var LPP'] = std_lpp.tolist()
     
-    experiment_name = experiment_params['name']
-    experiment_path = f'saves/{experiment_name}/'
+    
     with open(f'{experiment_path}metrics.json', 'w') as fp:
         # json.dump(experiment_params, fp, indent=4)
         json.dump(metrics, fp, indent=4)
