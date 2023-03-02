@@ -26,6 +26,7 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     for t in tqdm(range(parameters['steps']), position=5, leave=False):
         viscecmodel.update()
         viscecstates.append(viscecmodel.agents)
+
         if t % parameters['sampling_rate'] == 0:
             filtermodel.agents = filtermodel.update(viscecmodel.agents)
             filterstates.append(filtermodel.agents)
@@ -48,28 +49,29 @@ def execute_experiment(
         'velocity': 0.03,
         'sampling_rate': 2,
         'alignment_radius': 1.,
-        'observable_axis': (True,True,False),
+        'observable_axis': (True,True,True,True,False),
         'x_axis': 10,
         'y_axis': 10,
+        'find_velocities': False,
         }):
     t0 = time.time()
     for seed in parameters['seeds']:
         experimentname = parameters['name']
         # print(f'Running experiment {experimentname} with seed {seed}')
 
-        experiment_path = f'../saves/{experimentname}/'
+        experiment_path = f'saves/{experimentname}/'
         if not os.path.exists(experiment_path):
             os.makedirs(experiment_path)
             
-        if os.path.exists(experiment_path+f'{seed}_model.npy'):
-            continue
+        # if os.path.exists(experiment_path+f'{seed}_model.npy'):
+        #     continue
         
         np.random.seed(int(seed))
 
         t = time.time()
         
         viscecstates, filterstates = simulate(parameters)
-        
+        print(viscecstates[0].shape)
         runtime = time.time()-t
         # print(f'Runtime: \t {runtime}, \t Saving to {experiment_path}')
         

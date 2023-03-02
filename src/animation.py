@@ -24,6 +24,7 @@ class Animation():
         self.animate_step = self._step_visualize
         
         self.modelagents = self.viscecdata[0]
+        # print(self.modelagents.shape)
         self.filteragents = self.filterdata[0]
             
         self.metrics = {
@@ -42,6 +43,7 @@ class Animation():
 
     def loadexperiment(self, experimentid):
         self.viscecdata = np.load(f'{experimentid}_model.npy')
+        print(self.viscecdata.shape)
         self.filterdata = np.load(f'{experimentid}_filter.npy')
 
     def init_figure(self):
@@ -66,7 +68,7 @@ class Animation():
     def init_polygon_plot(self, agents, axis):
         self.agent_colors = n_colors(self.config['n_particles'])
         polygon_coors = [
-            xyphi_to_abc(w[0],w[1], w[2]) for w in agents
+            xyphi_to_abc(w[0],w[1],w[4]) for w in agents
         ]
         polygons = [
             Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(polygon_coors, self.agent_colors)
@@ -90,7 +92,7 @@ class Animation():
 
     def update_polygons(self, agents, polygons):
         for a, p in zip(agents, polygons):
-            t = xyphi_to_abc(a[0], a[1], a[2])
+            t = xyphi_to_abc(a[0], a[1],a[4])
             p.set_xy(t)
     
     def update_metrics(self, step):
