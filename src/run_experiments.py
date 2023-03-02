@@ -22,13 +22,14 @@ parameters = {
         'observable_axis': (True,True,False),
         'x_axis': 10,
         'y_axis': 10,
+        'find_velocities': True,
         }
 
 
 #### GRID SUCHEN !!!! ###
 
 def grid_search():
-    test_observable_axis = [(True,True,True),(True,True,False)]
+    test_observable_axis = [(True,True,True,True,True),(True,True,True,True,False),(True,True,False,False,False)]
     test_agents = [50,100]
     test_ensembles = [50,100,150,200,250]
     test_observation_noise = [0.0001 ,0.001, 0.01, 0.1, 1]
@@ -45,7 +46,6 @@ def grid_search():
                         parameters['observation_noise'] = observation_noise
                         parameters['sampling_rate']  = sampling_rate
                         parameters['name'] = name
-                        # print(name)
                         execute_experiment(parameters)
                         read_and_eval(name)
 
