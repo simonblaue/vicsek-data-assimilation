@@ -19,11 +19,13 @@ class ViszecSimulation:
         self.agents = np.random.rand(self.config["n_particles"], 5)
         self.agents[:,0] *= self.config["x_axis"]
         self.agents[:,1] *= self.config["y_axis"]
-        self.agents[:,2] = config['velocity']
-        self.agents[:,3] = config['velocity']
+        self.agents[:,2] =( np.random.rand(self.config["n_particles"])) * config['velocity']
+        self.agents[:,3] = ( np.random.rand(self.config["n_particles"])) * config['velocity']
+
+        
         self.agents[:,4] *= 2*np.pi
         self.time = 0
-        
+
 
     def distances(self) -> np.ndarray:
         """
@@ -74,6 +76,7 @@ class ViszecSimulation:
         Does one timestep in the visceck model
         """
         self.agents = self._step(self.agents)
+
         # return self.agents
         
         
@@ -85,12 +88,11 @@ class ViszecSimulation:
         noise = np.random.normal(0,self.config["noisestrength"], self.config["n_particles"])
         
         # set the new direction 
-        agents[:,2] = self.config["xi"]*(agents[:,2])+(1-self.config["xi"])*av_phi_per_walker + noise 
+        agents[:,4] = self.config["xi"]*(agents[:,4])+(1-self.config["xi"])*av_phi_per_walker + noise 
         
         # Calculate and set new positions
-        new_directions = np.array([np.cos(agents[:,2]), np.sin(agents[:,2])]).transpose()
+        new_directions = np.array([np.cos(agents[:,4]), np.sin(agents[:,4])]).transpose()
         agents[:,0:2] +=  agents[:,2:4] * self.config["timestepsize"] * new_directions 
-        
         # Apply boundaries
         agents[:,1] = np.mod(agents[:,1], self.config["y_axis"])
         agents[:,0] = np.mod(agents[:,0], self.config["x_axis"])

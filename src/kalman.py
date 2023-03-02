@@ -14,7 +14,14 @@ class EnsembleKalman():
         
         """
         self.config = config
-        self.agents = init_agents.copy()
+        # self.agents = init_agents.copy()
+        # self.agents = init_agents.copy()
+        self.agents = np.random.rand(self.config["n_particles"], 5)
+        self.agents[:,0] *= self.config["x_axis"]
+        self.agents[:,1] *= self.config["y_axis"]
+        self.agents[:,2] =( np.random.rand(self.config["n_particles"])) * config['velocity']
+        self.agents[:,3] = ( np.random.rand(self.config["n_particles"])) * config['velocity']
+
         # print(self.agents.shape)
         self.model_forecast = forecast_func
 

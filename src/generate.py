@@ -37,22 +37,22 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
 def execute_experiment(
     parameters = {
         'name': 'Baseline',
-        'seeds': [i for i in range(1, 11)],
-        'steps': 200,
+        'seeds': [1],
+        'steps': 300,
         'timestepsize': 1,
-        'n_particles': 50,
-        'n_ensembles': 100,
-        'observation_noise': 0.01,
+        'n_particles': 100,
+        'n_ensembles': 150,
+        'observation_noise': 0.001,
         'viscec_noise': 0.5,
         'xi' : 0.8,
         'noisestrength':0.5,
         'velocity': 0.03,
-        'sampling_rate': 2,
+        'sampling_rate': 4,
         'alignment_radius': 1.,
-        'observable_axis': (True,True,True,True,False),
+        'observable_axis': (True,True,False,False,False),
         'x_axis': 10,
         'y_axis': 10,
-        'find_velocities': False,
+        'find_velocities': True,
         }):
     t0 = time.time()
     for seed in parameters['seeds']:
@@ -71,7 +71,6 @@ def execute_experiment(
         t = time.time()
         
         viscecstates, filterstates = simulate(parameters)
-        print(viscecstates[0].shape)
         runtime = time.time()-t
         # print(f'Runtime: \t {runtime}, \t Saving to {experiment_path}')
         
@@ -79,7 +78,7 @@ def execute_experiment(
         np.save(experiment_path+f'{seed}_filter.npy', filterstates)
 
     parameters['total_runtime'] = time.time() - t0
-        
+ 
     # saving parameters
     with open(f'{experiment_path}params.json', 'w') as fp:
         json.dump(parameters, fp, indent=4)

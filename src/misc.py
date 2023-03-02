@@ -52,7 +52,7 @@ def xyphi_to_abc(x: float, y: float, phi: float) -> np.ndarray:
     return triangle
 
 def format_e(n):
-    return "{:.2E}".format(Decimal(n))
+    return "{:0.1f}%".format(n*100)
 
 def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: np.ndarray,) -> float:
     n_particles = np.shape(viscek_positions)[0]

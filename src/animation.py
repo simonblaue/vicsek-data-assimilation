@@ -97,10 +97,10 @@ class Animation():
     
     def update_metrics(self, step):
         hungarian_precision = metric_hungarian_precision(
-            self.modelagents,
-            self.filteragents,
+            self.modelagents[:,0:2],
+            self.filteragents[:,0:2],
         )
-        lpp = metric_lost_particles(self.modelagents, self.filteragents, self.config['lpp_thres'])
+        lpp = metric_lost_particles(self.modelagents[:,0:2], self.filteragents[:,0:2], self.config['lpp_thres'])
         if step == 0:
             self.metrics['Hungarian Precision'] = [hungarian_precision]
             self.metrics['LPP'] = [lpp]
@@ -118,7 +118,11 @@ class Animation():
             self.metrics['LPP'],
         )
         self.axes[2].set_xlim(0, self.step+1)
-        self.axes[2].set_ylim(0, np.max(self.metrics['Hungarian Precision'])+0.05)
+        ylimit = max(self.metrics['Hungarian Precision']+self.metrics['LPP'])
+        self.axes[2].set_ylim(
+            0,
+            ylimit+0.05
+        )
         _hp = format_e(np.mean(self.metrics['Hungarian Precision']))
         _lpp = format_e(np.mean(self.metrics['LPP']))
         self.axes[2].set_xlabel(

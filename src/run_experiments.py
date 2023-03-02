@@ -16,7 +16,7 @@ parameters = {
         'viscec_noise': 0.5,
         'xi' : 0.8,
         'noisestrength':0.5,
-        'velocity': 0.03,
+        'velocity': 0.003,
         'sampling_rate': 2,
         'alignment_radius': 1.,
         'observable_axis': (True,True,False),
