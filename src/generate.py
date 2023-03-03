@@ -38,7 +38,7 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
 
 def execute_experiment(
     parameters = {
-        'name': 'BaselineShuffeld',
+        'name': 'BaselineShuffled',
         'seeds': [1],
         'steps': 100,
         'timestepsize': 1,
@@ -55,6 +55,7 @@ def execute_experiment(
         'x_axis': 10,
         'y_axis': 10,
         'find_velocities': True,
+        'shuffle_measurements': False
         }):
     t0 = time.time()
     for seed in parameters['seeds']:

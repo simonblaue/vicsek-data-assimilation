@@ -39,10 +39,12 @@ class EnsembleKalman():
 
     def update(self, _measurement: np.ndarray, ) -> np.ndarray:
         
-            predicted_idxs = self.suffle_and_reassign(_measurement[:,0:2], self.agents[:,0:2])
-            
+            predicted_idxs = np.arange(self.config['n_particles'])
+            if self.config['shuffle_measurements']:
+                predicted_idxs = self.suffle_and_reassign(_measurement[:,0:2], self.agents[:,0:2])
             measurement = _measurement[predicted_idxs]
-            
+
+                
             #generating forecast ensamples
             forecast_ensemble = np.array([
                 self.model_forecast(self.agents) for _ in range(self.config["n_ensembles"])

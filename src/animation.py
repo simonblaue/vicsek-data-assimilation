@@ -24,7 +24,6 @@ class Animation():
         self.animate_step = self._step_visualize
         
         self.modelagents = self.viscecdata[0]
-        # print(self.modelagents.shape)
         self.filteragents = self.filterdata[0]
             
         self.metrics = {
