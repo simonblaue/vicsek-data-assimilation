@@ -26,17 +26,22 @@ class EnsembleKalman():
         
         self._idxs = np.arange(0, config['n_particles'], dtype=np.uint8)
         
-    def suffle_and_reassign(self, measurement):
-        shuffled_idxs = np.random.shuffle(self._idxs)
-        measurement_shuffled = measurement[:,0:2][shuffled_idxs]
-        assign_idxs = assign_fn(measurement_shuffled, self.agents[:,0:2])
+    def suffle_and_reassign(self, measurement_pos, agents_pos):
+        shuffled_idxs = self._idxs.copy()
+        np.random.shuffle(shuffled_idxs)
+        
+        measurement_shuffled = measurement_pos[shuffled_idxs].squeeze()
+        assign_idxs = assign_fn(measurement_shuffled, agents_pos)
         # new measurement, assignment
-        return measurement_shuffled[assign_idxs], shuffled_idxs[assign_idxs]
+
+        return shuffled_idxs[assign_idxs]
         
 
     def update(self, _measurement: np.ndarray, ) -> np.ndarray:
         
-            measurement, predicted_idxs = self.suffle_and_reassign(_measurement)
+            predicted_idxs = self.suffle_and_reassign(_measurement[:,0:2], self.agents[:,0:2])
+            
+            measurement = _measurement[predicted_idxs]
             
             #generating forecast ensamples
             forecast_ensemble = np.array([
