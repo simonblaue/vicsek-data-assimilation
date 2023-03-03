@@ -44,7 +44,7 @@ def execute_experiment(
         'timestepsize': 1,
         'n_particles': 50,
         'n_ensembles': 150,
-        'observation_noise': 0.0001,
+        'observation_noise': 0.01,
         'xi' : 1,
         'noisestrength': 0.3,
         'velocity': 0.03,

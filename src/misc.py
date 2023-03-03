@@ -71,3 +71,4 @@ def metric_lost_particles(viscek_positions: np.ndarray, kalman_positions: np.nda
     right_particles =  sum(abs_distances <= dist_thresh)
     return right_particles/n_particles
     
+    
