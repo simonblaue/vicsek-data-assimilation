@@ -19,7 +19,7 @@ parameters = {
         'velocity': 0.003,
         'sampling_rate': 2,
         'alignment_radius': 1.,
-        'observable_axis': (True,True,False),
+        'observable_axis': (True,True,True,True,False),
         'x_axis': 10,
         'y_axis': 10,
         'find_velocities': True,
@@ -36,18 +36,19 @@ def grid_search():
     test_sampling_rate = [1,2,4]
 
     for observable_axis in tqdm(test_observable_axis, position=0, leave=False):
-        for agents in tqdm(test_agents, position=1, leave=False):
-            for ensembles in tqdm(test_ensembles, position=2, leave=False):
-                for observation_noise in tqdm(test_observation_noise, position=3, leave=False):
-                    for sampling_rate in tqdm(test_sampling_rate, position=4, leave=False):
-                        name = f"{bools2str(observable_axis)}_{agents}_{ensembles}_{observation_noise}_{sampling_rate}"
-                        parameters['observable_axis'] = observable_axis
-                        parameters['agents'] = agents
-                        parameters['observation_noise'] = observation_noise
-                        parameters['sampling_rate']  = sampling_rate
-                        parameters['name'] = name
-                        execute_experiment(parameters)
-                        read_and_eval(name)
+        # for agents in tqdm(test_agents, position=1, leave=False):
+        for ensembles in tqdm(test_ensembles, position=2, leave=False):
+            for observation_noise in tqdm(test_observation_noise, position=3, leave=False):
+                for sampling_rate in tqdm(test_sampling_rate, position=4, leave=False):
+                    name = f"{bools2str(observable_axis)}_50_{ensembles}_{observation_noise}_{sampling_rate}"
+                    parameters['observable_axis'] = observable_axis
+                    # parameters['agents'] = agents
+                    parameters['observation_noise'] = observation_noise
+                    parameters['sampling_rate']  = sampling_rate
+                    parameters['name'] = name
+                    parameters['n_ensambles'] = test_ensembles
+                    execute_experiment(parameters)
+                    read_and_eval(name)
 
 ####### Experiment for Observation Noise ######## 
 

@@ -38,7 +38,7 @@ def execute_experiment(
     parameters = {
         'name': 'Baseline',
         'seeds': [1],
-        'steps': 10,
+        'steps': 100,
         'timestepsize': 1,
         'n_particles': 100,
         'n_ensembles': 150,
@@ -46,7 +46,7 @@ def execute_experiment(
         'viscec_noise': 0.5,
         'xi' : 0.8,
         'noisestrength':0.5,
-        'velocity': 0.3,
+        'velocity': 0.03,
         'sampling_rate': 1,
         'alignment_radius': 1.,
         'observable_axis': (True,True,False,False,False),
