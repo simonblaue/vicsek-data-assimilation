@@ -21,6 +21,7 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     filtermodel = EnsembleKalman(parameters, viscecmodel.agents, viscecmodel._step)
     viscecstates = []
     filterstates = []
+    assignments = []
    
     # with alive_bar(parameters['steps']) as bar:
     for t in tqdm(range(parameters['steps']), position=5, leave=False):
@@ -28,11 +29,12 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
         viscecstates.append(viscecmodel.agents)
 
         if t % parameters['sampling_rate'] == 0:
-            filtermodel.agents = filtermodel.update(viscecmodel.agents)
+            filtermodel.agents, predicted_idxs = filtermodel.update(viscecmodel.agents)
             filterstates.append(filtermodel.agents)
+            assignments.append(predicted_idxs)
 
     
-    return viscecstates, filterstates
+    return viscecstates, filterstates, assignments
 
 def execute_experiment(
     parameters = {
@@ -67,15 +69,13 @@ def execute_experiment(
         #     continue
         
         np.random.seed(int(seed))
-
-        t = time.time()
         
-        viscecstates, filterstates = simulate(parameters)
-        runtime = time.time()-t
+        viscecstates, filterstates, assignments = simulate(parameters)
         # print(f'Runtime: \t {runtime}, \t Saving to {experiment_path}')
         
         np.save(experiment_path+f'{seed}_model.npy', viscecstates)
         np.save(experiment_path+f'{seed}_filter.npy', filterstates)
+        np.save(experiment_path+f'{seed}_assignments.npy', assignments)
 
     parameters['total_runtime'] = time.time() - t0
  

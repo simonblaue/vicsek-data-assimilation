@@ -24,16 +24,19 @@ class EnsembleKalman():
         # print(self.agents.shape)
         self.model_forecast = forecast_func
         
-        self.particle_idxs = np.arange(0, config['n_particles'], dtype=np.uint8)
+        self._idxs = np.arange(0, config['n_particles'], dtype=np.uint8)
         
     def suffle_and_reassign(self, measurement):
-        shuffled_idxs = np.random.shuffle(self.particle_idxs)
+        shuffled_idxs = np.random.shuffle(self._idxs)
         measurement_shuffled = measurement[:,0:2][shuffled_idxs]
         assign_idxs = assign_fn(measurement_shuffled, self.agents[:,0:2])
+        # new measurement, assignment
         return measurement_shuffled[assign_idxs], shuffled_idxs[assign_idxs]
         
 
-    def update(self, measurement: np.ndarray, ) -> np.ndarray:
+    def update(self, _measurement: np.ndarray, ) -> np.ndarray:
+        
+            measurement, predicted_idxs = self.suffle_and_reassign(_measurement)
             
             #generating forecast ensamples
             forecast_ensemble = np.array([
@@ -97,6 +100,6 @@ class EnsembleKalman():
             
             # print(f'Update time:\t{time.time()-t}')
 
-            return self.agents
+            return self.agents, predicted_idxs
 
 
