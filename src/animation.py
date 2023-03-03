@@ -44,6 +44,7 @@ class Animation():
         self.viscecdata = np.load(f'{experimentid}_model.npy')
         print(self.viscecdata.shape)
         self.filterdata = np.load(f'{experimentid}_filter.npy')
+        self.assignmentdata = np.load(f'{experimentid}_assignments.npy')
 
     def init_figure(self):
         self.fig = plt.figure(figsize=(10,7),)
@@ -94,12 +95,17 @@ class Animation():
             t = xyphi_to_abc(a[0], a[1],a[4])
             p.set_xy(t)
     
-    def update_metrics(self, step):
+    def update_metrics(self, step, step_assignment_idxs):
+        model_positions = self.modelagents[:,0:2][step_assignment_idxs]
         hungarian_precision = metric_hungarian_precision(
-            self.modelagents[:,0:2],
+            model_positions,
             self.filteragents[:,0:2],
         )
-        lpp = metric_lost_particles(self.modelagents[:,0:2], self.filteragents[:,0:2], self.config['lpp_thres'])
+        lpp = metric_lost_particles(
+            model_positions, 
+            self.filteragents[:,0:2], 
+            self.config['lpp_thres']
+        )
         if step == 0:
             self.metrics['Hungarian Precision'] = [hungarian_precision]
             self.metrics['LPP'] = [lpp]
@@ -134,11 +140,13 @@ class Animation():
         self.modelagents = self.viscecdata[i]
         self.update_polygons(self.modelagents, self.model_polygons)
         if i % self.config['sampling_rate'] == 0:
-            filter_idx = i // self.config['sampling_rate']
-            # print(filter_idx)
-            self.filteragents = self.filterdata[filter_idx]
-            self.update_polygons(self.filteragents, self.filter_polygons)
-            self.update_metrics(i)
+            filter_step = i // self.config['sampling_rate']
+            
+            step_assignment_idxs = self.assignmentdata[filter_step]
+            # print(step_assignment_idxs)
+            self.filteragents = self.filterdata[filter_step]
+            self.update_polygons(self.filteragents, [self.filter_polygons[i] for i in step_assignment_idxs])
+            self.update_metrics(i, step_assignment_idxs)
             
         return self.model_polygons, self.filter_polygons, self.hungarian_precision_line, self.lpp_line
 
