@@ -29,4 +29,4 @@ def visualize_experiment(experiment_name):
     animation()
     
 if __name__ =="__main__":
-    visualize_experiment("BaselineShuffled")
+    visualize_experiment("Baseline")
