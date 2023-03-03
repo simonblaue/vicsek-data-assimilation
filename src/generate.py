@@ -50,7 +50,7 @@ def execute_experiment(
         'velocity': 0.03,
         'sampling_rate': 1,
         'alignment_radius': 1,
-        'observable_axis': (True,True,False,False,False),
+        'observable_axis': (True,True,True,True,True),
         'x_axis': 10,
         'y_axis': 10,
         'find_velocities': True,
