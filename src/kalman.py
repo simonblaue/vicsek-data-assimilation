@@ -74,7 +74,7 @@ class EnsembleKalman():
                 )
             )
             ensemble_update = [
-                x + np.hstack(((K @ (z-xobs[:,self.config["observable_axis"]])), xobs)) for x, z in zip(forecast_ensemble, virtual_observations)
+                x + np.hstack(((K @ (z-x[:,self.config["observable_axis"]])), xobs)) for x, z in zip(forecast_ensemble, virtual_observations)
             ]
             
             

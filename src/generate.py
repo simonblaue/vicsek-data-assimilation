@@ -38,7 +38,7 @@ def execute_experiment(
     parameters = {
         'name': 'Baseline',
         'seeds': [1],
-        'steps': 300,
+        'steps': 10,
         'timestepsize': 1,
         'n_particles': 100,
         'n_ensembles': 150,
