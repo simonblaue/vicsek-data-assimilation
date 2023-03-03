@@ -88,7 +88,9 @@ class ViszecSimulation:
         noise = np.random.normal(0,self.config["noisestrength"], self.config["n_particles"])
         
         # set the new direction 
-        agents[:,4] = self.config["xi"]*(agents[:,4])+(1-self.config["xi"])*av_phi_per_walker + noise 
+        #agents[:,4] = self.config["xi"]*(agents[:,4])+(1-self.config["xi"])*av_phi_per_walker + noise 
+        agents[:,4] += av_phi_per_walker*self.config["timestepsize"] + 0.5*np.sqrt(self.config["timestepsize"])*noise
+        
         
         # Calculate and set new positions
         new_directions = np.array([np.cos(agents[:,4]), np.sin(agents[:,4])]).transpose()
