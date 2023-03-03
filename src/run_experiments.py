@@ -13,7 +13,7 @@ parameters = {
         'n_particles': 50,
         'n_ensembles': 100,
         'observation_noise': 0.01,
-        'viscec_noise': 0.5,
+        'viscec_noise': 0.05,
         'xi' : 0.8,
         'noisestrength':0.5,
         'velocity': 0.003,

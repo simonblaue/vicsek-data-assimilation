@@ -55,7 +55,6 @@ def format_e(n):
     return "{:0.1f}%".format(n*100)
 
 def assign_fn(measurement_positions, state_positions):
-    print(measurement_positions.shape, state_positions.shape)
     rowids, colids = linear_sum_assignment(distance_matrix(measurement_positions, state_positions))
     return colids
 

@@ -40,22 +40,21 @@ def execute_experiment(
     parameters = {
         'name': 'BaselineShuffled',
         'seeds': [1],
-        'steps': 100,
+        'steps': 300,
         'timestepsize': 1,
         'n_particles': 50,
         'n_ensembles': 150,
         'observation_noise': 0.0001,
-        'viscec_noise': 0.5,
-        'xi' : 0.8,
-        'noisestrength':0.5,
+        'xi' : 1,
+        'noisestrength': 0.3,
         'velocity': 0.03,
         'sampling_rate': 1,
-        'alignment_radius': 1.,
-        'observable_axis': (True,True,True,True,True),
+        'alignment_radius': 1,
+        'observable_axis': (True,True,False,False,False),
         'x_axis': 10,
         'y_axis': 10,
         'find_velocities': True,
-        'shuffle_measurements': False
+        'shuffle_measurements': True
         }):
     t0 = time.time()
     for seed in parameters['seeds']:
