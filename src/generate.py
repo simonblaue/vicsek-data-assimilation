@@ -39,14 +39,14 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
 def execute_experiment(
     parameters = {
         'name': 'Baseline',
-        'seeds': [1],
-        'steps': 500,
+        'seeds': [np.random.randint(1,1000)],
+        'steps': 200,
         'timestepsize': 1,
         'n_particles': 50,
         'n_ensembles': 2,
         'observation_noise': 0.0001,
         'xi' : 0.05,
-        'noisestrength': 0.0,
+        'noisestrength': 0.,
         'velocity': 0.03,
         'sampling_rate': 1,
         'alignment_radius': 1,

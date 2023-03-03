@@ -60,13 +60,15 @@ class ViszecSimulation:
         dists = self.distances()
         d =  np.linalg.norm(dists, axis=2)
         
+        d[d == 0] = np.inf
+        
         aligner = d < self.config["alignment_radius"]
         
         # calculate mean angles
         all_phi = self.agents[:,4]
         av_phi_per_walker = np.zeros(self.config["n_particles"])
         for i in range(self.config["n_particles"]):
-            av_phi_per_walker[i] = np.angle(np.sum(np.exp(1j*all_phi[aligner[i]])))
+            av_phi_per_walker[i] = np.angle(np.sum(np.exp(1j*all_phi[aligner[i]]))) - all_phi[i]
             
         return av_phi_per_walker
         
@@ -100,17 +102,17 @@ class ViszecSimulation:
     def _step(self, state: np.ndarray) -> np.ndarray:
         agents = state.copy()
         av_phi_per_walker = self.av_directions()
-        
+        print(av_phi_per_walker[1])
         # noise for new angle
         noise = np.random.normal(0,self.config["noisestrength"], self.config["n_particles"])
 
         
         # set the new direction 
         #agents[:,4] = self.config["xi"]*(agents[:,4])+(1-self.config["xi"])*av_phi_per_walker + noise 
-        agents[:,4] = (1-self.config['xi']) * agents[:,4] +  self.config["xi"] * ((av_phi_per_walker-agents[:,4]) * self.config["timestepsize"]  + 0.5 * np.sqrt(self.config["timestepsize"]) * noise)
+        agents[:,4] = (1-self.config['xi']) * agents[:,4] +  self.config["xi"] * ((av_phi_per_walker) * self.config["timestepsize"])  + 0.5 * np.sqrt(self.config["timestepsize"]) * noise
         
         agents[:,4] = np.mod(agents[:,4], 2*np.pi)
-        
+        # print(agents[0])
         # Calculate and set new positions
         new_directions = np.array([np.cos(agents[:,4]), np.sin(agents[:,4])]).transpose()
         agents[:,0:2] +=  agents[:,2:4] * self.config["timestepsize"] * new_directions 
