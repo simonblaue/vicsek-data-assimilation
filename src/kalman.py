@@ -1,6 +1,7 @@
 import numpy as np
 import time
 import scipy
+from misc import assign_fn
 
 """
 This file contains the Kalman filterclass
@@ -22,6 +23,15 @@ class EnsembleKalman():
 
         # print(self.agents.shape)
         self.model_forecast = forecast_func
+        
+        self.particle_idxs = np.arange(0, config['n_particles'], dtype=np.uint8)
+        
+    def suffle_and_reassign(self, measurement):
+        shuffled_idxs = np.random.shuffle(self.particle_idxs)
+        measurement_shuffled = measurement[shuffled_idxs]
+        assign_idxs = assign_fn(measurement_shuffled, self.agents)
+        return measurement_shuffled[assign_idxs], shuffled_idxs[assign_idxs]
+        
 
     def update(self, measurement: np.ndarray, ) -> np.ndarray:
             
@@ -40,6 +50,7 @@ class EnsembleKalman():
             if not self.config['find_velocities']:
                 virtual_observations[:,:,2:4] = forecast_ensemble[:,:,2:4]
                 
+            # print(np.var(virtual_observations, axis=0)[0][0])
 
             # Mean forecast over ensembles 
             mean_forecast = np.mean(forecast_ensemble[:,:,self.config["observable_axis"]], axis = 0)

@@ -54,6 +54,10 @@ def xyphi_to_abc(x: float, y: float, phi: float) -> np.ndarray:
 def format_e(n):
     return "{:0.1f}%".format(n*100)
 
+def assign_fn(measurement_positions, state_positions):
+    rowids, colids = linear_sum_assignment(distance_matrix(measurement_positions, state_positions))
+    return colids
+
 def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: np.ndarray,) -> float:
     n_particles = np.shape(viscek_positions)[0]
     cost_matrix = distance_matrix(viscek_positions, kalman_positions)
