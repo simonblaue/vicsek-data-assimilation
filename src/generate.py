@@ -59,7 +59,7 @@ def execute_experiment(
         experimentname = parameters['name']
         # print(f'Running experiment {experimentname} with seed {seed}')
 
-        experiment_path = f'saves/{experimentname}/'
+        experiment_path = f'../saves/{experimentname}/'
         if not os.path.exists(experiment_path):
             os.makedirs(experiment_path)
             
