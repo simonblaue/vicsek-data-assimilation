@@ -28,8 +28,8 @@ class EnsembleKalman():
         
     def suffle_and_reassign(self, measurement):
         shuffled_idxs = np.random.shuffle(self.particle_idxs)
-        measurement_shuffled = measurement[shuffled_idxs]
-        assign_idxs = assign_fn(measurement_shuffled, self.agents)
+        measurement_shuffled = measurement[:,0:2][shuffled_idxs]
+        assign_idxs = assign_fn(measurement_shuffled, self.agents[:,0:2])
         return measurement_shuffled[assign_idxs], shuffled_idxs[assign_idxs]
         
 
