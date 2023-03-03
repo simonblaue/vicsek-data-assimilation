@@ -21,6 +21,7 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     filtermodel = EnsembleKalman(parameters, viscecmodel.agents, viscecmodel._step)
     viscecstates = []
     filterstates = []
+    assignments = []
    
     # with alive_bar(parameters['steps']) as bar:
     for t in tqdm(range(parameters['steps']), position=5, leave=False):
@@ -28,31 +29,33 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
         viscecstates.append(viscecmodel.agents)
 
         if t % parameters['sampling_rate'] == 0:
-            filtermodel.agents = filtermodel.update(viscecmodel.agents)
+            filtermodel.agents, predicted_idxs = filtermodel.update(viscecmodel.agents)
             filterstates.append(filtermodel.agents)
+            assignments.append(predicted_idxs)
 
     
-    return viscecstates, filterstates
+    return viscecstates, filterstates, assignments
 
 def execute_experiment(
     parameters = {
-        'name': 'Baseline',
+        'name': 'BaselineShuffled',
         'seeds': [1],
         'steps': 100,
         'timestepsize': 1,
-        'n_particles': 100,
+        'n_particles': 50,
         'n_ensembles': 150,
-        'observation_noise': 0.001,
+        'observation_noise': 0.0001,
         'viscec_noise': 0.5,
         'xi' : 0.8,
         'noisestrength':0.5,
         'velocity': 0.03,
         'sampling_rate': 1,
         'alignment_radius': 1.,
-        'observable_axis': (True,True,False,False,False),
+        'observable_axis': (True,True,True,True,True),
         'x_axis': 10,
         'y_axis': 10,
         'find_velocities': True,
+        'shuffle_measurements': False
         }):
     t0 = time.time()
     for seed in parameters['seeds']:
@@ -67,15 +70,13 @@ def execute_experiment(
         #     continue
         
         np.random.seed(int(seed))
-
-        t = time.time()
         
-        viscecstates, filterstates = simulate(parameters)
-        runtime = time.time()-t
+        viscecstates, filterstates, assignments = simulate(parameters)
         # print(f'Runtime: \t {runtime}, \t Saving to {experiment_path}')
         
         np.save(experiment_path+f'{seed}_model.npy', viscecstates)
         np.save(experiment_path+f'{seed}_filter.npy', filterstates)
+        np.save(experiment_path+f'{seed}_assignments.npy', assignments)
 
     parameters['total_runtime'] = time.time() - t0
  

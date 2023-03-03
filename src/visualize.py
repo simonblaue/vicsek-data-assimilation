@@ -12,7 +12,7 @@ The animations can be saved.
 
 def visualize_experiment(experiment_name):
 
-    experiment = f'saves/{experiment_name}/'
+    experiment = f'../saves/{experiment_name}/'
     parameters = json.load(open(f'{experiment}params.json'))
     parameters['save_name'] = 'None'
     seed_number = 0
@@ -29,4 +29,4 @@ def visualize_experiment(experiment_name):
     animation()
     
 if __name__ =="__main__":
-    visualize_experiment("Baseline")
+    visualize_experiment("BaselineShuffeld")
