@@ -69,7 +69,24 @@ class ViszecSimulation:
             av_phi_per_walker[i] = np.mean(all_phi[aligner[i]])
             
         return av_phi_per_walker
-    
+        
+        
+    def av_directions_gauss(self) -> np.ndarray:
+        """
+        Difference to the function above: Here the average angle is weighted by a Gaussian factor instead of a Step function 
+        """
+        
+        dists = self.distances()
+        d =  np.linalg.norm(dists, axis=2)
+        weight_factor = np.exp(-d**2/2/self.config["sigma"]**2)
+            
+        all_phi = self.agents[:,4]
+        av_phi_per_walker = np.zeros(self.config["n_particles"])
+        
+        #for i in range(self.config["n_particles"]):
+        av_phi_per_walker = weight_factor @ all_phi 
+        
+        return av_phi_per_walker     
     
     def update(self) -> np.ndarray:
         """
