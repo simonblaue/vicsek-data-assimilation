@@ -74,13 +74,13 @@ def distances_with_periodic_boundary(
 
 def assign_fn(measurement_positions, state_positions, boundary):
     rowids, colids = linear_sum_assignment(
-        distances_with_periodic_boundary(measurement_positions, state_positions, L=boundary)
+        distances_with_periodic_boundary(measurement_positions, state_positions, boundary=boundary)
     )
     return colids
 
 def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: np.ndarray, boundary:float) -> float:
     n_particles = np.shape(viscek_positions)[0]
-    cost_matrix = distances_with_periodic_boundary(viscek_positions, kalman_positions, L=boundary)
+    cost_matrix = distances_with_periodic_boundary(viscek_positions, kalman_positions, boundary=boundary)
     rowid, col_id = linear_sum_assignment(cost_matrix)
     precision = 1/n_particles*sum(np.diag(np.ones(n_particles))[rowid, col_id])
     return precision
