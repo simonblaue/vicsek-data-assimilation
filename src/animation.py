@@ -1,7 +1,7 @@
 from typing import List, Tuple
 import matplotlib.gridspec as gridspec
 import numpy as np
-from misc import n_colors, xyphi_to_abc, format_e, metric_hungarian_precision, metric_lost_particles
+from misc import n_colors, xyphi_to_abc, format_e, metric_hungarian_precision, metric_lost_particles, metric_flocking
 from matplotlib import animation
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
@@ -29,6 +29,7 @@ class Animation():
         self.metrics = {
             'Hungarian Precision': [],
             'LPP': [],
+            'Flocking' : [],
         }
             
         self.init_figure()
@@ -87,12 +88,14 @@ class Animation():
         self.step = 1
         self.error_mean = []
         self.error_hungarian = []
+        self.error_flocking = []
         self.axes[2].set_xlabel('Steps')
         self.axes[2].set_ylabel('')
         self.axes[2].set_title('Metrics')
         self.axes[2].grid()
         self.hungarian_precision_line, = self.axes[2].plot([0], [0], lw=1, c='blue', label=f'Hungarian Precision')
         self.lpp_line, = self.axes[2].plot([0], [0], lw=1, c='orange', label=f'LPP')
+        self.flocking_line, = self.axes[2].plot([0], [0], lw=1, c='darkred', label=f'Flocking')
         self.axes[2].legend()
         
 
@@ -113,13 +116,17 @@ class Animation():
             self.filteragents[:,0:2], 
             self.config['lpp_thres']
         )
+        flocking = metric_flocking(self.modelagents[:,3][step_assignment_idxs],self.config["velocity"],self.config["n_particles"])
+        
         if step == 0:
             self.metrics['Hungarian Precision'] = [hungarian_precision]
             self.metrics['LPP'] = [lpp]
+            self.metrics['Flocking'] = [flocking]
         else:
             self.step = step+1
             self.metrics['Hungarian Precision'].append(hungarian_precision)
             self.metrics['LPP'].append(lpp)
+            self.metrics['Flocking'].append(flocking)
         
         self.hungarian_precision_line.set_data(
             np.arange(0, self.step, self.config['sampling_rate']),
@@ -129,17 +136,23 @@ class Animation():
             np.arange(0, self.step, self.config['sampling_rate']),
             self.metrics['LPP'],
         )
+        self.flocking_line.set_data(
+            np.arange(0, self.step, self.config['sampling_rate']),
+            self.metrics['Flocking'],
+        )
         self.axes[2].set_xlim(0, self.step+1)
         ylimit = max(self.metrics['Hungarian Precision']+self.metrics['LPP'])
         self.axes[2].set_ylim(
             0,
-            ylimit+0.05
+            1#ylimit+0.05
         )
         _hp = format_e(np.mean(self.metrics['Hungarian Precision']))
         _lpp = format_e(np.mean(self.metrics['LPP']))
+        _fl = format_e(np.mean(self.metrics['Flocking']))
         self.axes[2].set_xlabel(
             f'Steps,  Mean HP: {_hp},  '
             f'Mean LPP: {_lpp}'
+            f'Flocking: {_fl}'
         )     
 
     # TODO:
