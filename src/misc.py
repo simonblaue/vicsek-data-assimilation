@@ -57,7 +57,7 @@ def format_e(n):
 
 def distances_with_periodic_boundary(
     a_positions,
-    b_positions,
+    b_positions,        
     boundary,
 ):
     _a1 = np.tile(a_positions, (a_positions.shape[0], 1, 1))

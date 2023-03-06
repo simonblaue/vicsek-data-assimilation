@@ -18,7 +18,7 @@ The simulation parameters and results will be saved under a given directory
 
 def simulate(parameters: Dict) -> Tuple[List, List, Dict]:    
     viscecmodel = ViszecSimulation(parameters)
-    filtermodel = EnsembleKalman(parameters, viscecmodel.agents, viscecmodel._step)
+    filtermodel = EnsembleKalman(parameters, viscecmodel._step)
     viscecstates = []
     filterstates = []
     assignments = []

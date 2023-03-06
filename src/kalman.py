@@ -98,7 +98,12 @@ class EnsembleKalman():
             where_list = [i for i,m in enumerate(self.config["observable_axis"]) if not m]
             
             ensemble_update = [
-                x + np.insert(((K @ (z-x[:,self.config["observable_axis"]])), where_list, np.zeros((self.config["n_particles"],1)))) for x, z in zip(forecast_ensemble, virtual_observations)
+                x + np.insert(
+                    K @ (z-x[:,self.config["observable_axis"]]), 
+                    where_list,
+                    np.zeros((self.config["n_particles"],1)),
+                    axis = 1) 
+                for x, z in zip(forecast_ensemble, virtual_observations)
             ]
             
             
