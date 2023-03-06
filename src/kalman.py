@@ -8,7 +8,7 @@ This file contains the Kalman filterclass
 """
 
 class EnsembleKalman():
-    def __init__(self, config, init_agents, forecast_func):
+    def __init__(self, config, forecast_func):
         """
         Receives parameters for the Kalman filter (e.g. Ensemble size) via the config
         Receives model_forecast which is the Vicsek step 
