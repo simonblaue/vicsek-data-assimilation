@@ -88,15 +88,19 @@ class EnsembleKalman():
             K = np.matmul(pf, scipy.linalg.pinv(pf+R))
 
             # Update the forecasts
-            xobs =  np.zeros(
-                (
-                    self.config["n_particles"],
-                    np.size(self.config["observable_axis"])-np.count_nonzero(self.config["observable_axis"])
-                )
-            )
+            # xobs =  np.zeros(
+            #     (
+            #         self.config["n_particles"],
+            #         np.size(self.config["observable_axis"])-np.count_nonzero(self.config["observable_axis"])
+            #     )
+            # )
+            
+            where_list = [i for i,m in enumerate(self.config["observable_axis"]) if not m]
+            
             ensemble_update = [
-                x + np.hstack(((K @ (z-x[:,self.config["observable_axis"]])), xobs)) for x, z in zip(forecast_ensemble, virtual_observations)
+                x + np.insert(((K @ (z-x[:,self.config["observable_axis"]])), where_list, np.zeros((self.config["n_particles"],1)))) for x, z in zip(forecast_ensemble, virtual_observations)
             ]
+            
             
             
             # Updated state is mean over the updated ensemble members 

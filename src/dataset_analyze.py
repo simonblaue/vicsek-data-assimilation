@@ -20,15 +20,28 @@ parameters = {
         'x_axis': 50,
         'y_axis': 50,
         'find_velocities': True,
+        'shuffle_measurements' : True,
         }
 
 def run_filters(cfg=parameters):
     
-    model_states = np.load(DATASET_PATH)
+    modelstates = np.load(DATASET_PATH)
+    vicsekmodel = vicsek.ViszecSimulation(cfg)    
+    filtermodel = kalman.EnsembleKalman(cfg, vicsekmodel._step)
     
-    vicsek_model = vicsek.ViszecSimulation(cfg)
+    n_steps = modelstates.shape[0]
+
+    filterstates = []
+    assignments = []
     
-    kalman.EnsembleKalman(cfg, )
+    for t in range(100):
+
+        filtermodel.agents, predicted_idxs = filtermodel.update(modelstates)
+        filterstates.append(filtermodel.agents)
+        assignments.append(predicted_idxs)
+    
+    np.save(DATASET_PATH.replace('model', 'filter'))
     
     
-    
+if __name__ == "__main__":
+    run_filters()
