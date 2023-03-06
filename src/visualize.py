@@ -45,6 +45,7 @@ def visualize_dataset(dataset):
     
     parameters['save_name'] = "None"
     parameters['sampling_rate'] = 1
+    
 
     animation = Animation(parameters)
     animation()

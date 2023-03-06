@@ -8,7 +8,7 @@ from alive_progress import alive_bar
 from tqdm.auto import tqdm
 
 from vicsek import ViszecSimulation
-from kalman import EnsembleKalman
+from kalman_test import EnsembleKalman
 from typing import Dict, Tuple, List
 
 """
@@ -38,7 +38,7 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
 
 def execute_experiment(
     parameters = {
-        'name': 'Baseline',
+        'name': 'Random',
         'seeds': [np.random.randint(1,1000)],
         'steps': 200,
         'timestepsize': 1,
@@ -51,8 +51,8 @@ def execute_experiment(
         'sampling_rate': 1,
         'alignment_radius': 1,
         'observable_axis': (True,True,True,True),
-        'x_axis': 10,
-        'y_axis': 10,
+        'x_axis': 50,
+        'y_axis': 50,
         'find_velocities': True,
         'shuffle_measurements': False
         }):
