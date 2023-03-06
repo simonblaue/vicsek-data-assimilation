@@ -116,7 +116,7 @@ class Animation():
             self.filteragents[:,0:2], 
             self.config['lpp_thres']
         )
-        flocking = metric_flocking(self.modelagents[:,3][step_assignment_idxs],self.config["velocity"],self.config["n_particles"])
+        flocking = metric_flocking(self.modelagents[:,3][step_assignment_idxs],self.config["n_particles"])
         
         if step == 0:
             self.metrics['Hungarian Precision'] = [hungarian_precision]
@@ -144,7 +144,7 @@ class Animation():
         ylimit = max(self.metrics['Hungarian Precision']+self.metrics['LPP'])
         self.axes[2].set_ylim(
             0,
-            1#ylimit+0.05
+            1.05#ylimit+0.05
         )
         _hp = format_e(np.mean(self.metrics['Hungarian Precision']))
         _lpp = format_e(np.mean(self.metrics['LPP']))

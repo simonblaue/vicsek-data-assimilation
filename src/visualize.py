@@ -45,13 +45,14 @@ def visualize_dataset(dataset):
     
     parameters['save_name'] = "None"
     parameters['sampling_rate'] = 1
+    
 
     animation = Animation(parameters)
     animation()
 
 if __name__ =="__main__":
     visualize_experiment("Random")
-
+    
     #visualize_dataset('dataset')
     
     

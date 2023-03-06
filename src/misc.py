@@ -92,7 +92,7 @@ def metric_lost_particles(viscek_positions: np.ndarray, kalman_positions: np.nda
     return right_particles/n_particles
     
     
-def metric_flocking(viscek_angles: np.ndarray, velocity, n_particles: float) -> float:
-    v_xtot = np.sum(velocity*np.cos(viscek_angles))
-    v_ytot = np.sum(velocity*np.sin(viscek_angles))
-    return np.sqrt(v_xtot**2 + v_ytot**2) / n_particles / velocity
+def metric_flocking(viscek_angles: np.ndarray, n_particles: float) -> float:
+    v_xtot = np.sum(np.cos(viscek_angles))
+    v_ytot = np.sum(np.sin(viscek_angles))
+    return np.sqrt(v_xtot**2 + v_ytot**2) / n_particles

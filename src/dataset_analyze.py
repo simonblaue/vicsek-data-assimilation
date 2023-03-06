@@ -15,7 +15,7 @@ parameters = {
         'n_ensembles': 100,
         'observation_noise': 0.001,
         'noisestrength':0.1,
-        'velocity': 0.003,
+        'velocity': 0.03,
         'sampling_rate': 1,
         'alignment_radius': 1.,
         'alignment_strength': 0.05,

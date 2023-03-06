@@ -8,7 +8,7 @@ from alive_progress import alive_bar
 from tqdm.auto import tqdm
 
 from vicsek import ViszecSimulation
-from kalman import EnsembleKalman
+from kalman_test import EnsembleKalman
 from typing import Dict, Tuple, List
 
 """
@@ -38,23 +38,23 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
 
 def execute_experiment(
     parameters = {
-        'name': 'Baseline',
+        'name': 'Random',
         'seeds': [np.random.randint(1,1000)],
         'steps': 200,
         'timestepsize': 1,
-        'n_particles': 300,
-        'n_ensembles': 100,
-        'observation_noise': 0.0001,
+        'n_particles': 50,
+        'n_ensembles': 200,
+        'observation_noise': 0.001,
         'alignment_strength':0.05,
         'noisestrength': 0.15,#0.15 gives grouping behaviour where the Kalman Filter has trouble. 0.5 gives random motion where the Kalman filter works well
-        'velocity': 0.05,
+        'velocity': 0.5,
         'sampling_rate': 1,
         'alignment_radius': 1,
         'observable_axis': (True,True,True,True),
         'x_axis': 50,
         'y_axis': 50,
         'find_velocities': True,
-        'shuffle_measurements': True
+        'shuffle_measurements': False
         }):
     t0 = time.time()
     for seed in parameters['seeds']:
