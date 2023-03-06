@@ -57,4 +57,4 @@ def run_phase(phasedict):
 
 
 if __name__ == "__main__":
-    run_phase(phase_2_random)
+    run_phase(phase_1_flocking)

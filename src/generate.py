@@ -44,9 +44,9 @@ def execute_experiment(
         'timestepsize': 1,
         'n_particles': 50,
         'n_ensembles': 100,
-        'observation_noise': 0.0001,
-        'alignment_strength':0.05,
-        'noisestrength': 0.15,#0.15 gives grouping behaviour where the Kalman Filter has trouble. 0.5 gives random motion where the Kalman filter works well
+        'observation_noise': 0.05,
+        'alignment_strength':0.15,
+        'noisestrength': 0.15,
         'velocity': 0.05,
         'sampling_rate': 1,
         'alignment_radius': 1,

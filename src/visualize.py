@@ -50,7 +50,7 @@ def visualize_dataset(dataset):
     animation()
 
 if __name__ =="__main__":
-    visualize_experiment("Random")
+    visualize_experiment("Baseline")
 
     #visualize_dataset('dataset')
     
