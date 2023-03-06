@@ -106,6 +106,7 @@ class Animation():
         hungarian_precision = metric_hungarian_precision(
             model_positions,
             self.filteragents[:,0:2],
+            boundary=self.config["x_axis"],
         )
         lpp = metric_lost_particles(
             model_positions, 
