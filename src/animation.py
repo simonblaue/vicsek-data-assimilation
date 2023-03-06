@@ -36,15 +36,21 @@ class Animation():
         self.set_axis(self.axes[1], 'Filter')
 
         self.model_polygons = self.init_polygon_plot(self.modelagents, self.axes[0])
+
         self.filter_polygons = self.init_polygon_plot(self.filteragents, self.axes[1])
 
         self.init_metrics_plot()
 
     def loadexperiment(self, experimentid):
         self.viscecdata = np.load(f'{experimentid}_model.npy')
-        print(self.viscecdata.shape)
-        self.filterdata = np.load(f'{experimentid}_filter.npy')
-        self.assignmentdata = np.load(f'{experimentid}_assignments.npy')
+        try:
+            self.filterdata = np.load(f'{experimentid}_filter.npy')
+        except FileNotFoundError:
+            self.filterdata = None
+        try:
+            self.assignmentdata = np.load(f'{experimentid}_assignments.npy')
+        except FileNotFoundError:
+            self.assignmentdata = None
 
     def init_figure(self):
         self.fig = plt.figure(figsize=(10,7),)
@@ -68,7 +74,7 @@ class Animation():
     def init_polygon_plot(self, agents, axis):
         self.agent_colors = n_colors(self.config['n_particles'])
         polygon_coors = [
-            xyphi_to_abc(w[0],w[1],w[4]) for w in agents
+            xyphi_to_abc(w[0],w[1],w[3]) for w in agents
         ]
         polygons = [
             Polygon(t, closed=True, fc=c, ec=c) for t, c in zip(polygon_coors, self.agent_colors)
@@ -92,7 +98,7 @@ class Animation():
 
     def update_polygons(self, agents, polygons):
         for a, p in zip(agents, polygons):
-            t = xyphi_to_abc(a[0], a[1],a[4])
+            t = xyphi_to_abc(a[0], a[1],a[3])
             p.set_xy(t)
     
     def update_metrics(self, step, step_assignment_idxs):
@@ -142,10 +148,16 @@ class Animation():
         if i % self.config['sampling_rate'] == 0:
             filter_step = i // self.config['sampling_rate']
             
-            step_assignment_idxs = self.assignmentdata[filter_step]
+            if np.any(self.assignmentdata):
+                step_assignment_idxs = self.assignmentdata[filter_step]
+            else:
+                step_assignment_idxs = list(range(self.config['n_particles']))
             # print(step_assignment_idxs)
+
             self.filteragents = self.filterdata[filter_step]
+            
             self.update_polygons(self.filteragents, [self.filter_polygons[i] for i in step_assignment_idxs])
+           
             self.update_metrics(i, step_assignment_idxs)
             
         return self.model_polygons, self.filter_polygons, self.hungarian_precision_line, self.lpp_line
