@@ -16,11 +16,11 @@ class ViszecSimulation:
         # Init Config
         self.config = config
         # Array with posx, posy, velocity_x, velocity_y, orientations  n agents
-        self.agents = np.random.rand(self.config["n_particles"], 5)
+        self.agents = np.random.rand(self.config["n_particles"], 4)
         self.agents[:,0] *= self.config["x_axis"]
         self.agents[:,1] *= self.config["y_axis"]
         self.agents[:,2] = self.config['velocity'] #* (np.random.rand(self.config["n_particles"]))
-        self.agents[:,4] *= 2*np.pi
+        self.agents[:,3] *= 2*np.pi
 
        
         self.time = 0
@@ -65,7 +65,7 @@ class ViszecSimulation:
         aligner = d < self.config["alignment_radius"]
         
         # calculate mean angles
-        all_phi = self.agents[:,4]
+        all_phi = self.agents[:,3]
         av_phi_per_walker = np.zeros(self.config["n_particles"])
         for i in range(self.config["n_particles"]):
             av_phi_per_walker[i] = np.angle(1/self.config["n_particles"]*np.sum(np.exp(1j*(all_phi[aligner[i]]-all_phi[i]))) )
@@ -105,11 +105,11 @@ class ViszecSimulation:
         av_phi_per_walker = self.av_directions()
                 
         
-        self.agents[:,4] += self.config["timestepsize"]*av_phi_per_walker*self.config["alignment_strength"] \
+        self.agents[:,3] += self.config["timestepsize"]*av_phi_per_walker*self.config["alignment_strength"] \
             + np.random.normal(0,self.config["noisestrength"],self.config["n_particles"])*0.5*np.sqrt(self.config["timestepsize"])
         
-        agents[:,0] += np.cos(self.agents[:,4])*self.agents[:,2]
-        agents[:,1] += np.sin(self.agents[:,4])*self.agents[:,2]
+        agents[:,0] += np.cos(self.agents[:,3])*self.agents[:,2]
+        agents[:,1] += np.sin(self.agents[:,3])*self.agents[:,2]
         
         # Apply boundaries
         agents[:,0] = np.mod(agents[:,0], self.config["x_axis"])

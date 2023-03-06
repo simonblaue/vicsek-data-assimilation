@@ -15,7 +15,7 @@ class EnsembleKalman():
         
         """
         self.config = config
-        self.agents = np.random.rand(self.config["n_particles"], 5)
+        self.agents = np.random.rand(self.config["n_particles"], 4)
         self.agents[:,0] *= self.config["x_axis"]
         self.agents[:,1] *= self.config["y_axis"]
         self.agents[:,2] = self.config['velocity']
@@ -53,7 +53,7 @@ class EnsembleKalman():
             # Virtual observation = Measurement + Noise 
             virtual_observations = (
                 np.tile(measurement, (self.config["n_ensembles"], 1, 1)) + 
-                np.random.normal(size=(self.config["n_ensembles"],self.config["n_particles"], 5), scale=self.config["observation_noise"])
+                np.random.normal(size=(self.config["n_ensembles"],self.config["n_particles"], 4), scale=self.config["observation_noise"])
             )[:,:,self.config["observable_axis"]]
             
             # Set velocity onto this one value if we dont want to approximate it
