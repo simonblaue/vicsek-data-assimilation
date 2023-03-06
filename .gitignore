@@ -2,6 +2,6 @@ src/tests.py
 src/scratch_henrik.ipynb
 src/test.py
 src/__pycache__/**
-saves/**
-saves/**/**
-saves.zip
+# saves/**
+# saves/**/**
+
