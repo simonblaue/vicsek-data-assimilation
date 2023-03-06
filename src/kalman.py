@@ -18,8 +18,8 @@ class EnsembleKalman():
         self.agents = np.random.rand(self.config["n_particles"], 5)
         self.agents[:,0] *= self.config["x_axis"]
         self.agents[:,1] *= self.config["y_axis"]
-        self.agents[:,2] = config['velocity'] #* (np.random.rand(self.config["n_particles"])) * 
-        self.agents[:,3] = config['velocity'] #* (np.random.rand(self.config["n_particles"]))
+        self.agents[:,2] = self.config['velocity']
+        self.agents[:,3] *= 2*np.pi
 
         # print(self.agents.shape)
         self.model_forecast = forecast_func
@@ -58,7 +58,7 @@ class EnsembleKalman():
             
             # Set velocity onto this one value if we dont want to approximate it
             if not self.config['find_velocities']:
-                virtual_observations[:,:,2:4] = forecast_ensemble[:,:,2:4]
+                virtual_observations[:,:,2] = forecast_ensemble[:,:,2]
                 
             # print(np.var(virtual_observations, axis=0)[0][0])
 

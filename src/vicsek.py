@@ -59,7 +59,8 @@ class ViszecSimulation:
         dists = self.distances()
         d =  np.linalg.norm(dists, axis=2)
         
-        d[d == 0] = np.inf
+        # Has to be commented out because in the complex exponential the particle itself needs to be subtracted.
+        #d[d == 0] = np.inf
         
         aligner = d < self.config["alignment_radius"]
         
@@ -67,7 +68,7 @@ class ViszecSimulation:
         all_phi = self.agents[:,4]
         av_phi_per_walker = np.zeros(self.config["n_particles"])
         for i in range(self.config["n_particles"]):
-            av_phi_per_walker[i] = np.angle(np.sum(np.exp(1j*all_phi[aligner[i]]))) - all_phi[i]
+            av_phi_per_walker[i] = np.angle(1/self.config["n_particles"]*np.sum(np.exp(1j*(all_phi[aligner[i]]-all_phi[i]))) )
             
         return av_phi_per_walker
         
@@ -81,7 +82,7 @@ class ViszecSimulation:
         d =  np.linalg.norm(dists, axis=2)
         weight_factor = np.exp(-d**2/2/self.config["sigma"]**2)
             
-        all_phi = self.agents[:,4]
+        all_phi = self.agents[:,3]
         av_phi_per_walker = np.zeros(self.config["n_particles"])
         
         #for i in range(self.config["n_particles"]):
@@ -102,17 +103,10 @@ class ViszecSimulation:
     def _step(self, state: np.ndarray) -> np.ndarray:
         agents = state.copy()
         av_phi_per_walker = self.av_directions()
+                
         
-        # Position increment = velocity * (co-)sine(angle) 
-        
-        dx = (np.cos(av_phi_per_walker)-np.cos(self.agents[:,4])) + np.random.normal(np.cos(self.agents[:,4]),self.config["noisestrength"],self.config["n_particles"])
-        dy = (np.sin(av_phi_per_walker)-np.sin(self.agents[:,4])) + np.random.normal(np.sin(self.agents[:,4]),self.config["noisestrength"],self.config["n_particles"])
-        
-        phi = np.arctan2(dx,dy) 
-        
-        
-        self.agents[:,4] += phi*self.config["timestepsize"]*self.config["alignment_strength"] 
-        
+        self.agents[:,4] += self.config["timestepsize"]*av_phi_per_walker*self.config["alignment_strength"] \
+            + np.random.normal(0,self.config["noisestrength"],self.config["n_particles"])*0.5*np.sqrt(self.config["timestepsize"])
         
         agents[:,0] += np.cos(self.agents[:,4])*self.agents[:,2]
         agents[:,1] += np.sin(self.agents[:,4])*self.agents[:,2]
