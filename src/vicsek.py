@@ -19,11 +19,10 @@ class ViszecSimulation:
         self.agents = np.random.rand(self.config["n_particles"], 5)
         self.agents[:,0] *= self.config["x_axis"]
         self.agents[:,1] *= self.config["y_axis"]
-        self.agents[:,2] = config['velocity'] #* (np.random.rand(self.config["n_particles"]))
-        self.agents[:,3] = config['velocity'] #* (np.random.rand(self.config["n_particles"]))
-
-        
+        self.agents[:,2] = self.config['velocity'] #* (np.random.rand(self.config["n_particles"]))
         self.agents[:,4] *= 2*np.pi
+
+       
         self.time = 0
 
 
@@ -99,27 +98,29 @@ class ViszecSimulation:
         # return self.agents
         
         
+        
     def _step(self, state: np.ndarray) -> np.ndarray:
         agents = state.copy()
         av_phi_per_walker = self.av_directions()
-        print(av_phi_per_walker[1])
-        # noise for new angle
-        noise = np.random.normal(0,self.config["noisestrength"], self.config["n_particles"])
-
         
-        # set the new direction 
-        #agents[:,4] = self.config["xi"]*(agents[:,4])+(1-self.config["xi"])*av_phi_per_walker + noise 
-        agents[:,4] = (1-self.config['xi']) * agents[:,4] +  self.config["xi"] * ((av_phi_per_walker) * self.config["timestepsize"])  + 0.5 * np.sqrt(self.config["timestepsize"]) * noise
+        # Position increment = velocity * (co-)sine(angle) 
         
-        agents[:,4] = np.mod(agents[:,4], 2*np.pi)
-        # print(agents[0])
-        # Calculate and set new positions
-        new_directions = np.array([np.cos(agents[:,4]), np.sin(agents[:,4])]).transpose()
-        agents[:,0:2] +=  agents[:,2:4] * self.config["timestepsize"] * new_directions 
+        dx = (np.cos(av_phi_per_walker)-np.cos(self.agents[:,4])) + np.random.normal(np.cos(self.agents[:,4]),self.config["noisestrength"],self.config["n_particles"])
+        dy = (np.sin(av_phi_per_walker)-np.sin(self.agents[:,4])) + np.random.normal(np.sin(self.agents[:,4]),self.config["noisestrength"],self.config["n_particles"])
+        
+        phi = np.arctan2(dx,dy) 
+        
+        
+        self.agents[:,4] += phi*self.config["timestepsize"]*self.config["alignment_strength"] 
+        
+        
+        agents[:,0] += np.cos(self.agents[:,4])*self.agents[:,2]
+        agents[:,1] += np.sin(self.agents[:,4])*self.agents[:,2]
+        
         # Apply boundaries
-        agents[:,1] = np.mod(agents[:,1], self.config["y_axis"])
         agents[:,0] = np.mod(agents[:,0], self.config["x_axis"])
-    
+        agents[:,1] = np.mod(agents[:,1], self.config["y_axis"])
+            
         return agents
     
 
