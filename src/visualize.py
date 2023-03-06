@@ -30,9 +30,9 @@ def visualize_experiment(experiment_name):
     
 def visualize_dataset(dataset):
     parameters = {'Name':'Dataset'}
-    parameters['experimentid'] = f'{dataset}/external_states'
+    parameters['experimentid'] = f'../saves/dataset/ds'
     parameters['loadexperiment'] = f'experiment'
-    parameters['frames'] = 1001
+    parameters['frames'] = 100
 
     parameters['plot_interval'] = 20
     parameters['boundary'] = 0.5
@@ -43,7 +43,7 @@ def visualize_dataset(dataset):
 
     parameters['n_particles'] = 361
     
-    parameters['save_name'] = "Dataset_Vis"
+    parameters['save_name'] = "None"
     parameters['sampling_rate'] = 1
 
     animation = Animation(parameters)
@@ -51,7 +51,7 @@ def visualize_dataset(dataset):
 
 if __name__ =="__main__":
     visualize_experiment("Random")
-    #visualize_experiment("Baseline")
+
     #visualize_dataset('dataset')
     
     
