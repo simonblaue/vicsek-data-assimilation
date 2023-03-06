@@ -1,14 +1,13 @@
 {
     "name": "Baseline",
     "seeds": [
-        32
+        475
     ],
     "steps": 200,
     "timestepsize": 1,
-    "n_particles": 50,
+    "n_particles": 300,
     "n_ensembles": 100,
     "observation_noise": 0.0001,
-    "xi": 0.05,
     "alignment_strength": 0.05,
     "noisestrength": 0.15,
     "velocity": 0.05,
@@ -20,9 +19,9 @@
         true,
         true
     ],
-    "x_axis": 10,
-    "y_axis": 10,
+    "x_axis": 50,
+    "y_axis": 50,
     "find_velocities": true,
-    "shuffle_measurements": false,
-    "total_runtime": 10.552344799041748
+    "shuffle_measurements": true,
+    "total_runtime": 119.13984084129333
 }
