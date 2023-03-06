@@ -18,7 +18,7 @@ The simulation parameters and results will be saved under a given directory
 
 def simulate(parameters: Dict) -> Tuple[List, List, Dict]:    
     viscecmodel = ViszecSimulation(parameters)
-    filtermodel = EnsembleKalman(parameters, viscecmodel.agents, viscecmodel._step)
+    filtermodel = EnsembleKalman(parameters, viscecmodel._step)
     viscecstates = []
     filterstates = []
     assignments = []
@@ -45,7 +45,6 @@ def execute_experiment(
         'n_particles': 50,
         'n_ensembles': 100,
         'observation_noise': 0.0001,
-        'xi' : 0.05,
         'alignment_strength':0.05,
         'noisestrength': 0.15,#0.15 gives grouping behaviour where the Kalman Filter has trouble. 0.5 gives random motion where the Kalman filter works well
         'velocity': 0.05,
