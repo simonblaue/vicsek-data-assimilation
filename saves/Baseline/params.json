@@ -1,19 +1,14 @@
 {
     "name": "Baseline",
     "seeds": [
-<<<<<<< HEAD
-        475
-=======
-        1,
-        2
->>>>>>> 5bc0810 (added analysis scrips)
+        947
     ],
     "steps": 200,
     "timestepsize": 1,
-    "n_particles": 300,
+    "n_particles": 1,
     "n_ensembles": 100,
-    "observation_noise": 0.0001,
-    "alignment_strength": 0.05,
+    "observation_noise": 0.0,
+    "alignment_strength": 0.15,
     "noisestrength": 0.15,
     "velocity": 0.05,
     "sampling_rate": 1,
@@ -21,16 +16,12 @@
     "observable_axis": [
         true,
         true,
-        true,
+        false,
         true
     ],
-    "x_axis": 50,
-    "y_axis": 50,
-    "find_velocities": true,
-    "shuffle_measurements": true,
-<<<<<<< HEAD
-    "total_runtime": 119.13984084129333
-=======
-    "total_runtime": 62.12203860282898
->>>>>>> 5bc0810 (added analysis scrips)
+    "x_axis": 10,
+    "y_axis": 10,
+    "find_velocities": false,
+    "shuffle_measurements": false,
+    "total_runtime": 1.2687430381774902
 }

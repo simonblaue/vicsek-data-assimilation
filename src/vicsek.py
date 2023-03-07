@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import numpy as np
+from misc import distances_with_periodic_boundary
 
 """
 This script contains the Viscec Model
@@ -37,7 +38,6 @@ class ViszecSimulation:
         
         agents = state.copy()
         walker_pos = agents[:,0:2]
-        #Old: walker_pos = self.agents[:,0:2]
 
         for i,walker in enumerate(walker_pos):
  
@@ -61,8 +61,9 @@ class ViszecSimulation:
         agents = state.copy()
 
          # get which are neighbors 
-        dists = self.distances(agents)
-        d =  np.linalg.norm(dists, axis=2)
+        # dists = self.distances(agents[:,0:2])
+        # d =  np.linalg.norm(dists, axis=2)
+        d = distances_with_periodic_boundary(agents[:,0:2],agents[:,0:2], self.config['x_axis'])
         
         # Has to be commented out because in the complex exponential the particle itself needs to be subtracted.
         #d[d == 0] = np.inf
@@ -73,7 +74,7 @@ class ViszecSimulation:
         all_phi = agents[:,3]
         av_phi_per_walker = np.zeros(self.config["n_particles"])
         for i in range(self.config["n_particles"]):
-            av_phi_per_walker[i] = np.angle(1/self.config["n_particles"]*np.sum(np.exp(1j*(all_phi[aligner[i]]-all_phi[i]))) )
+            av_phi_per_walker[i] = np.angle(np.sum(np.exp(1j*(all_phi[aligner[i]]-all_phi[i]))) )
             
         return av_phi_per_walker
         

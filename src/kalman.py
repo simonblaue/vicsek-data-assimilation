@@ -48,6 +48,7 @@ class EnsembleKalman():
             
         return ensemble
     
+    # TODO for parameter estimation 4 hardcoded = bad 
     def create_virtual_observations_ensemble(self, measured_state):
         virtual_observations = (
                 np.tile(measured_state, (self.config["n_ensembles"], 1, 1)) + 
@@ -81,7 +82,7 @@ class EnsembleKalman():
 
             # Mean forecast over ensembles 
             mean_forecast = mean_over_ensemble(forecast_ensemble, self.config['x_axis'], self.config['y_axis'])
-            
+            # print(mean_forecast[:,3])
             # Errors within the ensemble = distance between ensemble members and the mean ensemble 
             errors = foldback_dist_ensemble(forecast_ensemble, np.tile(mean_forecast, (self.config["n_ensembles"], 1, 1)), self.config['x_axis'], self.config['y_axis'])
                     
@@ -94,10 +95,9 @@ class EnsembleKalman():
             # Virtual observation covariance
             R = np.diag(np.ones(self.config["n_particles"])) * self.config["observation_noise"]
 
-            
-            
             # Kalman Gain is calculated using the pseudo inverse 
             K = np.matmul(pf, scipy.linalg.pinv(pf+R))
+            
             # K = np.zeros((self.config["n_particles"], self.config["n_particles"]))
 
             # Update the forecasts            

@@ -38,12 +38,12 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
 def execute_experiment(
     parameters = {
         'name': 'Baseline',
-        'seeds': [1, 2],
+        'seeds': [np.random.randint(1,1000)],
         'steps': 200,
         'timestepsize': 1,
-        'n_particles': 10,
+        'n_particles': 1,
         'n_ensembles': 100,
-        'observation_noise': 0.001,
+        'observation_noise': 0.00,
         'alignment_strength':0.15,
         'noisestrength': 0.15,
         'velocity': 0.05,
@@ -52,17 +52,19 @@ def execute_experiment(
         'observable_axis': (True,True,False,True),
         'x_axis': 10,
         'y_axis': 10,
-        'find_velocities': True,
+        'find_velocities': False,
         'shuffle_measurements': False
         }):
+    
     t0 = time.time()
     for seed in parameters['seeds']:
         experimentname = parameters['name']
         # print(f'Running experiment {experimentname} with seed {seed}')
 
         # experiment_path = f'/saves/{experimentname}/'
-        experiment_path = f'/home/henrik/projects/nonlineardynamics23/vicsek-data-assimilation/saves/{experimentname}/'
+        experiment_path = f'saves/{experimentname}/'
         if not os.path.exists(experiment_path):
+            print("Created new Directory!")
             os.makedirs(experiment_path)
             
         # if os.path.exists(experiment_path+f'{seed}_model.npy'):
