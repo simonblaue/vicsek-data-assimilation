@@ -1,7 +1,7 @@
 import numpy as np
 import time
 import scipy
-from misc import assign_fn
+from misc import assign_fn, mean_over_ensemble
 
 """
 This file contains the Kalman filterclass
@@ -63,7 +63,7 @@ class EnsembleKalman():
             # print(np.var(virtual_observations, axis=0)[0][0])
 
             # Mean forecast over ensembles 
-            mean_forecast = np.mean(forecast_ensemble[:,:,self.config["observable_axis"]], axis = 0)
+            mean_forecast = mean_over_ensemble(forecast_ensemble)#[:,:,self.config["observable_axis"]])
             
             # Errors within the ensemble = distance between ensemble members and the mean ensemble 
             errors = forecast_ensemble[:,:,self.config["observable_axis"]] - np.tile(mean_forecast, (self.config["n_ensembles"], 1, 1))
