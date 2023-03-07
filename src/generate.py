@@ -8,7 +8,7 @@ from alive_progress import alive_bar
 from tqdm.auto import tqdm
 
 from vicsek import ViszecSimulation
-from kalman_test import EnsembleKalman
+from kalman import EnsembleKalman
 from typing import Dict, Tuple, List
 
 """

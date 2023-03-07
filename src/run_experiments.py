@@ -3,50 +3,59 @@ from analyze import read_and_eval
 from misc import bools2str
 import os
 from tqdm import tqdm
+import run_phase_experiments
 
 
-parameters = {
+baseparameters = {
         'name': 'Baseline',
         'seeds': [1,2,3,4,5,6,7,8,9,10],
-        'steps': 200,
+        'steps': 300,
         'timestepsize': 1,
         'n_particles': 50,
         'n_ensembles': 100,
-        'observation_noise': 0.01,
-        'viscec_noise': 0.05,
-        'xi' : 0.8,
-        'noisestrength':0.5,
-        'velocity': 0.003,
-        'sampling_rate': 2,
-        'alignment_radius': 1.,
-        'observable_axis': (True,True,True,True,False),
+        'observation_noise': 0.001,
+        'alignment_strength':0.05,
+        'noisestrength': 0.15,
+        'velocity': 0.05,
+        'sampling_rate': 1,
+        'alignment_radius': 1,
+        'observable_axis': (True,True,True,False),
         'x_axis': 10,
         'y_axis': 10,
-        'find_velocities': True,
+        'find_velocities': False,
+        'shuffle_measurements': False
         }
 
 
 #### GRID SUCHEN !!!! ###
 
-def grid_search():
-    test_observable_axis = [(True,True,True,True,True),(True,True,True,True,False),(True,True,False,False,False)]
-    test_agents = [50,100]
+def grid_search(baseparameters,phaseparameters):
+
+    # Noisestrength and Alignment strength are set to specific phase
+    for p in phaseparameters:
+        baseparameters[p] = phaseparameters[p]
+    
+
+    test_observable_axis = [(True,True,True,True),(True,True,True,False),(True,True,False,False)]
     test_ensembles = [50,100,150,200,250]
-    test_observation_noise = [0.0001 ,0.001, 0.01, 0.1, 1]
-    test_sampling_rate = [1,2,4]
+    test_observation_noise = np.logspace(-4,0,9) #starts at 1e-4
+    test_shuffle = [True,False]
 
     for observable_axis in tqdm(test_observable_axis, position=0, leave=False):
-        # for agents in tqdm(test_agents, position=1, leave=False):
         for ensembles in tqdm(test_ensembles, position=2, leave=False):
             for observation_noise in tqdm(test_observation_noise, position=3, leave=False):
-                for sampling_rate in tqdm(test_sampling_rate, position=4, leave=False):
-                    name = f"{bools2str(observable_axis)}_50_{ensembles}_{observation_noise}_{sampling_rate}"
+                for shuffle in tqdm(test_shuffle, position=4, leave=False):
+                    name = f"{phaseparameters["name"]}_{bools2str(observable_axis)}_50_{ensembles}_{observation_noise}-{bools2str(shuffle)}"
                     parameters['observable_axis'] = observable_axis
-                    # parameters['agents'] = agents
+                    parameters['n_ensambles'] = ensembles
                     parameters['observation_noise'] = observation_noise
-                    parameters['sampling_rate']  = sampling_rate
+                    parameters['shuffle_measurements'] = shuffle 
                     parameters['name'] = name
-                    parameters['n_ensambles'] = test_ensembles
+
+                    if observable_axis[2] == False:
+                        parameters['find_velocities'] = True 
+
+                    
                     execute_experiment(parameters)
                     read_and_eval(name)
 
@@ -76,4 +85,4 @@ def ensemble_size_exp():
         read_and_eval(name)
         
 if __name__ == "__main__":
-    grid_search()
+    grid_search(baseparameters,run_phase_experiments.phase_1_flocking)
