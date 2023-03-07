@@ -30,7 +30,7 @@ def visualize_experiment(experiment_name):
     
 def visualize_dataset(dataset):
     parameters = {'Name':'Dataset'}
-    parameters['experimentid'] = f'../saves/dataset/ds'
+    parameters['experimentid'] = f'saves/dataset/ds'
     parameters['loadexperiment'] = f'experiment'
     parameters['frames'] = 100
 
@@ -53,7 +53,7 @@ def visualize_dataset(dataset):
 if __name__ =="__main__":
     #visualize_experiment("Flocking")
     visualize_experiment("Baseline")
-    # visualize_dataset('dataset')
+    visualize_dataset('dat')
     
     
     
