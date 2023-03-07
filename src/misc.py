@@ -81,6 +81,7 @@ def mean_over_ensemble(ensemble, x_size, y_size):
 
     average = p1 + 1/(n_ensemble-1) * np.sum(dists, axis=0)
 
+    average[:,2] = np.mean(ensemble[:,:,2], axis=0)
     average[:,0] = np.mod(average[:,0], x_size)
     average[:,1] = np.mod(average[:,1], y_size)
         

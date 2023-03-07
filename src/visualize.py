@@ -51,8 +51,8 @@ def visualize_dataset(dataset):
     animation()
 
 if __name__ =="__main__":
-    visualize_experiment("Flocking")
-    # visualize_experiment("Random")
+    # visualize_experiment("Flocking")
+    visualize_experiment("Random")
     #visualize_dataset('dataset')
     
     

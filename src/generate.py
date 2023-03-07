@@ -53,7 +53,7 @@ def execute_experiment(
         'observable_axis': (True,True,True,True),
         'x_axis': 20,
         'y_axis': 20,
-        'find_velocities': True,
+        'find_velocities': False,
         'shuffle_measurements': False
         }):
     t0 = time.time()
