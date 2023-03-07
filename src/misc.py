@@ -77,13 +77,14 @@ def mean_over_ensemble(ensemble, x_size, y_size):
     dists[:,:,0:2] = periodic_distant_vectors(dists[:,:,0:2], x_size,y_size)
 
     #dists[:,:,0:2] = np.mod(dists[:,:,0:2], x_size)
-    dists[:,:,3] = np.mod(dists[:,:,3], 2*np.pi)
+    # dists[:,:,3] = np.mod(dists[:,:,3], 2*np.pi)
 
-    average = p1 + 1/(n_ensemble-1) * np.sum(dists, axis=0)
+    average = p1 + 1/(n_ensemble) * np.sum(dists, axis=0)
 
-    average[:,2] = np.mean(ensemble[:,:,2], axis=0)
     average[:,0] = np.mod(average[:,0], x_size)
     average[:,1] = np.mod(average[:,1], y_size)
+    average[:,2] = np.mean(ensemble[:,:,2], axis=0)
+    average[:,3] = np.angle(np.sum( np.exp(1j* ensemble[:,:,3] ) ,axis=0))
         
     
     return average
