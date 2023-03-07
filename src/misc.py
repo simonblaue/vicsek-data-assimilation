@@ -60,6 +60,9 @@ def format_e(n):
 
 def periodic_distant_vectors(vectors, x_size, y_size):
     
+    assert vectors.shape[-1] == 2, "Dont pass angles in this function you dumbo!"
+    
+    
     vectors[:,:,0] = np.where(vectors[:,:,0]>x_size/2,vectors[:,:,0]-x_size,vectors[:,:,0])
     vectors[:,:,0] = np.where(vectors[:,:,0]<-x_size/2,vectors[:,:,0]+x_size,vectors[:,:,0])
     vectors[:,:,1] = np.where(vectors[:,:,1]>y_size/2,vectors[:,:,1]-y_size,vectors[:,:,1])
@@ -89,7 +92,10 @@ def foldback_dist_states(state_a, state_b, x_size, y_size):
     vectors[:,1] = np.where(vectors[:,1]>y_size/2,vectors[:,1]-y_size,vectors[:,1])
     vectors[:,1] = np.where(vectors[:,1]<-y_size/2,vectors[:,1]+y_size,vectors[:,1])
     
-    vectors[:,3] = np.angle(np.exp(1j* (state_a[:,3] - state_b[:,3]) ))
+    try:
+        vectors[:,3] = np.angle(np.exp(1j* (state_a[:,3] - state_b[:,3]) ))
+    except IndexError:
+        pass
     
     return vectors
 

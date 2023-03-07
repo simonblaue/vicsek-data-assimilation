@@ -49,11 +49,11 @@ def execute_experiment(
         'velocity': 0.05,
         'sampling_rate': 1,
         'alignment_radius': 1,
-        'observable_axis': (True,True,True,True),
+        'observable_axis': (True,True,False,True),
         'x_axis': 10,
         'y_axis': 10,
         'find_velocities': False,
-        'shuffle_measurements': False
+        'shuffle_measurements': True
         }):
     t0 = time.time()
     for seed in parameters['seeds']:

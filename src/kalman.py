@@ -1,7 +1,7 @@
 import numpy as np
 import time
 import scipy
-from misc import assign_fn, mean_over_ensemble, periodic_distant_vectors, foldback_dist_states, foldback_dist_ensemble
+from misc import assign_fn, mean_over_ensemble, foldback_dist_states, foldback_dist_ensemble
 
 """
 This file contains the Kalman filterclass
