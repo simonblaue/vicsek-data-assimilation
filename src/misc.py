@@ -55,6 +55,24 @@ def xyphi_to_abc(x: float, y: float, phi: float) -> np.ndarray:
 def format_e(n):
     return "{:0.1f}%".format(n*100)
 
+
+###### MATHS
+
+def periodic_distant_vectors(vectors, x_size, y_size):
+    
+    vectors[:,:,0] = np.where(vectors[:,:,0]>x_size/2,vectors[:,:,0]-x_size,vectors[:,:,0])
+    vectors[:,:,0] = np.where(vectors[:,:,0]<-x_size/2,vectors[:,:,0]+x_size,vectors[:,:,0])
+    vectors[:,:,1] = np.where(vectors[:,:,1]>y_size/2,vectors[:,:,1]-y_size,vectors[:,:,1])
+    vectors[:,:,1] = np.where(vectors[:,:,1]<-y_size/2,vectors[:,:,1]+y_size,vectors[:,:,1])
+    
+    return vectors
+
+def mean_over_ensemble(ensemble):
+    
+        
+    
+    return 
+
 def distances_with_periodic_boundary(
     a_positions,
     b_positions,        
@@ -77,6 +95,9 @@ def assign_fn(measurement_positions, state_positions, boundary):
         distances_with_periodic_boundary(measurement_positions, state_positions, boundary=boundary)
     )
     return colids
+
+
+###### METRICS
 
 def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: np.ndarray, boundary:float) -> float:
     n_particles = np.shape(viscek_positions)[0]
