@@ -52,7 +52,7 @@ def visualize_dataset(dataset):
 
 if __name__ =="__main__":
     visualize_experiment("Flocking")
-
+    # visualize_experiment("Random")
     #visualize_dataset('dataset')
     
     
