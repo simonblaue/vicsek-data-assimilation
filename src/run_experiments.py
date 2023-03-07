@@ -4,7 +4,7 @@ from misc import bools2str
 import os
 from tqdm import tqdm
 import run_phase_experiments
-
+import numpy as np
 
 parameters = {
         'name': 'Baseline',
@@ -45,7 +45,7 @@ def grid_search(parameters,phaseparameters):
         for ensembles in tqdm(test_ensembles, position=2, leave=False):
             for observation_noise in tqdm(test_observation_noise, position=3, leave=False):
                 for shuffle in tqdm(test_shuffle, position=4, leave=False):
-                    name = f"{parameters['name']}_{bools2str(observable_axis)}_50_{ensembles}_{observation_noise}-{bools2str(shuffle)}"
+                    name = f"{parameters['name']}_{bools2str(observable_axis)}_50_{ensembles}_{observation_noise}-{shuffle}"
                     parameters['observable_axis'] = observable_axis
                     parameters['n_ensambles'] = ensembles
                     parameters['observation_noise'] = observation_noise
@@ -86,3 +86,4 @@ def ensemble_size_exp():
         
 if __name__ == "__main__":
     grid_search(parameters,run_phase_experiments.phase_1_flocking)
+    grid_search(parameters,run_phase_experiments.phase_2_random)
