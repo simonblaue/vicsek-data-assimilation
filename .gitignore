@@ -5,5 +5,5 @@ src/__pycache__/**
 saves/**
 saves/**/**
 
-# tests/test.ipynb
+tests/test.ipynb
 src/Static_Plots_Joel.ipynb
