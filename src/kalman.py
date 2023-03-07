@@ -64,7 +64,6 @@ class EnsembleKalman():
 
             # Mean forecast over ensembles 
             mean_forecast = mean_over_ensemble(forecast_ensemble, self.config['x_axis'], self.config['y_axis'])#[:,:,self.config["observable_axis"]])
-            
             # Errors within the ensemble = distance between ensemble members and the mean ensemble 
             errors = forecast_ensemble[:,:,self.config["observable_axis"]] - np.tile(mean_forecast, (self.config["n_ensembles"], 1, 1))
 
@@ -109,7 +108,9 @@ class EnsembleKalman():
             
             
             # Updated state is mean over the updated ensemble members 
-            self.agents = np.mean(ensemble_update, axis = 0)
+            
+            # 
+            self.agents = mean_over_ensemble(np.array(ensemble_update),self.config["x_axis"], self.config["y_axis"] )
             
             self.agents[:,0] = np.mod(self.agents[:,0], self.config["x_axis"])
             self.agents[:,1] = np.mod(self.agents[:,1], self.config["y_axis"])
