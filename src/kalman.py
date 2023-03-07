@@ -1,7 +1,7 @@
 import numpy as np
 import time
 import scipy
-from misc import assign_fn, mean_over_ensemble, foldback_dist_states, foldback_dist_ensemble
+from misc import assign_fn, mean_over_ensemble, foldback_dist_states, foldback_dist_ensemble, periodic_distant_vectors
 
 """
 This file contains the Kalman filterclass
@@ -44,6 +44,7 @@ class EnsembleKalman():
         for _ in range(self.config["sampling_rate"]):
             for j in range(self.config["n_ensembles"]):
                 ensemble[j] = self.model_forecast(ensemble[j])
+                
             
         return ensemble
     
@@ -80,11 +81,9 @@ class EnsembleKalman():
 
             # Mean forecast over ensembles 
             mean_forecast = mean_over_ensemble(forecast_ensemble, self.config['x_axis'], self.config['y_axis'])
+            
             # Errors within the ensemble = distance between ensemble members and the mean ensemble 
-            errors = foldback_dist_ensemble(forecast_ensemble,np.tile(mean_forecast, (self.config["n_ensembles"], 1, 1)), self.config['x_axis'], self.config['y_axis'])
-
-            # #boundaries
-            # errors = periodic_distant_vectors(errors, self.config["x_axis"], self.config["y_axis"])
+            errors = foldback_dist_ensemble(forecast_ensemble, np.tile(mean_forecast, (self.config["n_ensembles"], 1, 1)), self.config['x_axis'], self.config['y_axis'])
                     
             # Forecast ensemble covariance
             pf = 1/(self.config["n_ensembles"]-1) * np.sum(
@@ -92,7 +91,6 @@ class EnsembleKalman():
                 axis = 0
             )
             
-
             # Virtual observation covariance
             R = np.diag(np.ones(self.config["n_particles"])) * self.config["observation_noise"]
 
@@ -100,7 +98,7 @@ class EnsembleKalman():
             
             # Kalman Gain is calculated using the pseudo inverse 
             K = np.matmul(pf, scipy.linalg.pinv(pf+R))
-            
+            # K = np.zeros((self.config["n_particles"], self.config["n_particles"]))
 
             # Update the forecasts            
             where_list = [i for i,m in enumerate(self.config["observable_axis"]) if not m]
@@ -115,11 +113,7 @@ class EnsembleKalman():
                 for x, z in zip(forecast_ensemble, virtual_observations)
             ]
             
-            # ensemble_update = [ x + K @ (z-x) for x, z in zip(forecast_ensemble, virtual_observations) ]
-            
-            # ensemble_update = virtual_observations
-            
-            
+                        
             # Updated state is mean over the updated ensemble members 
             agents = mean_over_ensemble(np.array(ensemble_update),self.config["x_axis"], self.config["y_axis"] )
             
