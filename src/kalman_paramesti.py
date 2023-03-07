@@ -21,6 +21,11 @@ class EnsembleKalman():
         self.agents[:,2] = self.config['velocity']
         self.agents[:,3] *= 2*np.pi
 
+        # Parameters for estimation: Alignment Radius, Noise strength 
+        self.agents[:,4] = self.config['alignment_radius']
+        self.agents[:,5] = self.config['alignment_strength']
+        self.agents[:,6] = self.config['noisestrength']
+
         #self.agents = init_state
         # print(self.agents.shape)
         self.model_forecast = forecast_func
