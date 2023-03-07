@@ -40,9 +40,9 @@ def execute_experiment(
     parameters = {
         'name': 'Random',
         'seeds': [np.random.randint(1,1000)],
-        'steps': 200,
+        'steps': 400,
         'timestepsize': 1,
-        'n_particles': 200,
+        'n_particles': 10,
         'n_ensembles': 100,
         'observation_noise': 0.05,
         'alignment_strength':0.15,
