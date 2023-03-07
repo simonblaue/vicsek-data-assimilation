@@ -8,7 +8,7 @@ from alive_progress import alive_bar
 from tqdm.auto import tqdm
 
 from vicsek import ViszecSimulation
-from kalman_old import EnsembleKalman
+from kalman import EnsembleKalman
 from typing import Dict, Tuple, List
 
 """
@@ -18,7 +18,7 @@ The simulation parameters and results will be saved under a given directory
 
 def simulate(parameters: Dict) -> Tuple[List, List, Dict]:    
     viscecmodel = ViszecSimulation(parameters)
-    filtermodel = EnsembleKalman(parameters, viscecmodel._step)
+    filtermodel = EnsembleKalman(parameters, viscecmodel._step, viscecmodel.agents)
     viscecstates = []
     filterstates = []
     assignments = []
@@ -43,8 +43,8 @@ def execute_experiment(
         'steps': 400,
         'timestepsize': 1,
         'n_particles': 10,
-        'n_ensembles': 100,
-        'observation_noise': 0.0,
+        'n_ensembles': 2,
+        'observation_noise': 0.05,
         'alignment_strength':0.15,
         'noisestrength': 0.15,
         'velocity': 0.05,

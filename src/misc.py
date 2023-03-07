@@ -67,6 +67,19 @@ def periodic_distant_vectors(vectors, x_size, y_size):
     
     return vectors
 
+
+def foldback_dist_states(state_a, state_b, x_size, y_size):
+    
+    vectors = state_a - state_b
+    vectors[:,0] = np.where(vectors[:,0]>x_size/2,vectors[:,0]-x_size,vectors[:,0])
+    vectors[:,0] = np.where(vectors[:,0]<-x_size/2,vectors[:,0]+x_size,vectors[:,0])
+    vectors[:,1] = np.where(vectors[:,1]>y_size/2,vectors[:,1]-y_size,vectors[:,1])
+    vectors[:,1] = np.where(vectors[:,1]<-y_size/2,vectors[:,1]+y_size,vectors[:,1])
+    
+    vectors[:,3] = np.angle(np.exp(1j* (state_a[:,3] - state_b[:,3]) ))
+    
+    return vectors
+
 def mean_over_ensemble(ensemble, x_size, y_size):
     
     p1 = ensemble[0,:,:]
@@ -105,6 +118,9 @@ def distances_with_periodic_boundary(
     distances[:,:,1] = np.where(distances[:,:,1]>boundary/2,distances[:,:,1]-boundary,distances[:,:,1])
     distances[:,:,1] = np.where(distances[:,:,1]<-boundary/2,distances[:,:,1]+boundary,distances[:,:,1])
     return np.linalg.norm(distances, axis=2)
+
+
+
 
 def assign_fn(measurement_positions, state_positions, boundary):
     rowids, colids = linear_sum_assignment(
