@@ -6,7 +6,7 @@ from tqdm import tqdm
 import run_phase_experiments
 
 
-baseparameters = {
+parameters = {
         'name': 'Baseline',
         'seeds': [1,2,3,4,5,6,7,8,9,10],
         'steps': 300,
@@ -29,14 +29,14 @@ baseparameters = {
 
 #### GRID SUCHEN !!!! ###
 
-def grid_search(baseparameters,phaseparameters):
+def grid_search(parameters,phaseparameters):
 
     # Noisestrength and Alignment strength are set to specific phase
     for p in phaseparameters:
-        baseparameters[p] = phaseparameters[p]
+        parameters[p] = phaseparameters[p]
     
 
-    test_observable_axis = [(True,True,True,True),(True,True,True,False),(True,True,False,False)]
+    test_observable_axis = [(True,True,True,True),(True,True,True,False),(True,True,False,False),(True,True,False,True)]
     test_ensembles = [50,100,150,200,250]
     test_observation_noise = np.logspace(-4,0,9) #starts at 1e-4
     test_shuffle = [True,False]
@@ -45,7 +45,7 @@ def grid_search(baseparameters,phaseparameters):
         for ensembles in tqdm(test_ensembles, position=2, leave=False):
             for observation_noise in tqdm(test_observation_noise, position=3, leave=False):
                 for shuffle in tqdm(test_shuffle, position=4, leave=False):
-                    name = f"{phaseparameters["name"]}_{bools2str(observable_axis)}_50_{ensembles}_{observation_noise}-{bools2str(shuffle)}"
+                    name = f"{parameters['name']}_{bools2str(observable_axis)}_50_{ensembles}_{observation_noise}-{bools2str(shuffle)}"
                     parameters['observable_axis'] = observable_axis
                     parameters['n_ensambles'] = ensembles
                     parameters['observation_noise'] = observation_noise
@@ -85,4 +85,4 @@ def ensemble_size_exp():
         read_and_eval(name)
         
 if __name__ == "__main__":
-    grid_search(baseparameters,run_phase_experiments.phase_1_flocking)
+    grid_search(parameters,run_phase_experiments.phase_1_flocking)

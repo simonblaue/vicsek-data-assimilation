@@ -107,7 +107,7 @@ class EnsembleKalman():
             ## Foldback 
             ensemble_update = [
                 x + np.insert(
-                    K @ foldback_dist_states(z,x[:,self.config["observable_axis"]],self.config["x_axis"], self.config["y_axis"] ), 
+                    K @ foldback_dist_states(z,x[:,self.config["observable_axis"]],self.config["x_axis"], self.config["y_axis"], theat_axis=self.config['theta_observerd'] ), 
                     where_list,
                     np.zeros((self.config["n_particles"],1)),
                     axis = 1) 

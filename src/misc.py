@@ -79,7 +79,7 @@ def foldback_dist_ensemble(ensemble_a, ensemble_b, x_size, y_size):
     
 
 
-def foldback_dist_states(state_a, state_b, x_size, y_size):
+def foldback_dist_states(state_a, state_b, x_size, y_size, theat_axis=3):
     
     vectors = state_a - state_b
 
@@ -89,7 +89,8 @@ def foldback_dist_states(state_a, state_b, x_size, y_size):
     vectors[:,1] = np.where(vectors[:,1]<-y_size/2,vectors[:,1]+y_size,vectors[:,1])
     
     # Theta in this dim !! 
-    vectors[:,-1] = np.mod(state_a[:,-1] - state_b[:,-1] + np.pi, 2*np.pi) - np.pi
+    if theat_axis:
+        vectors[:,-1] = np.mod(state_a[:,-1] - state_b[:,-1] + np.pi, 2*np.pi) - np.pi
     
     return vectors
 
