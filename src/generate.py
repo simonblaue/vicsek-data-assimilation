@@ -39,9 +39,9 @@ def execute_experiment(
     parameters = {
         'name': 'Random',
         'seeds': [np.random.randint(1,1000)],
-        'steps': 400,
+        'steps': 300,
         'timestepsize': 1,
-        'n_particles': 200,
+        'n_particles': 50,
         'n_ensembles': 100,
         'observation_noise': 0.05,
         'alignment_strength':0.15,
@@ -50,10 +50,10 @@ def execute_experiment(
         'sampling_rate': 1,
         'alignment_radius': 1,
         'observable_axis': (True,True,True,True),
-        'x_axis': 40,
-        'y_axis': 40,
+        'x_axis': 10,
+        'y_axis': 10,
         'find_velocities': False,
-        'shuffle_measurements': False
+        'shuffle_measurements': True
         }):
     t0 = time.time()
     for seed in parameters['seeds']:
