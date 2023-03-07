@@ -4,9 +4,6 @@ import numpy as np
 from typing import List
 from decimal import Decimal
 from scipy.optimize import linear_sum_assignment
-from scipy.spatial import distance_matrix
-import math
-
 
 """
 This script contains all kinds of functions
@@ -85,16 +82,14 @@ def foldback_dist_ensemble(ensemble_a, ensemble_b, x_size, y_size):
 def foldback_dist_states(state_a, state_b, x_size, y_size):
     
     vectors = state_a - state_b
+
     vectors[:,0] = np.where(vectors[:,0]>x_size/2,vectors[:,0]-x_size,vectors[:,0])
     vectors[:,0] = np.where(vectors[:,0]<-x_size/2,vectors[:,0]+x_size,vectors[:,0])
     vectors[:,1] = np.where(vectors[:,1]>y_size/2,vectors[:,1]-y_size,vectors[:,1])
     vectors[:,1] = np.where(vectors[:,1]<-y_size/2,vectors[:,1]+y_size,vectors[:,1])
     
-    try:
-        vectors[:,3] = np.mod(state_a[:,3] - state_b[:,3], 2*np.pi)
-    except IndexError:
-        print("Dumm")
-        pass
+    # Theta in this dim !! 
+    vectors[:,-1] = np.mod(state_a[:,-1] - state_b[:,-1] + np.pi, 2*np.pi) - np.pi
     
     return vectors
 

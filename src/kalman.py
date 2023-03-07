@@ -53,8 +53,8 @@ class EnsembleKalman():
         virtual_observations = (
                 np.tile(measured_state, (self.config["n_ensembles"], 1, 1)) + 
                 np.random.normal(size=(self.config["n_ensembles"],self.config["n_particles"], 4), scale=self.config["observation_noise"])
-            )[:,:,self.config["observable_axis"]]
-        
+            )
+        # print(virtual_observations)
         return virtual_observations
         
 
@@ -78,6 +78,7 @@ class EnsembleKalman():
             if not self.config['find_velocities']:
                 virtual_observations[:,:,2] = forecast_ensemble[:,:,2]
                 
+            virtual_observations = virtual_observations[:,:,self.config["observable_axis"]]
             # print(np.var(virtual_observations, axis=0)[0][0])
 
             # Mean forecast over ensembles 
