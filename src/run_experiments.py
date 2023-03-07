@@ -29,7 +29,7 @@ parameters = {
 
 #### GRID SUCHEN !!!! ###
 
-def grid_search(parameters,phaseparameters):
+def grid_search(parameters,phaseparameters, kind):
 
     # Noisestrength and Alignment strength are set to specific phase
     for p in phaseparameters:
@@ -45,7 +45,7 @@ def grid_search(parameters,phaseparameters):
         for ensembles in tqdm(test_ensembles, position=2, leave=False):
             for observation_noise in tqdm(test_observation_noise, position=3, leave=False):
                 for shuffle in tqdm(test_shuffle, position=4, leave=False):
-                    name = f"{parameters['name']}_{bools2str(observable_axis)}_50_{ensembles}_{observation_noise}-{shuffle}"
+                    name = f"{kind}_{bools2str(observable_axis)}_50_{ensembles}_{observation_noise}_{shuffle}"
                     parameters['observable_axis'] = observable_axis
                     parameters['n_ensambles'] = ensembles
                     parameters['observation_noise'] = observation_noise
@@ -85,5 +85,5 @@ def ensemble_size_exp():
         read_and_eval(name)
         
 if __name__ == "__main__":
-    grid_search(parameters,run_phase_experiments.phase_1_flocking)
-    grid_search(parameters,run_phase_experiments.phase_2_random)
+    grid_search(parameters,run_phase_experiments.phase_1_flocking, "Flocking")
+    grid_search(parameters,run_phase_experiments.phase_2_random, "Random")

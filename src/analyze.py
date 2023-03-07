@@ -14,7 +14,7 @@ def read_and_eval(experiment_name):
     evaluate_experiment(filter_states, model_states, params)
 
 def read_experiment(experiment_name : str):
-    folder = "../saves/"+ experiment_name + "/"
+    folder = "saves/"+ experiment_name + "/"
     experiment_params  = json.load(open(folder + "params.json"))
     seeds = experiment_params['seeds']
     model_states = []
@@ -28,7 +28,7 @@ def read_experiment(experiment_name : str):
 def evaluate_experiment(model_states, filter_states, experiment_params):
     
     experiment_name = experiment_params['name']
-    experiment_path = f'../saves/{experiment_name}/'
+    experiment_path = f'saves/{experiment_name}/'
     if os.path.exists(f'{experiment_path}metrics.json'):
         return
     
@@ -63,7 +63,7 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
         lpp_metric = []
         
         for i in range(measure_steps) :
-            m_hung = metric_hungarian_precision(model_pos[i], filter_pos[i])
+            m_hung = metric_hungarian_precision(model_pos[i], filter_pos[i], experiment_params['x_axis'])
             m_lpp = metric_lost_particles(model_pos[i], filter_pos[i], experiment_params['alignment_radius']/2)
             hung_metric.append(m_hung)
             lpp_metric.append(m_lpp)
