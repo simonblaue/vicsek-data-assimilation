@@ -67,11 +67,25 @@ def periodic_distant_vectors(vectors, x_size, y_size):
     
     return vectors
 
-def mean_over_ensemble(ensemble):
+def mean_over_ensemble(ensemble, x_size, y_size):
     
+    p1 = ensemble[0,:,:]
+    n_ensemble = ensemble.shape[0]
+    dists = ensemble - p1
+
+    # apply pbc to dist
+    dists[:,:,0:2] = periodic_distant_vectors(dists[:,:,0:2], x_size,y_size)
+
+    #dists[:,:,0:2] = np.mod(dists[:,:,0:2], x_size)
+    dists[:,:,3] = np.mod(dists[:,:,3], 2*np.pi)
+
+    average = p1 + 1/(n_ensemble-1) * np.sum(dists, axis=0)
+
+    average[:,0] = np.mod(average[:,0], x_size)
+    average[:,1] = np.mod(average[:,1], y_size)
         
     
-    return 
+    return average
 
 def distances_with_periodic_boundary(
     a_positions,
