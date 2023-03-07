@@ -4,7 +4,6 @@ import numpy as np
 from pathlib import Path
 import json
 import os
-from alive_progress import alive_bar
 from tqdm.auto import tqdm
 
 from vicsek import ViszecSimulation
@@ -42,8 +41,8 @@ def execute_experiment(
         'seeds': [np.random.randint(1,1000)],
         'steps': 400,
         'timestepsize': 1,
-        'n_particles': 10,
-        'n_ensembles': 2,
+        'n_particles': 200,
+        'n_ensembles': 100,
         'observation_noise': 0.05,
         'alignment_strength':0.15,
         'noisestrength': 0.15,
@@ -51,8 +50,8 @@ def execute_experiment(
         'sampling_rate': 1,
         'alignment_radius': 1,
         'observable_axis': (True,True,True,True),
-        'x_axis': 10,
-        'y_axis': 10,
+        'x_axis': 40,
+        'y_axis': 40,
         'find_velocities': False,
         'shuffle_measurements': False
         }):

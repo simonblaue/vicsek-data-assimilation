@@ -92,8 +92,7 @@ class EnsembleKalman():
                 axis = 0
             )
             
-            print(pf)
-            print()
+
             # Virtual observation covariance
             R = np.diag(np.ones(self.config["n_particles"])) * self.config["observation_noise"]
 
@@ -109,7 +108,7 @@ class EnsembleKalman():
             ## Foldback 
             ensemble_update = [
                 x + np.insert(
-                    K @ foldback_dist_states(z,x[:,self.config["observable_axis"]]), 
+                    K @ foldback_dist_states(z,x[:,self.config["observable_axis"]],self.config["x_axis"], self.config["y_axis"] ), 
                     where_list,
                     np.zeros((self.config["n_particles"],1)),
                     axis = 1) 

@@ -61,7 +61,7 @@ class ViszecSimulation:
         agents = state.copy()
 
          # get which are neighbors 
-        dists = distances(agents)
+        dists = self.distances(agents)
         d =  np.linalg.norm(dists, axis=2)
         
         # Has to be commented out because in the complex exponential the particle itself needs to be subtracted.
@@ -91,7 +91,7 @@ class ViszecSimulation:
     def _step(self, state: np.ndarray) -> np.ndarray:
         agents = state.copy()
          
-        av_phi_per_walker = av_directions(agents)
+        av_phi_per_walker = self.av_directions(agents)
                 
         
         agents[:,3] += self.config["timestepsize"]*av_phi_per_walker*self.config["alignment_strength"] \
