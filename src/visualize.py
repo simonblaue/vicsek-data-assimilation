@@ -12,7 +12,7 @@ The animations can be saved.
 
 def visualize_experiment(experiment_name):
 
-    experiment = f'../saves/{experiment_name}/'
+    experiment = f'/home/henrik/projects/nonlineardynamics23/vicsek-data-assimilation/saves/{experiment_name}/'
     parameters = json.load(open(f'{experiment}params.json'))
     parameters['save_name'] = 'None'
     seed_number = 0

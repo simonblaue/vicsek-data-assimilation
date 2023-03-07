@@ -3,6 +3,11 @@ import json
 import numpy as np 
 from misc import metric_lost_particles, metric_hungarian_precision
 import os
+from typing import Dict, List
+from pathlib import Path
+from misc import bools2str
+from parameters import load_parameters
+import matplotlib.pyplot as plt
 
 def read_and_eval(experiment_name):
     filter_states, model_states, params = read_experiment(experiment_name)
@@ -91,10 +96,128 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
         # json.dump(experiment_params, fp, indent=4)
         json.dump(metrics, fp, indent=4)
         
+
+def name_from_parameters(
+    datatype,
+    observable_axis,
+    n_agents,
+    ensembles,
+    observation_noise,
+    sampling_rate,
+):
+    return (
+        f"{datatype}_{bools2str(observable_axis)}"
+        f"_{n_agents}_{ensembles}_{observation_noise}"
+        f"_{sampling_rate}"
+    )
+    
+def experiments_to_analyze(datatype: str) -> List[Path]:
+    print(f'Datatype: {datatype}')
+    (
+        test_observable_axis,
+        test_agents,
+        test_ensembles,
+        test_observation_noise,
+        test_sampling_rate,
+    ) = load_parameters(datatype=datatype)
+    names = []
+    for observable_axis in test_observable_axis:
+        for ensembles in test_ensembles:
+            for observation_noise in test_observation_noise:
+                for sampling_rate in test_sampling_rate:
+                    name = Path(
+                        name_from_parameters(
+                            datatype=datatype,
+                            n_agents=test_agents,
+                            observable_axis=observable_axis,
+                            ensembles=ensembles,
+                            observation_noise=observation_noise,
+                            sampling_rate=sampling_rate,
+                        )
+                    )
+                    if name.is_dir():
+                        names.append(name)
+                    else:
+                        raise Exception(
+                            f'The Experiment {name} does not exist.'
+                            'Please check your hyperparameters.'
+                            )
+    
+    return names
+
+def assignments_to_binary_trajectories(assignmentsT, steps):
+    state_old = assignmentsT[:,:steps-1]
+    state_new = assignmentsT[:,1:steps]
+    return np.array(state_new==state_old, dtype=np.byte)
+
+def analyze_single_experiment(path: str,):
+    metrics = {
+        'Hungarian Precision': [],
+        'LPP': [],
+        'Filter Consistency': []
+    }
+    
+    experiment_params  = json.load(open(path + "params.json"))
+    seed = experiment_params['seeds'][0]
+    assignmentsT = np.load(f"{path}{seed}_assignments.npy").T
+    steps = experiment_params['steps']
+
+    trajs = assignments_to_binary_trajectories(assignmentsT, steps)
+    
+    metrics['Filter Consistency'] = np.sum(trajs, axis=0)/50
+
+    viscecdata = np.load(f'{path}{seed}_model.npy')
+    filterdata = np.load(f'{path}{seed}_filter.npy')
+    assignmentdata = assignmentsT.T
+
+    modelagents = viscecdata[0]
+    filteragents = filterdata[0]
+    sampling_rate = 1
+
+    for i in range(200):
+        modelagents = viscecdata[i]
         
+        if i % sampling_rate == 0:
+            filter_step = i // sampling_rate
+            
+            
+            step_assignment_idxs = assignmentdata[filter_step]
+
+            filteragents = filterdata[filter_step]
+            
+            
+            model_positions = modelagents[:,0:2][step_assignment_idxs]
+            hungarian_precision = metric_hungarian_precision(
+                model_positions,
+                filteragents[:,0:2],
+                boundary=10,
+            )
+            lpp = metric_lost_particles(
+                model_positions, 
+                filteragents[:,0:2], 
+                experiment_params['alignment_radius']/2,
+            )
+        
+            metrics['Hungarian Precision'].append(hungarian_precision)
+            metrics['LPP'].append(lpp)
+    
+
+    fig, axs = plt.subplots(1, 2, figsize=(15, 5))
+    axs[0].plot(assignmentdata)
+    axs[1].plot(metrics['Filter Consistency'], label='Consistency')
+    axs[1].plot(metrics['Hungarian Precision'], label='Hungarian Precision')
+    # axs[1].plot(metrics['LPP'], label='LPP')
+    axs[1].legend()
+    axs[0].set_xlabel('step')
+    axs[1].set_xlabel('step')
+    axs[0].set_ylabel('assignments')
+    axs[1].set_ylabel('metric')
+    plt.show()
+
         
 if __name__ == "__main__":
-    read_and_eval('Obsv_noise_0.1')
+    # read_and_eval('Obsv_noise_0.1')
+    analyze_single_experiment('/home/henrik/projects/nonlineardynamics23/vicsek-data-assimilation/saves/Baseline/')
         
         
         

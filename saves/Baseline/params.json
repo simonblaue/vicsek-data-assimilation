@@ -1,7 +1,12 @@
 {
     "name": "Baseline",
     "seeds": [
+<<<<<<< HEAD
         475
+=======
+        1,
+        2
+>>>>>>> 5bc0810 (added analysis scrips)
     ],
     "steps": 200,
     "timestepsize": 1,
@@ -23,5 +28,9 @@
     "y_axis": 50,
     "find_velocities": true,
     "shuffle_measurements": true,
+<<<<<<< HEAD
     "total_runtime": 119.13984084129333
+=======
+    "total_runtime": 62.12203860282898
+>>>>>>> 5bc0810 (added analysis scrips)
 }
