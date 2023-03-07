@@ -8,7 +8,7 @@ from alive_progress import alive_bar
 from tqdm.auto import tqdm
 
 from vicsek import ViszecSimulation
-from kalman import EnsembleKalman
+from kalman_old import EnsembleKalman
 from typing import Dict, Tuple, List
 
 """
@@ -44,15 +44,15 @@ def execute_experiment(
         'timestepsize': 1,
         'n_particles': 10,
         'n_ensembles': 100,
-        'observation_noise': 0.05,
+        'observation_noise': 0.0,
         'alignment_strength':0.15,
         'noisestrength': 0.15,
         'velocity': 0.05,
         'sampling_rate': 1,
         'alignment_radius': 1,
         'observable_axis': (True,True,True,True),
-        'x_axis': 20,
-        'y_axis': 20,
+        'x_axis': 10,
+        'y_axis': 10,
         'find_velocities': False,
         'shuffle_measurements': False
         }):

@@ -1,7 +1,7 @@
 import numpy as np
 import time
 import scipy
-from misc import assign_fn, mean_over_ensemble, periodic_distant_vectors
+from misc import assign_fn, mean_over_ensemble
 
 """
 This file contains the Kalman filterclass
@@ -35,24 +35,6 @@ class EnsembleKalman():
         # new measurement, assignment
 
         return shuffled_idxs[assign_idxs]
-    
-    
-    def create_forecast_ensemble(self, state):
-        ensemble = np.tile(state, (self.config["n_ensembles"], 1, 1))  
-        
-        for i in self.config["sampling_rate"]:
-            for j in range(self.config["n_ensembles"]):
-                ensemble[j] = self.model_forecast(ensemble[j])
-            
-        return ensemble
-    
-    def create_virtual_observations_ensemble(self, measured_state):
-        virtual_observations = (
-                np.tile(measured_state, (self.config["n_ensembles"], 1, 1)) + 
-                np.random.normal(size=(self.config["n_ensembles"],self.config["n_particles"], 4), scale=self.config["observation_noise"])
-            )[:,:,self.config["observable_axis"]]
-        
-        return virtual_observations
         
 
     def update(self, _measurement: np.ndarray, ) -> np.ndarray:
@@ -64,12 +46,15 @@ class EnsembleKalman():
 
                 
             #generating forecast ensamples
-            forecast_ensemble = self.create_forecast_ensemble(self.agents)
-            
-            #step the forecast ensemble
+            forecast_ensemble = np.array([
+                self.model_forecast(self.agents) for _ in range(self.config["n_ensembles"])
+            ])
 
             # Virtual observation = Measurement + Noise 
-            virtual_observations = self.create_virtual_observations_ensemble(measurement)
+            virtual_observations = (
+                np.tile(measurement, (self.config["n_ensembles"], 1, 1)) + 
+                np.random.normal(size=(self.config["n_ensembles"],self.config["n_particles"], 4), scale=self.config["observation_noise"])
+            )[:,:,self.config["observable_axis"]]
             
             # Set velocity onto this one value if we dont want to approximate it
             if not self.config['find_velocities']:
@@ -83,8 +68,12 @@ class EnsembleKalman():
             errors = forecast_ensemble[:,:,self.config["observable_axis"]] - np.tile(mean_forecast, (self.config["n_ensembles"], 1, 1))
 
             # #boundaries
-            periodic_distant_vectors(errors, self.config["x_axis"], self.config["y_axis"])
-                    
+            errors[:,:,0] = np.where(errors[:,:,0]>self.config["x_axis"]/2,errors[:,:,0]-self.config["x_axis"],errors[:,:,0])
+            errors[:,:,0] = np.where(errors[:,:,0]<-self.config["x_axis"]/2,errors[:,:,0]+self.config["x_axis"],errors[:,:,0])
+            
+            errors[:,:,1] = np.where(errors[:,:,1]>self.config["y_axis"]/2,errors[:,:,1]-self.config["y_axis"],errors[:,:,1])
+            errors[:,:,1] = np.where(errors[:,:,1]<-self.config["y_axis"]/2,errors[:,:,1]+self.config["y_axis"],errors[:,:,1])
+            
             # Forecast ensemble covariance
             pf = 1/(self.config["n_ensembles"]-1) * np.sum(
                 [np.matmul(e, e.T) for e in errors],
@@ -110,14 +99,15 @@ class EnsembleKalman():
             ]
             
             
-            # Updated state is mean over the updated ensemble members 
-            agents = mean_over_ensemble(np.array(ensemble_update),self.config["x_axis"], self.config["y_axis"] )
             
-            agents[:,0] = np.mod(agents[:,0], self.config["x_axis"])
-            agents[:,1] = np.mod(agents[:,1], self.config["y_axis"])
+            # Updated state is mean over the updated ensemble members 
+            self.agents = mean_over_ensemble(np.array(ensemble_update),self.config["x_axis"], self.config["y_axis"] )
+            
+            self.agents[:,0] = np.mod(self.agents[:,0], self.config["x_axis"])
+            self.agents[:,1] = np.mod(self.agents[:,1], self.config["y_axis"])
             
             # print(f'Update time:\t{time.time()-t}')
 
-            return agents, predicted_idxs
+            return self.agents, predicted_idxs
 
 
