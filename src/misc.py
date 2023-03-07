@@ -67,6 +67,19 @@ def periodic_distant_vectors(vectors, x_size, y_size):
     
     return vectors
 
+def foldback_dist_ensemble(ensemble_a, ensemble_b, x_size, y_size):
+    
+    vectors = ensemble_a - ensemble_b
+    vectors[:,:,0] = np.where(vectors[:,:,0]>x_size/2,vectors[:,:,0]-x_size,vectors[:,:,0])
+    vectors[:,:,0] = np.where(vectors[:,:,0]<-x_size/2,vectors[:,:,0]+x_size,vectors[:,:,0])
+    vectors[:,:,1] = np.where(vectors[:,:,1]>y_size/2,vectors[:,:,1]-y_size,vectors[:,:,1])
+    vectors[:,:,1] = np.where(vectors[:,:,1]<-y_size/2,vectors[:,:,1]+y_size,vectors[:,:,1])
+    
+    vectors[:,3] = np.angle(np.exp(1j* (ensemble_a[:,3] - ensemble_b[:,3]) ))
+    
+    return vectors
+    
+
 
 def foldback_dist_states(state_a, state_b, x_size, y_size):
     

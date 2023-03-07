@@ -1,5 +1,5 @@
 import numpy as np
-import kalman_old
+import kalman
 import vicsek
 
 from tqdm.auto import tqdm
@@ -30,14 +30,14 @@ def run_filters(cfg=parameters):
     
     modelstates = np.load(DATASET_PATH)
     vicsekmodel = vicsek.ViszecSimulation(cfg)    
-    filtermodel = kalman_old.EnsembleKalman(cfg, vicsekmodel._step)
+    filtermodel = kalman.EnsembleKalman(cfg, vicsekmodel._step, init_state=None)
     
     n_steps = modelstates.shape[0]
 
     filterstates = []
     assignments = []
     
-    for t in tqdm(range(100), position=1, leave=False):
+    for t in tqdm(range(200), position=1, leave=False):
 
         filtermodel.agents, predicted_idxs = filtermodel.update(modelstates[t])
         filterstates.append(filtermodel.agents)

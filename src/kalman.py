@@ -1,7 +1,7 @@
 import numpy as np
 import time
 import scipy
-from misc import assign_fn, mean_over_ensemble, periodic_distant_vectors, foldback_dist_states
+from misc import assign_fn, mean_over_ensemble, periodic_distant_vectors, foldback_dist_states, foldback_dist_ensemble
 
 """
 This file contains the Kalman filterclass
@@ -79,12 +79,12 @@ class EnsembleKalman():
             # print(np.var(virtual_observations, axis=0)[0][0])
 
             # Mean forecast over ensembles 
-            mean_forecast = mean_over_ensemble(forecast_ensemble, self.config['x_axis'], self.config['y_axis'])#[:,:,self.config["observable_axis"]])
+            mean_forecast = mean_over_ensemble(forecast_ensemble, self.config['x_axis'], self.config['y_axis'])
             # Errors within the ensemble = distance between ensemble members and the mean ensemble 
-            errors = forecast_ensemble[:,:,self.config["observable_axis"]] - np.tile(mean_forecast, (self.config["n_ensembles"], 1, 1))
+            errors = foldback_dist_ensemble(forecast_ensemble,np.tile(mean_forecast, (self.config["n_ensembles"], 1, 1)), self.config['x_axis'], self.config['y_axis'])
 
             # #boundaries
-            errors = periodic_distant_vectors(errors, self.config["x_axis"], self.config["y_axis"])
+            # errors = periodic_distant_vectors(errors, self.config["x_axis"], self.config["y_axis"])
                     
             # Forecast ensemble covariance
             pf = 1/(self.config["n_ensembles"]-1) * np.sum(
