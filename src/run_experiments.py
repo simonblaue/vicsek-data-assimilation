@@ -47,7 +47,7 @@ def grid_search(parameters,phaseparameters, kind):
                 for shuffle in tqdm(test_shuffle, position=4, leave=False):
                     name = f"{kind}_{bools2str(observable_axis)}_50_{ensembles}_{observation_noise}_{shuffle}"
                     parameters['observable_axis'] = observable_axis
-                    parameters['n_ensambles'] = ensembles
+                    parameters['n_ensembles'] = ensembles
                     parameters['observation_noise'] = observation_noise
                     parameters['shuffle_measurements'] = shuffle 
                     parameters['name'] = name
