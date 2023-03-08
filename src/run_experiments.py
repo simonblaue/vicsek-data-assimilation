@@ -38,7 +38,7 @@ def grid_search(parameters,phaseparameters, kind):
 
     test_observable_axis = [(True,True,True,True),(True,True,True,False),(True,True,False,False),(True,True,False,True)]
     test_ensembles = [50,100,150,200,250]
-    test_observation_noise = np.logspace(-4,0,9) #starts at 1e-4
+    test_observation_noise = [0.0001,0.001,0.01,0.1,1]
     test_shuffle = [True,False]
 
     for observable_axis in tqdm(test_observable_axis, position=0, leave=False):
