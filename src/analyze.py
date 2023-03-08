@@ -9,15 +9,14 @@ from misc import bools2str
 from parameters import load_parameters
 import matplotlib.pyplot as plt
 
-p = '/home/henrik/projects/nonlineardynamics23/Flocking_1100/Flocking_1111_50_50_0.1_True/'
 
 def read_and_eval(experiment_name):
     filter_states, model_states, assignments_states, params = read_experiment(experiment_name)
     evaluate_experiment(filter_states, model_states, assignments_states, params)
 
 def read_experiment(experiment_name : str):
-    # folder = "saves/"+ experiment_name + "/"
-    folder = experiment_name
+    folder = "saves/"+ experiment_name + "/"
+    # folder = experiment_name
     experiment_params  = json.load(open(folder + "params.json"))
     seeds = experiment_params['seeds']
     model_states = []
@@ -34,8 +33,8 @@ def evaluate_experiment(model_states, filter_states, assignments_states, experim
     
     experiment_name = experiment_params['name']
     experiment_path = f'saves/{experiment_name}/'
-    if os.path.exists(f'{experiment_path}metrics.json'):
-        return
+    # if os.path.exists(f'{experiment_path}metrics.json'):
+    #     return
     
     metrics = {
         'Hungarian Precision':[],
@@ -110,7 +109,7 @@ def evaluate_experiment(model_states, filter_states, assignments_states, experim
     metrics['Var LPP'] = std_lpp.tolist()
     
     
-    with open(f'{p}metrics.json', 'w') as fp:
+    with open(f'{experiment_path}metrics.json', 'w') as fp:
         # json.dump(experiment_params, fp, indent=4)
         json.dump(metrics, fp, indent=4)
         
@@ -175,11 +174,11 @@ def analyze_single_experiment(path: str,):
         'Filter Consistency': []
     }
     
-    metrics  = json.load(open(path + "metrics.json"))
+    metrics  = json.load(open(f'saves/{path}metrics.json'))
     # print(metrics['max_length_analysis'])
-    experiment_params  = json.load(open(path + "params.json"))
+    experiment_params  = json.load(open(f'saves/{path}params.json'))
     seed = experiment_params['seeds'][0]
-    assignmentsT = np.load(f"{path}{seed}_assignments.npy").T
+    assignmentsT = np.load(f'saves/{path}{seed}_assignments.npy').T
     steps = experiment_params['steps']
 
     trajs = assignments_to_binary_trajectories(assignmentsT, steps)
@@ -205,9 +204,13 @@ def analyze_single_experiment(path: str,):
         
 if __name__ == "__main__":
     # read_and_eval('Obsv_noise_0.1')
-    p = '/home/henrik/projects/nonlineardynamics23/Flocking_1100/Flocking_1111_50_50_0.1_True/'
-    read_and_eval(p)
+    p = 'Flocking_1111_50_50_0.1_True/'
     analyze_single_experiment(p)
+    # applying changes to all files
+    # for _p in list(Path('saves').iterdir()):
+    #     p = f'{str(_p.name)}'
+    #     read_and_eval(p)
+        
         
         
     

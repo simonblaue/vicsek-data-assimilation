@@ -135,7 +135,7 @@ def ob_axis_description(obs_axis):
 
 
 def plot_all(
-    path = "/home/henrik/projects/nonlineardynamics23/Flocking_1100/", # path to experiment folder
+    path = "/home/henrik/projects/nonlineardynamics23/saves/", # path to experiment folder
     experiment = 'Flocking',
     shuffle = True,
     test_observable_axis = ['1100','1101', '1110', '1111'],
@@ -177,6 +177,7 @@ def plot_all(
                 axs[j][i].set_ylabel('Tracking Consistency (steps)')
                 axs[j][i].legend()
     plt.tight_layout()
+    plt.savefig(f'../nonlineardynamics23/vicsek-data-assimilation/saves/plots/grid_seach_{shuffle}.jpg')
     plt.show()
     
 if __name__ == "__main__":
