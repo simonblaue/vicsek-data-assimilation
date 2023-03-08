@@ -37,7 +37,7 @@ def grid_search(parameters,phaseparameters, kind):
     
 
     test_observable_axis = [(True,True,True,True),(True,True,True,False),(True,True,False,False),(True,True,False,True)]
-    test_ensembles = [50,100,150,200,250]
+    test_ensembles = [2,10,25,50,100]
     test_observation_noise = [0.0001,0.001,0.01,0.1,1]
     test_shuffle = [True,False]
 
