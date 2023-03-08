@@ -69,8 +69,8 @@ def execute_experiment(
             print("Created new Directory!")
             os.makedirs(experiment_path)
             
-        # if os.path.exists(experiment_path+f'{seed}_model.npy'):
-        #     continue
+        if os.path.exists(experiment_path+f'{seed}_model.npy'):
+            continue
         
         np.random.seed(int(seed))
         

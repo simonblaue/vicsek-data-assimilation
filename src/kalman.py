@@ -104,6 +104,10 @@ class EnsembleKalman():
             # Update the forecasts            
             where_list = [i for i,m in enumerate(self.config["observable_axis"]) if not m]
             
+            for i,m in enumerate(where_list):
+                if m > virtual_observations.shape[2]:
+                    where_list[i] = virtual_observations.shape[2]
+            
             ## Foldback 
             ensemble_update = [
                 x + np.insert(
