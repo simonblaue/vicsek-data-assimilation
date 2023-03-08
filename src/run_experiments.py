@@ -26,6 +26,10 @@ parameters = {
         'shuffle_measurements': False
         }
 
+test_observable_axis = [(True,True,True,True),(True,True,True,False),(True,True,False,False),(True,True,False,True)]
+test_ensembles = [2,10,25,50,100]
+test_observation_noise = [0.0001,0.001,0.01,0.1,1]
+test_shuffle = [True,False]
 
 #### GRID SUCHEN !!!! ###
 
@@ -34,12 +38,7 @@ def grid_search(parameters,phaseparameters, kind):
     # Noisestrength and Alignment strength are set to specific phase
     for p in phaseparameters:
         parameters[p] = phaseparameters[p]
-    
 
-    test_observable_axis = [(True,True,True,True),(True,True,True,False),(True,True,False,False),(True,True,False,True)]
-    test_ensembles = [2,10,25,50,100]
-    test_observation_noise = [0.0001,0.001,0.01,0.1,1]
-    test_shuffle = [True,False]
 
     for observable_axis in tqdm(test_observable_axis, position=0, leave=False):
         for ensembles in tqdm(test_ensembles, position=2, leave=False):
