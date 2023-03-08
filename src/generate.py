@@ -53,7 +53,7 @@ def execute_experiment(
         'x_axis': 10,
         'y_axis': 10,
         'find_velocities': False,
-        'shuffle_measurements': True,
+        'shuffle_measurements': False,
         }):
     
     parameters['theta_observerd'] = parameters['observable_axis'][-1] 
@@ -79,7 +79,7 @@ def execute_experiment(
         
         np.save(experiment_path+f'{seed}_model.npy', viscecstates)
         np.save(experiment_path+f'{seed}_filter.npy', filterstates)
-        np.save(experiment_path+f'{seed}_assignments.npy', assignments,)
+        np.save(experiment_path+f'{seed}_assignments.npy', assignments)
 
     parameters['total_runtime'] = time.time() - t0
  
