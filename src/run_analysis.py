@@ -31,5 +31,5 @@ def analysis(dir):
 # TODO: analyze single experient
 
 if __name__ == "__main__":
-    print(analysis('/home/henrik/projects/nonlineardynamics23/Flocking1111/'))
+    analysis('/home/henrik/projects/nonlineardynamics23/Flocking1111/')
 
