@@ -20,10 +20,9 @@ def analysis(dir):
         max_lengths = [max([len(s) for s in ts.split('0')]) for ts in trajs]
         # result and save
         result = (np.mean(max_lengths), np.std(max_lengths))
-        try:
-            metrics = json.load(str(folder) + "/metrics.json")
-        except:
-            metrics = {'max_length_analysis': result}
+        # print(str(folder) + "/metrics.json")
+        metrics = json.load(open(str(folder) + "/metrics.json"))
+        metrics['max_length_analysis'] = result
         with open(str(folder) + "/metrics.json", 'w') as fp:
                 json.dump(metrics, fp, indent=4)
     return results
@@ -32,5 +31,5 @@ def analysis(dir):
 # TODO: analyze single experient
 
 if __name__ == "__main__":
-    print(analysis('../saves'))
+    print(analysis('/home/henrik/projects/nonlineardynamics23/Flocking1111/'))
 

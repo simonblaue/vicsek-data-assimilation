@@ -158,6 +158,7 @@ def analyze_single_experiment(path: str,):
     }
     
     metrics  = json.load(open(path + "metrics.json"))
+    print(metrics['max_length_analysis'])
     experiment_params  = json.load(open(path + "params.json"))
     seed = experiment_params['seeds'][0]
     assignmentsT = np.load(f"{path}{seed}_assignments.npy").T
