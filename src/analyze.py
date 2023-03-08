@@ -77,6 +77,14 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
         metrics['Hungarian Precision'].append(hung_metric)
         metrics['Lost Particle Precision'].append(lpp_metric)
         
+    assignmentsT = np.vstack(
+        [np.load(str(file)).T for file in Path(experiment_path).glob('*assignments.npy')]
+    )
+    trajs = assignments_to_binary_trajectories(assignmentsT, experiment_params['steps'])
+    trajs = [''.join(map(str, t)) for t in trajs]
+    max_lengths = [max([len(s) for s in ts.split('0')]) for ts in trajs]
+    metrics['max_length_analysis'] = (np.mean(max_lengths), np.std(max_lengths)) 
+        
     std_hung -=   (average_hung * average_hung)/len(seeds)
     std_hung /= len(seeds)    
     

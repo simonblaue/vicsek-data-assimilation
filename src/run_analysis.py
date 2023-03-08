@@ -27,7 +27,6 @@ def analysis(dir):
                 json.dump(metrics, fp, indent=4)
     return results
     
-    
 # TODO: analyze single experient
 
 if __name__ == "__main__":
