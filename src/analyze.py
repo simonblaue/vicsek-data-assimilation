@@ -9,23 +9,28 @@ from misc import bools2str
 from parameters import load_parameters
 import matplotlib.pyplot as plt
 
+p = '/home/henrik/projects/nonlineardynamics23/Flocking_1100/Flocking_1111_50_50_0.1_True/'
+
 def read_and_eval(experiment_name):
-    filter_states, model_states, params = read_experiment(experiment_name)
-    evaluate_experiment(filter_states, model_states, params)
+    filter_states, model_states, assignments_states, params = read_experiment(experiment_name)
+    evaluate_experiment(filter_states, model_states, assignments_states, params)
 
 def read_experiment(experiment_name : str):
-    folder = "saves/"+ experiment_name + "/"
+    # folder = "saves/"+ experiment_name + "/"
+    folder = experiment_name
     experiment_params  = json.load(open(folder + "params.json"))
     seeds = experiment_params['seeds']
     model_states = []
     filter_states = []
+    assignments_states = []
     for seed in seeds:
         model_states.append(np.load(f"{folder}{seed}_model.npy"))
         filter_states.append(np.load(f"{folder}{seed}_filter.npy"))
-    return model_states, filter_states, experiment_params
+        assignments_states.append(np.load(f"{folder}{seed}_assignments.npy"))
+    return model_states, filter_states, assignments_states, experiment_params
 
 
-def evaluate_experiment(model_states, filter_states, experiment_params):
+def evaluate_experiment(model_states, filter_states, assignments_states, experiment_params):
     
     experiment_name = experiment_params['name']
     experiment_path = f'saves/{experiment_name}/'
@@ -53,6 +58,7 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
     std_lpp = np.zeros(measure_steps)
 
     for seed in range(len(seeds)):
+        assignments = assignments_states[seed]
         model_pos = model_states[seed][::sampling_rate,:, 0:2]
         
         filter_pos = filter_states[seed][:,:,0:2]
@@ -63,8 +69,11 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
         lpp_metric = []
         
         for i in range(measure_steps) :
-            m_hung = metric_hungarian_precision(model_pos[i], filter_pos[i], experiment_params['x_axis'])
-            m_lpp = metric_lost_particles(model_pos[i], filter_pos[i], experiment_params['alignment_radius']/2)
+            current_model_pos = model_pos[i]
+            current_assignment = assignments[i]
+            reassigned_model_pos = current_model_pos[current_assignment]
+            m_hung = metric_hungarian_precision(reassigned_model_pos, filter_pos[i], experiment_params['x_axis'])
+            m_lpp = metric_lost_particles(reassigned_model_pos, filter_pos[i], experiment_params['alignment_radius']/2)
             hung_metric.append(m_hung)
             lpp_metric.append(m_lpp)
             
@@ -78,7 +87,8 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
         metrics['Lost Particle Precision'].append(lpp_metric)
         
     assignmentsT = np.vstack(
-        [np.load(str(file)).T for file in Path(experiment_path).glob('*assignments.npy')]
+        # [np.load(str(file)).T for file in Path(experiment_path).glob('*assignments.npy')]
+        a.T for a in assignments_states
     )
     trajs = assignments_to_binary_trajectories(assignmentsT, experiment_params['steps'])
     trajs = [''.join(map(str, t)) for t in trajs]
@@ -100,7 +110,7 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
     metrics['Var LPP'] = std_lpp.tolist()
     
     
-    with open(f'{experiment_path}metrics.json', 'w') as fp:
+    with open(f'{p}metrics.json', 'w') as fp:
         # json.dump(experiment_params, fp, indent=4)
         json.dump(metrics, fp, indent=4)
         
@@ -166,7 +176,7 @@ def analyze_single_experiment(path: str,):
     }
     
     metrics  = json.load(open(path + "metrics.json"))
-    print(metrics['max_length_analysis'])
+    # print(metrics['max_length_analysis'])
     experiment_params  = json.load(open(path + "params.json"))
     seed = experiment_params['seeds'][0]
     assignmentsT = np.load(f"{path}{seed}_assignments.npy").T
@@ -178,24 +188,26 @@ def analyze_single_experiment(path: str,):
 
     assignmentdata = assignmentsT.T    
 
-    fig, axs = plt.subplots(1, 2, figsize=(15, 5))
+    fig, axs = plt.subplots(1, 2, figsize=(15, 5),)
     axs[0].plot(assignmentdata)
-    axs[1].plot(metrics['Filter Consistency'], label='Consistency seed 0')
+    axs[1].plot(metrics['Filter Consistency'], label='Avg Max Consistency')
     axs[1].plot(metrics['Average Hungarian Precision'], label='Avg Hungarian Precision')
     axs[1].plot(metrics['Average LPP'], label='Avg LPP')
     axs[1].legend()
-    axs[0].set_xlabel('step')
-    axs[1].set_xlabel('step')
-    axs[0].set_ylabel('assignments')
-    axs[1].set_ylabel('metric')
+    axs[0].set_xlabel('Step')
+    axs[1].set_xlabel('Step')
+    axs[0].set_ylabel('Assignments')
+    axs[1].set_ylabel('Metric')
+    fig.suptitle(f'Experiment: {str(Path(path).name)}')
+    plt.savefig('../nonlineardynamics23/vicsek-data-assimilation/saves/plots/single_experiment.jpg')
     plt.show()
 
         
 if __name__ == "__main__":
     # read_and_eval('Obsv_noise_0.1')
-    analyze_single_experiment('/home/henrik/projects/nonlineardynamics23/Flocking1111/Flocking_1111_50_50_0.0001_False/')
-        
-        
+    p = '/home/henrik/projects/nonlineardynamics23/Flocking_1100/Flocking_1111_50_50_0.1_True/'
+    read_and_eval(p)
+    analyze_single_experiment(p)
         
         
     
