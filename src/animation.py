@@ -191,6 +191,8 @@ class Animation():
         )
         # TODO: cover none cases
         if self.config['save_name'] != 'None':
-            anim.save(f"saves/{self.config['save_name']}.gif")
+            filename = f"../nonlineardynamics23/vicsek-data-assimilation/saves/animations/{self.config['save_name']}.gif"
+            print(f'Saving as {filename}')
+            anim.save(filename)
         plt.show()
         return anim

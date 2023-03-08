@@ -12,9 +12,11 @@ The animations can be saved.
 
 def visualize_experiment(experiment_name):
 
-    experiment = f'saves/{experiment_name}/'
+    # experiment = f'saves/{experiment_name}/'
+    experiment = '/home/henrik/projects/nonlineardynamics23/saves/Flocking_1111_50_50_0.1_True/'
     parameters = json.load(open(f'{experiment}params.json'))
-    parameters['save_name'] = 'None'
+    # parameters['save_name'] = 'None'
+    parameters['save_name'] = parameters['name']
     seed_number = 0
     seed = int(parameters['seeds'][seed_number])
     parameters['experimentid'] = f'{experiment}{seed}'
@@ -43,7 +45,7 @@ def visualize_dataset(dataset):
 
     parameters['n_particles'] = 361
     
-    parameters['save_name'] = "None"
+    parameters['save_name'] = "test"
     parameters['sampling_rate'] = 1
     
 
