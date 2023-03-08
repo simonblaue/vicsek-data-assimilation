@@ -49,12 +49,14 @@ def execute_experiment(
         'velocity': 0.05,
         'sampling_rate': 1,
         'alignment_radius': 1,
-        'observable_axis': (True,True,False,True),
+        'observable_axis': (True,True,True,True),
         'x_axis': 10,
         'y_axis': 10,
         'find_velocities': False,
-        'shuffle_measurements': False
+        'shuffle_measurements': False,
         }):
+    
+    parameters['theta_observerd'] = parameters['observable_axis'][-1] 
     
     t0 = time.time()
     for seed in parameters['seeds']:
@@ -67,8 +69,8 @@ def execute_experiment(
             print("Created new Directory!")
             os.makedirs(experiment_path)
             
-        # if os.path.exists(experiment_path+f'{seed}_model.npy'):
-        #     continue
+        if os.path.exists(experiment_path+f'{seed}_model.npy'):
+            continue
         
         np.random.seed(int(seed))
         

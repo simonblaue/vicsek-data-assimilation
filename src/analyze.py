@@ -14,7 +14,7 @@ def read_and_eval(experiment_name):
     evaluate_experiment(filter_states, model_states, params)
 
 def read_experiment(experiment_name : str):
-    folder = "../saves/"+ experiment_name + "/"
+    folder = "saves/"+ experiment_name + "/"
     experiment_params  = json.load(open(folder + "params.json"))
     seeds = experiment_params['seeds']
     model_states = []
@@ -28,7 +28,7 @@ def read_experiment(experiment_name : str):
 def evaluate_experiment(model_states, filter_states, experiment_params):
     
     experiment_name = experiment_params['name']
-    experiment_path = f'../saves/{experiment_name}/'
+    experiment_path = f'saves/{experiment_name}/'
     if os.path.exists(f'{experiment_path}metrics.json'):
         return
     
@@ -63,7 +63,7 @@ def evaluate_experiment(model_states, filter_states, experiment_params):
         lpp_metric = []
         
         for i in range(measure_steps) :
-            m_hung = metric_hungarian_precision(model_pos[i], filter_pos[i])
+            m_hung = metric_hungarian_precision(model_pos[i], filter_pos[i], experiment_params['x_axis'])
             m_lpp = metric_lost_particles(model_pos[i], filter_pos[i], experiment_params['alignment_radius']/2)
             hung_metric.append(m_hung)
             lpp_metric.append(m_lpp)
@@ -157,6 +157,8 @@ def analyze_single_experiment(path: str,):
         'Filter Consistency': []
     }
     
+    metrics  = json.load(open(path + "metrics.json"))
+    print(metrics['max_length_analysis'])
     experiment_params  = json.load(open(path + "params.json"))
     seed = experiment_params['seeds'][0]
     assignmentsT = np.load(f"{path}{seed}_assignments.npy").T
@@ -166,47 +168,13 @@ def analyze_single_experiment(path: str,):
     
     metrics['Filter Consistency'] = np.sum(trajs, axis=0)/50
 
-    viscecdata = np.load(f'{path}{seed}_model.npy')
-    filterdata = np.load(f'{path}{seed}_filter.npy')
-    assignmentdata = assignmentsT.T
-
-    modelagents = viscecdata[0]
-    filteragents = filterdata[0]
-    sampling_rate = 1
-
-    for i in range(200):
-        modelagents = viscecdata[i]
-        
-        if i % sampling_rate == 0:
-            filter_step = i // sampling_rate
-            
-            
-            step_assignment_idxs = assignmentdata[filter_step]
-
-            filteragents = filterdata[filter_step]
-            
-            
-            model_positions = modelagents[:,0:2][step_assignment_idxs]
-            hungarian_precision = metric_hungarian_precision(
-                model_positions,
-                filteragents[:,0:2],
-                boundary=10,
-            )
-            lpp = metric_lost_particles(
-                model_positions, 
-                filteragents[:,0:2], 
-                experiment_params['alignment_radius']/2,
-            )
-        
-            metrics['Hungarian Precision'].append(hungarian_precision)
-            metrics['LPP'].append(lpp)
-    
+    assignmentdata = assignmentsT.T    
 
     fig, axs = plt.subplots(1, 2, figsize=(15, 5))
     axs[0].plot(assignmentdata)
-    axs[1].plot(metrics['Filter Consistency'], label='Consistency')
-    axs[1].plot(metrics['Hungarian Precision'], label='Hungarian Precision')
-    # axs[1].plot(metrics['LPP'], label='LPP')
+    axs[1].plot(metrics['Filter Consistency'], label='Consistency seed 0')
+    axs[1].plot(metrics['Average Hungarian Precision'], label='Avg Hungarian Precision')
+    axs[1].plot(metrics['Average LPP'], label='Avg LPP')
     axs[1].legend()
     axs[0].set_xlabel('step')
     axs[1].set_xlabel('step')
@@ -217,7 +185,7 @@ def analyze_single_experiment(path: str,):
         
 if __name__ == "__main__":
     # read_and_eval('Obsv_noise_0.1')
-    analyze_single_experiment('/home/henrik/projects/nonlineardynamics23/vicsek-data-assimilation/saves/Baseline/')
+    analyze_single_experiment('/home/henrik/projects/nonlineardynamics23/Flocking1111/Flocking_1111_50_50_0.0001_False/')
         
         
         

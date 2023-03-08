@@ -9,3 +9,4 @@ tests/test.ipynb
 src/Static_Plots_Joel.ipynb
 tests/test.ipynb
 __pycache__
+src/saves/**

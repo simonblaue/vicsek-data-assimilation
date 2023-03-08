@@ -104,10 +104,14 @@ class EnsembleKalman():
             # Update the forecasts            
             where_list = [i for i,m in enumerate(self.config["observable_axis"]) if not m]
             
+            for i,m in enumerate(where_list):
+                if m > virtual_observations.shape[2]:
+                    where_list[i] = virtual_observations.shape[2]
+            
             ## Foldback 
             ensemble_update = [
                 x + np.insert(
-                    K @ foldback_dist_states(z,x[:,self.config["observable_axis"]],self.config["x_axis"], self.config["y_axis"] ), 
+                    K @ foldback_dist_states(z,x[:,self.config["observable_axis"]],self.config["x_axis"], self.config["y_axis"], theat_axis=self.config['theta_observerd'] ), 
                     where_list,
                     np.zeros((self.config["n_particles"],1)),
                     axis = 1) 

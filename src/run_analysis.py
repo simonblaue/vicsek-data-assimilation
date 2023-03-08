@@ -1,17 +1,15 @@
 import numpy as np
 import tqdm
 import json
+from pathlib import Path
 from analyze import experiments_to_analyze, assignments_to_binary_trajectories
     
 
-def analysis():
-    experiment_paths = experiments_to_analyze(datatype='selfgenerated')
-    # experiment_paths = experiments_to_analyze(datatype='provided')
+def analysis(dir):
     results = {}
-    for folder in tqdm(experiment_paths):
+    for folder in tqdm.tqdm(list(Path(dir).iterdir())):
         # get params, id, assignments
         experiment_params  = json.load(open(str(folder) + "/params.json"))
-        experiment_id = experiment_params["name"]
         assignmentsT = np.vstack(
             [np.load(str(file)).T for file in folder.glob('*assignments.npy')]
         )
@@ -22,11 +20,16 @@ def analysis():
         max_lengths = [max([len(s) for s in ts.split('0')]) for ts in trajs]
         # result and save
         result = (np.mean(max_lengths), np.std(max_lengths))
-        experiment_params['max_length_analysis'] = result
-        with open(open(str(folder) + "/params.json"), 'w') as fp:
-            json.dump(experiment_params, fp, indent=4)
-        results[experiment_id] = result
-        return results
+        # print(str(folder) + "/metrics.json")
+        metrics = json.load(open(str(folder) + "/metrics.json"))
+        metrics['max_length_analysis'] = result
+        with open(str(folder) + "/metrics.json", 'w') as fp:
+                json.dump(metrics, fp, indent=4)
+    return results
     
     
 # TODO: analyze single experient
+
+if __name__ == "__main__":
+    print(analysis('/home/henrik/projects/nonlineardynamics23/Flocking1111/'))
+
