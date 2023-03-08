@@ -1,6 +1,8 @@
 import numpy as np
 import json
 import os
+import matplotlib.pyplot as plt
+from pathlib import Path
 
 
 ##############################################################################
@@ -120,3 +122,48 @@ def get_header(exp):
 
     title = f"Phase: {phase}, Observed: {obs_axis}, \n Agents:{nr_agents}, Ensembles:{nr_ensembles},\n Obs. Noise:{obs_noise}, Shuffling:{shuffling}"
     return title 
+
+
+def plot_all(
+    path = "/home/henrik/projects/nonlineardynamics23/Flocking_1100/",
+    experiment = 'Flocking',
+    shuffle = True,
+    test_observable_axis = ['1100','1100',],
+    test_ensembles = [2,10,25,50,100],
+    test_observation_noise = [0.0001,0.001,0.01,0.1,1],
+):
+    max_lengths = {}
+
+    for folder in list(Path(path).iterdir()):
+        parameters = json.load(open(str(folder)+'/params.json'))
+        metrics = json.load(open(str(folder)+'/metrics.json'))
+        max_lengths[parameters['name']] = metrics['max_length_analysis']
+        
+    scale = 2
+    fig, axs = plt.subplots(
+        len(test_observable_axis), len(test_ensembles), figsize=(len(test_ensembles)*3, len(test_observable_axis)*3),
+        sharey=True
+    )
+    for j in range(len(test_observable_axis)):
+        for i in range(len(test_ensembles)):
+            names = [
+                f'{experiment}_{test_observable_axis[j]}_50_{test_ensembles[i]}_{noise}_{shuffle}' for noise in test_observation_noise
+            ]
+            mls = np.array([max_lengths[n] for n in names]).T
+            axs[j][i].set_xlabel('Observation Noise')
+            axs[j][i].grid(which='major', axis='y', linestyle='--')
+            
+            if j == 0:
+                axs[j][i].set_title(f'Ensembles: {test_ensembles[i]}')
+            if i == 0:
+                axs[j][i].set_ylabel('Tracking Consistency (steps)')
+            
+            axs[j][i].set_ylim((0, 350))
+            axs[j][i].scatter(test_observation_noise, mls[0],)
+            axs[j][i].set_xscale('log')
+            axs[j][i].errorbar(test_observation_noise, mls[0],yerr=mls[1], capsize=5, elinewidth=1, fmt='o')
+    plt.tight_layout()
+    plt.show()
+    
+if __name__ == "__main__":
+    plot_all()
