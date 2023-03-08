@@ -123,14 +123,27 @@ def get_header(exp):
     title = f"Phase: {phase}, Observed: {obs_axis}, \n Agents:{nr_agents}, Ensembles:{nr_ensembles},\n Obs. Noise:{obs_noise}, Shuffling:{shuffling}"
     return title 
 
+def ob_axis_description(obs_axis):
+    if obs_axis == '1100':
+        return 'Only Positions'
+    elif obs_axis == '1101':
+        return 'Positions, Angles'
+    elif obs_axis == '1110':
+        return 'Positions, Velocity'
+    else:
+        return 'Positions, Velocity, Angles'
+
 
 def plot_all(
-    path = "/home/henrik/projects/nonlineardynamics23/Flocking_1100/",
+    path = "/home/henrik/projects/nonlineardynamics23/Flocking_1100/", # path to experiment folder
     experiment = 'Flocking',
     shuffle = True,
-    test_observable_axis = ['1100','1100',],
+    test_observable_axis = ['1100','1101', '1110', '1111'],
     test_ensembles = [2,10,25,50,100],
     test_observation_noise = [0.0001,0.001,0.01,0.1,1],
+    colors = ['navy', 'darkred',
+    'darkgreen', 'orange',
+    ]
 ):
     max_lengths = {}
 
@@ -153,15 +166,16 @@ def plot_all(
             axs[j][i].set_xlabel('Observation Noise')
             axs[j][i].grid(which='major', axis='y', linestyle='--')
             
+            axs[j][i].set_ylim((0, 350))
+            axs[j][i].scatter(test_observation_noise, mls[0],)
+            axs[j][i].set_xscale('log')
+            ob_axis = ob_axis_description(f'{test_observable_axis[j]}')
+            axs[j][i].errorbar(test_observation_noise, mls[0],yerr=mls[1], capsize=5, elinewidth=1, fmt='o', c=colors[j], label=ob_axis)
             if j == 0:
                 axs[j][i].set_title(f'Ensembles: {test_ensembles[i]}')
             if i == 0:
                 axs[j][i].set_ylabel('Tracking Consistency (steps)')
-            
-            axs[j][i].set_ylim((0, 350))
-            axs[j][i].scatter(test_observation_noise, mls[0],)
-            axs[j][i].set_xscale('log')
-            axs[j][i].errorbar(test_observation_noise, mls[0],yerr=mls[1], capsize=5, elinewidth=1, fmt='o')
+                axs[j][i].legend()
     plt.tight_layout()
     plt.show()
     
