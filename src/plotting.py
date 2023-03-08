@@ -7,11 +7,13 @@ import os
 #Obtaining Data, Experiments etc. 
 ##############################################################################
 
-def get_params_metrics(exp,folder='Flocking1111'):
+def get_params_metrics(exp):
     """
     Input: Name of the folder with the Experiment
     Returns: Parameter and Metric file 
     """
+    s = exp.split('_')
+    folder = f'{s[0]}_{s[1]}'
     basepath = f'../saves/{folder}/{exp}'
     
     with open(f'{basepath}/params.json') as paramfile:
@@ -56,13 +58,23 @@ def get_avg_metric(experiment,startidx=176,metric='Average Hungarian Precision')
     
     return avg_metric
 
+def get_metric_length(experiment):
+
+    p,m = get_params_metrics(experiment)
+
+    metric = m['max_length_analysis']
+    mean = metric[0]
+    variance = metric[1]
+
+    return mean,variance 
+
 
 ##############################################################################
 #Plotting routines 
 ##############################################################################
 
 def plot_metric(ax,exp,folder='Flocking1111',metric='Average Hungarian Precision',color='Royalblue',title=True,legend=False,errors=True,label=None,yscale=True):
-    p,m = get_params_metrics(exp,folder)
+    p,m = get_params_metrics(exp)
     
     x = np.arange(0,round(p['steps']/p['timestepsize']),p['sampling_rate']*p['timestepsize'])
     y = np.array(m[metric])

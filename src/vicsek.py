@@ -98,8 +98,8 @@ class ViszecSimulation:
         agents[:,3] += self.config["timestepsize"]*av_phi_per_walker*self.config["alignment_strength"] \
             + np.random.normal(0,self.config["noisestrength"],self.config["n_particles"])*0.5*np.sqrt(self.config["timestepsize"])
         
-        agents[:,0] += np.cos(agents[:,3])*agents[:,2]
-        agents[:,1] += np.sin(agents[:,3])*agents[:,2]
+        agents[:,0] += np.cos(agents[:,3])*agents[:,2]*self.config["timestepsize"]
+        agents[:,1] += np.sin(agents[:,3])*agents[:,2]*self.config["timestepsize"]
         
         # Apply boundaries
         agents[:,0] = np.mod(agents[:,0], self.config["x_axis"])
