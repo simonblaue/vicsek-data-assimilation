@@ -41,7 +41,7 @@ def execute_experiment(
         'seeds': [np.random.randint(1,1000)],
         'steps': 200,
         'timestepsize': 1,
-        'n_particles': 20,
+        'n_particles': 1,
         'n_ensembles': 100,
         'observation_noise': 0.001,
         'alignment_strength':0.15,
@@ -89,4 +89,25 @@ def execute_experiment(
     
 
 if __name__ =="__main__":
-    execute_experiment()
+    
+    
+    parameters_for_given_data = {
+        'name': 'GivenData',
+        'seeds': [np.random.randint(1,1000)],
+        'steps': 200,
+        'timestepsize': 1,
+        'n_particles': 361,
+        'n_ensembles': 2,
+        'observation_noise': 0.000,
+        'alignment_strength':0.05,
+        'noisestrength': 0.15,
+        'velocity': 0.09,
+        'sampling_rate': 1,
+        'alignment_radius': 1,
+        'observable_axis': (True,True,True,True),
+        'x_axis': 50,
+        'y_axis': 50,
+        'find_velocities': False,
+        'shuffle_measurements': False,
+        }
+    execute_experiment(parameters_for_given_data)
