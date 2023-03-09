@@ -11,3 +11,4 @@ tests/test.ipynb
 __pycache__
 src/saves/**
 src/wrong_saves/**
+tests/test.ipynb
