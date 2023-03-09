@@ -43,7 +43,7 @@ class EnsembleKalman():
         
         self.agents = np.random.rand(self.number_particles, 4)
         
-        # self.agents[:,config["observable_axis"]] = init_state[:,config["observable_axis"]]
+        self.agents[:,config["observable_axis"]] = init_state[:,config["observable_axis"]]
              
         if not self.config["observable_axis"][0]:
             self.agents[:,0] *= self.config["x_axis"]
@@ -58,10 +58,10 @@ class EnsembleKalman():
             self.agents[:,3] *= 2*np.pi
                     
                     
-        self.agents[:,0] *= self.config["x_axis"]
-        self.agents[:,1] *= self.config["y_axis"]
-        self.agents[:,2] = self.config['velocity']
-        self.agents[:,3] *= 2*np.pi
+        # self.agents[:,0] *= self.config["x_axis"]
+        # self.agents[:,1] *= self.config["y_axis"]
+        # self.agents[:,2] = self.config['velocity']
+        # self.agents[:,3] *= 2*np.pi
         
         self.H = create_H(config["n_particles"], config["observable_axis"] )
         
