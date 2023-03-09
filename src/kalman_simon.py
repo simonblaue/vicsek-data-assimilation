@@ -43,6 +43,21 @@ class EnsembleKalman():
         
         self.agents = np.random.rand(self.number_particles, 4)
         
+        # self.agents[:,config["observable_axis"]] = init_state[:,config["observable_axis"]]
+             
+        if not self.config["observable_axis"][0]:
+            self.agents[:,0] *= self.config["x_axis"]
+            
+        if not self.config["observable_axis"][1]:
+            self.agents[:,1] *= self.config["y_axis"]
+            
+        if not self.config["observable_axis"][2]:
+            self.agents[:,2] = self.config['velocity']
+            
+        if not self.config["observable_axis"][3]:
+            self.agents[:,3] *= 2*np.pi
+                    
+                    
         self.agents[:,0] *= self.config["x_axis"]
         self.agents[:,1] *= self.config["y_axis"]
         self.agents[:,2] = self.config['velocity']
@@ -74,7 +89,8 @@ class EnsembleKalman():
         
         
         ensemble = np.tile(state, (self.number_ensembles, 1, 1)) 
-        ensemble[:,:,0:2] += np.random.normal(size=(self.number_ensembles, self.number_particles, 2), scale=0.15)
+        ensemble[:,:,0:2] += np.random.normal(size=(self.number_ensembles, self.number_particles, 2), scale=0.03)
+        ensemble[:,:,3] += np.random.normal(size=(self.number_ensembles, self.number_particles), scale=0.2) 
         
         for _ in range(self.config["sampling_rate"]):
             for j in range(self.number_ensembles):
@@ -105,20 +121,7 @@ class EnsembleKalman():
         X_tilde = foldback_dist_ensemble(forecast_ensemble, np.tile(mean_forecast, (self.number_ensembles, 1, 1)), self.config['x_axis'], self.config['y_axis'])
                      
         errors =  np.array([np.outer(e.flatten(), e.flatten()) for e in X_tilde])
-        
-        # c = 1.5
-        # new_forecast_ensemble =  np.tile(mean_forecast, (self.number_ensembles, 1, 1)) + c * X_tilde    
-        
-        # new_forecast_ensemble[:,:,0] = np.mod(new_forecast_ensemble[:,:,0], self.config['x_axis'])
-        # new_forecast_ensemble[:,:,1] = np.mod(new_forecast_ensemble[:,:,1], self.config['y_axis'])
-        
-        # new_forecast_ensemble[:,:,3] = np.mod(new_forecast_ensemble[:,:,1], self.config['y_axis'])
-        
-        # # if theata_axis:
-        # new_forecast_ensemble[:,:,3] = np.mod(np.tile(mean_forecast, (self.number_ensembles, 1, 1))[:,:,3] + c * X_tilde[:,:,3] + np.pi, 2*np.pi) - np.pi
-        
-        
-        
+                
         pf = 1/(self.number_ensembles-1) * np.sum(errors,axis = 0)
 
         return pf, forecast_ensemble
