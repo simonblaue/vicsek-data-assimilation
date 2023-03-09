@@ -12,7 +12,7 @@ The animations can be saved.
 
 def visualize_experiment(experiment_name):
 
-    experiment = f'saves/{experiment_name}/'
+    experiment = f'../saves/{experiment_name}/'
     parameters = json.load(open(f'{experiment}params.json'))
     parameters['save_name'] = 'None'
     seed_number = 0
@@ -51,9 +51,8 @@ def visualize_dataset(dataset):
     animation()
 
 if __name__ =="__main__":
-    visualize_experiment("Baseline")
     # visualize_experiment("GivenData")
-    # visualize_experiment("Random_1111/Random_1111_50_100_0.01_False")
+    visualize_experiment("Random_1111_50_100_0.01_False")
     # visualize_dataset('dat')
 
     
