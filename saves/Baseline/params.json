@@ -3,7 +3,7 @@
     "seeds": [
         608
     ],
-    "steps": 200,
+    "steps": 300,
     "timestepsize": 1,
     "n_particles": 50,
     "n_ensembles": 100,
