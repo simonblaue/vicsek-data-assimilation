@@ -51,8 +51,8 @@ def visualize_dataset(dataset):
     animation()
 
 if __name__ =="__main__":
-    # visualize_experiment("Baseline")
-    visualize_experiment("GivenData")
+    visualize_experiment("Baseline")
+    # visualize_experiment("GivenData")
     # visualize_experiment("Random_1111/Random_1111_50_100_0.01_False")
     # visualize_dataset('dat')
 

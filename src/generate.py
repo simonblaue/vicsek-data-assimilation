@@ -7,7 +7,7 @@ import os
 from tqdm.auto import tqdm
 
 from vicsek import ViszecSimulation
-from kalman import EnsembleKalman
+from kalman_simon import EnsembleKalman
 from typing import Dict, Tuple, List
 
 """
@@ -41,7 +41,7 @@ def execute_experiment(
         'seeds': [np.random.randint(1,1000)],
         'steps': 200,
         'timestepsize': 1,
-        'n_particles': 1,
+        'n_particles': 50,
         'n_ensembles': 100,
         'observation_noise': 0.001,
         'alignment_strength':0.15,
@@ -49,7 +49,7 @@ def execute_experiment(
         'velocity': 0.05,
         'sampling_rate': 1,
         'alignment_radius': 1,
-        'observable_axis': (True,True,True,True),
+        'observable_axis': (True,True,False,False),
         'x_axis': 10,
         'y_axis': 10,
         'find_velocities': False,
@@ -110,4 +110,4 @@ if __name__ =="__main__":
         'find_velocities': False,
         'shuffle_measurements': False,
         }
-    execute_experiment(parameters_for_given_data)
+    execute_experiment()

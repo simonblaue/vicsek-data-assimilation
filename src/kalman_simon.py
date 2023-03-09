@@ -68,12 +68,17 @@ class EnsembleKalman():
         return shuffled_idxs[assign_idxs]
     
     
-    def create_forecast_ensemble(self, state):
-        ensemble = np.tile(state, (self.number_ensembles, 1, 1))  
+    def create_forecast_ensemble(self, agents):
+        
+        state = agents.copy()
+        
+        
+        ensemble = np.tile(state, (self.number_ensembles, 1, 1)) 
+        ensemble[:,:,0:2] += np.random.normal(size=(self.number_ensembles, self.number_particles, 2), scale=0.15)
         
         for _ in range(self.config["sampling_rate"]):
             for j in range(self.number_ensembles):
-                ensemble[j] = self.model_forecast(ensemble[j])
+                ensemble[j] = self.model_forecast(ensemble[j]) 
                 
         return ensemble
     
@@ -93,17 +98,30 @@ class EnsembleKalman():
         
         # forecast_ensemble = ensemble.reshape(self.number_ensembles,self.number_particles, self.number_dims)
         
+        
         mean_forecast = mean_over_ensemble(forecast_ensemble, self.config['x_axis'], self.config['y_axis'])
            
         # Errors within the ensemble = distance between ensemble members and the mean ensemble 
-        errors = foldback_dist_ensemble(forecast_ensemble, np.tile(mean_forecast, (self.number_ensembles, 1, 1)), self.config['x_axis'], self.config['y_axis'])
-                                
-        pf = 1/(self.number_ensembles-1) * np.sum(
-                np.array([np.outer(e.flatten(), e.flatten()) for e in errors]),
-                axis = 0
-            )
+        X_tilde = foldback_dist_ensemble(forecast_ensemble, np.tile(mean_forecast, (self.number_ensembles, 1, 1)), self.config['x_axis'], self.config['y_axis'])
+                     
+        errors =  np.array([np.outer(e.flatten(), e.flatten()) for e in X_tilde])
         
-        return pf
+        # c = 1.5
+        # new_forecast_ensemble =  np.tile(mean_forecast, (self.number_ensembles, 1, 1)) + c * X_tilde    
+        
+        # new_forecast_ensemble[:,:,0] = np.mod(new_forecast_ensemble[:,:,0], self.config['x_axis'])
+        # new_forecast_ensemble[:,:,1] = np.mod(new_forecast_ensemble[:,:,1], self.config['y_axis'])
+        
+        # new_forecast_ensemble[:,:,3] = np.mod(new_forecast_ensemble[:,:,1], self.config['y_axis'])
+        
+        # # if theata_axis:
+        # new_forecast_ensemble[:,:,3] = np.mod(np.tile(mean_forecast, (self.number_ensembles, 1, 1))[:,:,3] + c * X_tilde[:,:,3] + np.pi, 2*np.pi) - np.pi
+        
+        
+        
+        pf = 1/(self.number_ensembles-1) * np.sum(errors,axis = 0)
+
+        return pf, forecast_ensemble
         
 
     def update(self, _measurement: np.ndarray, ) -> np.ndarray:
@@ -118,7 +136,7 @@ class EnsembleKalman():
             forecast_ensemble = self.create_forecast_ensemble(self.agents)
             
             # Ensemble Covariance
-            PF = self.create_ensemble_covariance(forecast_ensemble)
+            PF, forecast_ensemble = self.create_ensemble_covariance(forecast_ensemble)
 
             # Virtual observation = Measurement + Noise 
             virtual_observations = self.create_virtual_observations_ensemble(measurement)
