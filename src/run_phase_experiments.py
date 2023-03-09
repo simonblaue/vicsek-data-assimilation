@@ -11,7 +11,7 @@ parameters = {
         'steps': 300,
         'timestepsize': 1,
         'n_particles': 50,
-        'n_ensembles': 100,
+        'n_ensembles': 50,
         'observation_noise': 0.001,
         'alignment_strength':0.05,
         'noisestrength': 0.15,
@@ -57,4 +57,4 @@ def run_phase(phasedict):
 
 
 if __name__ == "__main__":
-    run_phase(phase_2_random)
+    run_phase(phase_1_flocking)
