@@ -2,7 +2,7 @@
 import numpy as np
 from pathlib import Path
 import json
-from animation import Animation
+from visualization.animation import Animation
 
 """
 This script is called to animate the simulation with a given set of parameters.
@@ -15,7 +15,6 @@ def visualize_experiment(experiment_name):
 
     experiment = f'saves/{experiment_name}/'
     parameters = json.load(open(f'{experiment}params.json'))
-    parameters['save_name'] = 'WithOut_Artifical_Noise'
     seed_number = 0
     seed = int(parameters['seeds'][seed_number])
     parameters['experimentid'] = f'{experiment}{seed}'
@@ -51,11 +50,6 @@ def visualize_dataset(dataset):
     animation = Animation(parameters)
     animation()
 
-if __name__ =="__main__":
-    visualize_experiment("Baseline")
-    # visualize_experiment("GivenData")
-    # visualize_experiment("Random_1111_50_100_0.01_False")
-    # visualize_dataset('dat')
 
     
     

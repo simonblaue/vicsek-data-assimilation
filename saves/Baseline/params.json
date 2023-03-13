@@ -1,7 +1,7 @@
 {
     "name": "Baseline",
     "seeds": [
-        1
+        2
     ],
     "steps": 200,
     "timestepsize": 1,
@@ -23,7 +23,7 @@
     "shuffle_measurements": false,
     "ensemble_pos_noise": 0.03,
     "ensemble_theta_noise": 0.2,
-    "save_name": null,
+    "save_name": "None",
     "theta_observerd": true,
-    "total_runtime": 121.67486500740051
+    "total_runtime": 122.84569978713989
 }

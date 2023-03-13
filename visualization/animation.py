@@ -190,9 +190,9 @@ class Animation():
             blit=False
         )
 
-        # if self.config['save_name']:
-        #     filename = f"../vicsek-data-assimilation/saves/animations/{self.config['save_name']}.gif"
-        #     print(f'Saving as {filename}')
-        #     anim.save(filename)
+        if self.config['save_name'] != 'None':
+            filename = f"../vicsek-data-assimilation/saves/animations/{self.config['save_name']}.gif"
+            print(f'Saving as {filename}')
+            anim.save(filename)
         plt.show()
         return anim

@@ -70,48 +70,4 @@ def execute_experiment(parameters):
 
 
 
-if __name__ =="__main__":
     
-    os.path
-    
-    base_parameters = {
-        'name': 'Baseline',
-        'seeds': [np.random.randint(1,5)],
-        'steps': 200,
-        'timestepsize': 1,
-        'n_particles': 50,
-        'n_ensembles': 50,
-        'observation_noise': 0.1,
-        'alignment_strength':0.05,
-        'noisestrength': 0.15,
-        'velocity': 0.05,
-        'sampling_rate': 1,
-        'alignment_radius': 1,
-        'observable_axis': (True,True,True,True),
-        'box_size': 10,
-        'shuffle_measurements': False,
-        'ensemble_pos_noise' : 0.03,
-        'ensemble_theta_noise': 0.2,
-        'save_name' : None
-        }
-
-    parameters_for_given_data = {
-        'name': 'GivenData',
-        'seeds': [np.random.randint(1,5)],
-        'steps': 200,
-        'timestepsize': 1,
-        'n_particles': 361,
-        'n_ensembles': 2,
-        'observation_noise': 0.000,
-        'alignment_strength':0.05,
-        'noisestrength': 0.15,
-        'velocity': 0.09,
-        'sampling_rate': 1,
-        'alignment_radius': 1,
-        'observable_axis': (True,True,True,True),
-        'x_axis': 50,
-        'y_axis': 50,
-        'find_velocities': False,
-        'shuffle_measurements': False,
-        }
-    execute_experiment(base_parameters)

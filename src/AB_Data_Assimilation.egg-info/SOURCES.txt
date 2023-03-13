@@ -2,6 +2,7 @@
 .gitignore
 README.md
 Readme.md
+main.py
 pyproject.toml
 analyze/__init__.py
 analyze/analyze.py

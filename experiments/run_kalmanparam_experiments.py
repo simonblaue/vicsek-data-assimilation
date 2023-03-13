@@ -2,13 +2,13 @@
 from tqdm.auto import tqdm
 
 
-import experiments.run_phase_experiments as run_phase_experiments
-from parameters import parameters
+
+
 from analyze.analyze import read_and_eval
-from src.generate import execute_experiment
+from src.generate import execute_experiment, base_parameters
 from src.misc import bools2str
 
-
+parameters = base_parameters
 test_observable_axis = [(True,True,True,True),(True,True,True,False),(True,True,False,False),(True,True,False,True)]
 test_ensembles = [2,10,25,50,100]
 test_observation_noise = [0.0001,0.001,0.01,0.1,1]
@@ -67,6 +67,4 @@ def ensemble_size_exp():
         execute_experiment(parameters)
         read_and_eval(name)
         
-if __name__ == "__main__":
-    grid_search(parameters,run_phase_experiments.phase_1_flocking, "Flocking")
-    grid_search(parameters,run_phase_experiments.phase_2_random, "Random")
+
