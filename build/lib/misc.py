@@ -136,9 +136,9 @@ def assign_fn(measurement_positions, state_positions, box_size):
 
 ###### METRICS
 
-def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: np.ndarray, box_size:float) -> float:
+def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: np.ndarray, boundary:float) -> float:
     n_particles = np.shape(viscek_positions)[0]
-    cost_matrix = absolute_distances_with_periodic_box_size(viscek_positions, kalman_positions, box_size=box_size)
+    cost_matrix = absolute_distances_with_periodic_box_size(viscek_positions, kalman_positions, box_size=boundary)
     rowid, col_id = linear_sum_assignment(cost_matrix)
     precision = 1/n_particles*sum(np.diag(np.ones(n_particles))[rowid, col_id])
     return precision

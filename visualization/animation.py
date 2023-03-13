@@ -62,8 +62,8 @@ class Animation():
         self.axes[2]=self.fig.add_subplot(self.gs[1,:])
         
     def set_axis(self, ax: Axes, title: str):
-        ax.set_xlim(-self.config['boundary'], self.config['x_axis']+self.config['boundary'])
-        ax.set_ylim(-self.config['boundary'], self.config['y_axis']+self.config['boundary'])
+        ax.set_xlim(-self.config['boundary'], self.config['box_size']+self.config['boundary'])
+        ax.set_ylim(-self.config['boundary'], self.config['box_size']+self.config['boundary'])
         ax.set_title(title)
         ax.set_aspect('equal', 'box')
         ax.grid(alpha=0.25)
@@ -109,7 +109,7 @@ class Animation():
         hungarian_precision = metric_hungarian_precision(
             model_positions,
             self.filteragents[:,0:2],
-            boundary=self.config["x_axis"],
+            boundary=self.config["box_size"],
         )
         lpp = metric_lost_particles(
             model_positions, 
@@ -189,10 +189,10 @@ class Animation():
             interval=self.config['plot_interval'], 
             blit=False
         )
-        # TODO: cover none cases
-        if self.config['save_name'] != 'None':
-            filename = f"../vicsek-data-assimilation/saves/animations/{self.config['save_name']}.gif"
-            print(f'Saving as {filename}')
-            anim.save(filename)
+
+        # if self.config['save_name']:
+        #     filename = f"../vicsek-data-assimilation/saves/animations/{self.config['save_name']}.gif"
+        #     print(f'Saving as {filename}')
+        #     anim.save(filename)
         plt.show()
         return anim

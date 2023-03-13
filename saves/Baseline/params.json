@@ -1,12 +1,12 @@
 {
     "name": "Baseline",
     "seeds": [
-        6
+        1
     ],
-    "steps": 300,
+    "steps": 200,
     "timestepsize": 1,
     "n_particles": 50,
-    "n_ensembles": 100,
+    "n_ensembles": 50,
     "observation_noise": 0.1,
     "alignment_strength": 0.05,
     "noisestrength": 0.15,
@@ -23,6 +23,7 @@
     "shuffle_measurements": false,
     "ensemble_pos_noise": 0.03,
     "ensemble_theta_noise": 0.2,
+    "save_name": null,
     "theta_observerd": true,
-    "total_runtime": 199.81769680976868
+    "total_runtime": 121.67486500740051
 }

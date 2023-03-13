@@ -44,7 +44,7 @@ def execute_experiment(parameters):
         # print(f'Running experiment {experimentname} with seed {seed}')
 
         # experiment_path = f'/saves/{experimentname}/'
-        experiment_path = f'../saves/{experimentname}/'
+        experiment_path = f'saves/{experimentname}/'
         if not os.path.exists(experiment_path):
             # print("Created new Directory!")
             os.makedirs(experiment_path)
@@ -71,13 +71,16 @@ def execute_experiment(parameters):
 
 
 if __name__ =="__main__":
+    
+    os.path
+    
     base_parameters = {
         'name': 'Baseline',
         'seeds': [np.random.randint(1,5)],
-        'steps': 300,
+        'steps': 200,
         'timestepsize': 1,
         'n_particles': 50,
-        'n_ensembles': 100,
+        'n_ensembles': 50,
         'observation_noise': 0.1,
         'alignment_strength':0.05,
         'noisestrength': 0.15,
@@ -89,6 +92,7 @@ if __name__ =="__main__":
         'shuffle_measurements': False,
         'ensemble_pos_noise' : 0.03,
         'ensemble_theta_noise': 0.2,
+        'save_name' : None
         }
 
     parameters_for_given_data = {
