@@ -16,7 +16,7 @@ def get_params_metrics(exp):
     """
     s = exp.split('_')
     folder = f'{s[0]}_{s[1]}'
-    basepath = f'../saves/{folder}/{exp}'
+    basepath = f'saves/{folder}/{exp}'
     
     with open(f'{basepath}/params.json') as paramfile:
         params = json.load(paramfile)
@@ -27,7 +27,7 @@ def get_params_metrics(exp):
     return params,metrics
 
 
-def get_experiments(basepath='../saves/',folder='Flocking1111'):
+def get_experiments(basepath='saves/',folder='Flocking1111'):
     """
     Input: Path of the Saves Folder
     Output: A list of all Experiment names
@@ -139,7 +139,7 @@ def get_header(exp):
 # experiment particles ensembles obs position theta
 
 def plot_all(
-    path = "/home/henrik/projects/nonlineardynamics23/saves_new/", # path to experiment folder
+    path = "saves/", # path to experiment folder
     experiment = 'Flocking',
     ensembles = [10, 25, 50, 75][3],
     colors = ['navy', 'darkred', 'orange',
@@ -184,8 +184,6 @@ def plot_all(
                 axs[j][i].legend()
     plt.title(f'Ensebles: {ensembles}')
     plt.tight_layout()
-    plt.savefig(f'../nonlineardynamics23/vicsek-data-assimilation/saves/plots/grid_seach_{ensembles}.jpg')
+    plt.savefig(f'saves/plots/grid_seach_{ensembles}.jpg')
     plt.show()
     
-if __name__ == "__main__":
-    plot_all()

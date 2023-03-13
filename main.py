@@ -8,6 +8,8 @@ from experiments.parameters import base_parameters, parameters_for_given_data, p
 from experiments.run_kalmanparam_experiments import grid_search as kalmanparam_grid_search
 from experiments.run_noise_experiments import grid_search as noise_grid_search
 
+from visualization.plotting import plot_all
+
 if __name__ == "__main__":
     """
     Uncomment the lines you want to execute
@@ -20,3 +22,5 @@ if __name__ == "__main__":
     # kalmanparam_grid_search(base_parameters,phase_2_random, "Random")
     
     #noise_grid_search(base_parameters,phase_1_flocking, "Flocking")
+    
+    #plot_all()
