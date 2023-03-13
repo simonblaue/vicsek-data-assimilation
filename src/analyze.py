@@ -14,7 +14,7 @@ def read_and_eval(experiment_name):
     evaluate_experiment(filter_states, model_states, params)
 
 def read_experiment(experiment_name : str):
-    folder = "saves/"+ experiment_name + "/"
+    folder = "../saves/"+ experiment_name + "/"
     experiment_params  = json.load(open(folder + "params.json"))
     seeds = experiment_params['seeds']
     model_states = []
@@ -28,7 +28,7 @@ def read_experiment(experiment_name : str):
 def evaluate_experiment(model_states, filter_states, experiment_params):
     
     experiment_name = experiment_params['name']
-    experiment_path = f'saves/{experiment_name}/'
+    experiment_path = f'../saves/{experiment_name}/'
     if os.path.exists(f'{experiment_path}metrics.json'):
         return
     
@@ -189,14 +189,14 @@ def analyze_single_experiment(path: str,):
     axs[0].set_ylabel('Assignments')
     axs[1].set_ylabel('Metric')
     fig.suptitle(f'Experiment: {str(Path(path).name)}')
-    plt.savefig('../vicsek-data-assimilation/saves/plots/single_experiment.jpg')
+    plt.savefig('saves/plots/single_experiment.jpg')
     plt.show()
 
         
 if __name__ == "__main__":
     # read_and_eval('Obsv_noise_0.1')
     # print(list(Path('../saves').iterdir())[0])
-    p = 'Flocking_1111_50_50_0.1_True/'
+    p = 'Flocking_50_10_0.01_0.1_0.08/'
     analyze_single_experiment(p)
     
     # applying changes to all files

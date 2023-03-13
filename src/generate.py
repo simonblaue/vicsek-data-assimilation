@@ -39,21 +39,24 @@ def execute_experiment(
     parameters = {
         'name': 'Baseline',
         'seeds': [np.random.randint(1,1000)],
-        'steps': 200,
+        'steps': 300,
         'timestepsize': 1,
-        'n_particles': 50,
-        'n_ensembles': 100,
-        'observation_noise': 0.05,
+        'n_particles': 10,
+        'n_ensembles': 75,
+        'observation_noise': 0.01,
         'alignment_strength':0.15,
         'noisestrength': 0.15,
         'velocity': 0.05,
         'sampling_rate': 1,
         'alignment_radius': 1,
-        'observable_axis': (True,True,False,False),
+        'observable_axis': (True,True,True,False),
         'x_axis': 10,
         'y_axis': 10,
         'find_velocities': False,
         'shuffle_measurements': False,
+        'ensemble_theta_noise': 0.,
+        'ensemble_pos_noise' : 0.00,
+        'save_name' : "With_Artificall_Noise"
         }):
     
     parameters['theta_observerd'] = parameters['observable_axis'][-1] 
@@ -64,9 +67,9 @@ def execute_experiment(
         # print(f'Running experiment {experimentname} with seed {seed}')
 
         # experiment_path = f'/saves/{experimentname}/'
-        experiment_path = f'saves/{experimentname}/'
+        experiment_path = f'../saves/{experimentname}/'
         if not os.path.exists(experiment_path):
-            print("Created new Directory!")
+            # print("Created new Directory!")
             os.makedirs(experiment_path)
             
         if os.path.exists(experiment_path+f'{seed}_model.npy'):

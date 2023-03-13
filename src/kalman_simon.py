@@ -89,8 +89,8 @@ class EnsembleKalman():
         
         
         ensemble = np.tile(state, (self.number_ensembles, 1, 1)) 
-        ensemble[:,:,0:2] += np.random.normal(size=(self.number_ensembles, self.number_particles, 2), scale=0.03)
-        ensemble[:,:,3] += np.random.normal(size=(self.number_ensembles, self.number_particles), scale=0.2) 
+        ensemble[:,:,0:2] += np.random.normal(size=(self.number_ensembles, self.number_particles, 2), scale=self.config["ensemble_pos_noise"])
+        ensemble[:,:,3] += np.random.normal(size=(self.number_ensembles, self.number_particles), scale=self.config["ensemble_theta_noise"]) 
         
         for _ in range(self.config["sampling_rate"]):
             for j in range(self.number_ensembles):
