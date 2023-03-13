@@ -7,6 +7,24 @@ from misc import assign_fn, mean_over_ensemble, foldback_dist_states, foldback_d
 This file contains the Kalman filterclass
 """
 
+
+def create_H(particle_number, oax):
+    z_dim = particle_number * sum(oax)
+    x_dim = particle_number * len(oax)
+    oax_ints =  [int(b) for b in oax]
+    H = np.zeros((z_dim, x_dim))
+    i = 0
+    j = 0
+    while i < x_dim:
+        for value in oax_ints:
+            # print(i)
+            if value == 1:
+                H[j,i] = value
+                j += 1
+            i+=1
+            # print(H)
+    return H
+
 class EnsembleKalman():
     def __init__(self, config, forecast_func, init_state):
         """
@@ -15,17 +33,44 @@ class EnsembleKalman():
         
         """
         self.config = config
-        self.agents = np.random.rand(self.config["n_particles"], 4)
-        self.agents[:,0] *= self.config["x_axis"]
-        self.agents[:,1] *= self.config["y_axis"]
-        self.agents[:,2] = self.config['velocity']
-        self.agents[:,3] *= 2*np.pi
+        
+        self.number_particles = config['n_particles']
+        
+        self.number_ensembles = config['n_ensembles']
 
-        #self.agents = init_state
-        # print(self.agents.shape)
         self.model_forecast = forecast_func
         
+        
+        self.agents = np.random.rand(self.number_particles, 4)
+        
+        self.agents[:,config["observable_axis"]] = init_state[:,config["observable_axis"]]
+             
+        if not self.config["observable_axis"][0]:
+            self.agents[:,0] *= self.config["x_axis"]
+            
+        if not self.config["observable_axis"][1]:
+            self.agents[:,1] *= self.config["y_axis"]
+            
+        if not self.config["observable_axis"][2]:
+            self.agents[:,2] = self.config['velocity']
+            
+        if not self.config["observable_axis"][3]:
+            self.agents[:,3] *= 2*np.pi
+                    
+                    
+        # self.agents[:,0] *= self.config["x_axis"]
+        # self.agents[:,1] *= self.config["y_axis"]
+        # self.agents[:,2] = self.config['velocity']
+        # self.agents[:,3] *= 2*np.pi
+        
+        self.H = create_H(config["n_particles"], config["observable_axis"] )
+        
+        self.number_obs = sum(config["observable_axis"])
+        self.number_dims = len(config["observable_axis"])
+        
+
         self._idxs = np.arange(0, config['n_particles'], dtype=np.uint8)
+        
         
     def suffle_and_reassign(self, measurement_pos, agents_pos):
         shuffled_idxs = self._idxs.copy()
@@ -38,24 +83,48 @@ class EnsembleKalman():
         return shuffled_idxs[assign_idxs]
     
     
-    def create_forecast_ensemble(self, state):
-        ensemble = np.tile(state, (self.config["n_ensembles"], 1, 1))  
+    def create_forecast_ensemble(self, agents):
+        
+        state = agents.copy()
+        
+        
+        ensemble = np.tile(state, (self.number_ensembles, 1, 1)) 
+        ensemble[:,:,0:2] += np.random.normal(size=(self.number_ensembles, self.number_particles, 2), scale=self.config["ensemble_pos_noise"])
+        ensemble[:,:,3] += np.random.normal(size=(self.number_ensembles, self.number_particles), scale=self.config["ensemble_theta_noise"]) 
         
         for _ in range(self.config["sampling_rate"]):
-            for j in range(self.config["n_ensembles"]):
-                ensemble[j] = self.model_forecast(ensemble[j])
+            for j in range(self.number_ensembles):
+                ensemble[j] = self.model_forecast(ensemble[j]) 
                 
-            
         return ensemble
+    
+        
     
     # TODO for parameter estimation 4 hardcoded = bad 
     def create_virtual_observations_ensemble(self, measured_state):
         virtual_observations = (
-                np.tile(measured_state, (self.config["n_ensembles"], 1, 1)) + 
-                np.random.normal(size=(self.config["n_ensembles"],self.config["n_particles"], 4), scale=self.config["observation_noise"])
+                np.tile(measured_state, (self.number_ensembles, 1, 1)) + 
+                np.random.normal(size=(self.number_ensembles,self.number_particles, 4), scale=self.config["observation_noise"])
             )
         # print(virtual_observations)
         return virtual_observations
+    
+    
+    def create_ensemble_covariance(self, forecast_ensemble):
+        
+        # forecast_ensemble = ensemble.reshape(self.number_ensembles,self.number_particles, self.number_dims)
+        
+        
+        mean_forecast = mean_over_ensemble(forecast_ensemble, self.config['x_axis'], self.config['y_axis'])
+           
+        # Errors within the ensemble = distance between ensemble members and the mean ensemble 
+        X_tilde = foldback_dist_ensemble(forecast_ensemble, np.tile(mean_forecast, (self.number_ensembles, 1, 1)), self.config['x_axis'], self.config['y_axis'])
+                     
+        errors =  np.array([np.outer(e.flatten(), e.flatten()) for e in X_tilde])
+                
+        pf = 1/(self.number_ensembles-1) * np.sum(errors,axis = 0)
+
+        return pf, forecast_ensemble
         
 
     def update(self, _measurement: np.ndarray, ) -> np.ndarray:
@@ -66,66 +135,39 @@ class EnsembleKalman():
             measurement = _measurement[predicted_idxs]
 
                 
-            #generating forecast ensamples
+            #Generating forecast ensamples
             forecast_ensemble = self.create_forecast_ensemble(self.agents)
             
-            #step the forecast ensemble
+            # Ensemble Covariance
+            PF, forecast_ensemble = self.create_ensemble_covariance(forecast_ensemble)
 
             # Virtual observation = Measurement + Noise 
             virtual_observations = self.create_virtual_observations_ensemble(measurement)
-            
-            # Set velocity onto this one value if we dont want to approximate it
-            if not self.config['find_velocities']:
-                virtual_observations[:,:,2] = forecast_ensemble[:,:,2]
-                
             virtual_observations = virtual_observations[:,:,self.config["observable_axis"]]
-            # print(np.var(virtual_observations, axis=0)[0][0])
-
-            # Mean forecast over ensembles 
-            mean_forecast = mean_over_ensemble(forecast_ensemble, self.config['x_axis'], self.config['y_axis'])
-            # print(mean_forecast[:,3])
-            # Errors within the ensemble = distance between ensemble members and the mean ensemble 
-            errors = foldback_dist_ensemble(forecast_ensemble, np.tile(mean_forecast, (self.config["n_ensembles"], 1, 1)), self.config['x_axis'], self.config['y_axis'])
-                    
-            # Forecast ensemble covariance
-            pf = 1/(self.config["n_ensembles"]-1) * np.sum(
-                [np.matmul(e, e.T) for e in errors],
-                axis = 0
-            )
             
             # Virtual observation covariance
-            R = np.diag(np.ones(self.config["n_particles"])) * self.config["observation_noise"]
+            R = np.eye(self.number_particles*self.number_obs, self.number_particles*self.number_obs) * self.config["observation_noise"]
 
             # Kalman Gain is calculated using the pseudo inverse 
-            K = np.matmul(pf, scipy.linalg.pinv(pf+R))
+            K = PF @ self.H.T @ scipy.linalg.pinv(self.H @ PF @ self.H.T + R)
             
-            # K = np.zeros((self.config["n_particles"], self.config["n_particles"]))
-
-            # Update the forecasts            
-            where_list = [i for i,m in enumerate(self.config["observable_axis"]) if not m]
             
-            for i,m in enumerate(where_list):
-                if m > virtual_observations.shape[2]:
-                    where_list[i] = virtual_observations.shape[2]
-            
-            ## Foldback 
-            ensemble_update = [
-                x + np.insert(
-                    K @ foldback_dist_states(z,x[:,self.config["observable_axis"]],self.config["x_axis"], self.config["y_axis"], theat_axis=self.config['theta_observerd'] ), 
-                    where_list,
-                    np.zeros((self.config["n_particles"],1)),
-                    axis = 1) 
+            ensemble_update = np.array([ 
+                x + (K @ foldback_dist_states(z, \
+                    (self.H @ x.flatten()).reshape(self.number_particles, self.number_obs),\
+                        self.config["x_axis"], \
+                        self.config["y_axis"], \
+                        theat_axis=self.config['theta_observerd']).flatten()).reshape(self.number_particles, self.number_dims)
                 for x, z in zip(forecast_ensemble, virtual_observations)
-            ]
+            ])
             
-                        
+            
             # Updated state is mean over the updated ensemble members 
             agents = mean_over_ensemble(np.array(ensemble_update),self.config["x_axis"], self.config["y_axis"] )
             
             agents[:,0] = np.mod(agents[:,0], self.config["x_axis"])
             agents[:,1] = np.mod(agents[:,1], self.config["y_axis"])
             
-            # print(f'Update time:\t{time.time()-t}')
 
             return agents, predicted_idxs
 

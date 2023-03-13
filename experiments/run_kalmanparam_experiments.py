@@ -1,9 +1,9 @@
 from generate import execute_experiment
-from analyze import read_and_eval
+from analyze.analyze import read_and_eval
 from misc import bools2str
 import os
 from tqdm import tqdm
-import run_phase_experiments
+import experiments.run_phase_experiments as run_phase_experiments
 import numpy as np
 
 parameters = {

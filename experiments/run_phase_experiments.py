@@ -1,5 +1,5 @@
 from generate import execute_experiment
-from analyze import read_and_eval
+from analyze.analyze import read_and_eval
 from misc import bools2str
 import os
 from tqdm import tqdm

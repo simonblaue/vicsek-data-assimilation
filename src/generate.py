@@ -7,7 +7,7 @@ import os
 from tqdm.auto import tqdm
 
 from vicsek import ViszecSimulation
-from kalman_simon import EnsembleKalman
+from kalman import EnsembleKalman
 from typing import Dict, Tuple, List
 
 """

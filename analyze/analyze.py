@@ -6,7 +6,7 @@ import os
 from typing import Dict, List
 from pathlib import Path
 from misc import bools2str
-from parameters import load_parameters
+from experiments.parameters import load_parameters
 import matplotlib.pyplot as plt
 
 def read_and_eval(experiment_name):

@@ -2,7 +2,7 @@
 import numpy as np
 from pathlib import Path
 import json
-from animation import Animation
+from visualization.animation import Animation
 
 """
 This script is called to animate the simulation with a given set of parameters.
