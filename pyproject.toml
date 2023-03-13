@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "AB_Data_Assimilation"
+authors = [
+    {name = "Simon Blaue", email = "mail@simonblaue.de"},
+    {name = "Henrik Trommer"},
+    {name = "Joel Wagner", email = "mail@simonblaue.de"},
+]
+description = "This is the result of a 2 week seminar on EnKF on agent based systems."
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["Kalman Filter", "Agent Abased", "Time Series Analysis"]
+license = {text = "BSD-3-Clause"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "scipy",
+    "tqdm",
+    "numpy",
+    "matplotlib",
+]
+version = "0.0.1"
