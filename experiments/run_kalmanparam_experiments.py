@@ -1,11 +1,9 @@
 
 from tqdm.auto import tqdm
 
-
-
-
+from experiments.parameters import base_parameters
 from analyze.analyze import read_and_eval
-from src.generate import execute_experiment, base_parameters
+from src.generate import execute_experiment
 from src.misc import bools2str
 
 parameters = base_parameters

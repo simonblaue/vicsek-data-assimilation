@@ -5,7 +5,7 @@ import src.kalman
 import src.vicsek
 
 
-DATASET_PATH = "../dataset/external_states_model.npy"
+DATASET_PATH = "dataset/external_states_model.npy"
 
 parameters = {
         'name': 'Dataset',

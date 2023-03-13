@@ -1,5 +1,5 @@
 
-from src.generate import execute_experiment, parameters_for_given_data
+from src.generate import execute_experiment
 from visualization.visualize import visualize_experiment, visualize_dataset
 
 from experiments.parameters import base_parameters, parameters_for_given_data, phase_1_flocking, phase_2_random, phase_3_jonas
@@ -15,12 +15,12 @@ if __name__ == "__main__":
     Uncomment the lines you want to execute
     """
 
-    execute_experiment(base_parameters) # You can change the parameters to parameters_for_given_data, phase_1_flocking, phase_2_random, phase_3_jonas
-    visualize_experiment(experiment_name=base_parameters["name"])
+    # execute_experiment(base_parameters) # You can change the parameters to parameters_for_given_data, phase_1_flocking, phase_2_random, phase_3_jonas
+    # visualize_experiment(experiment_name=base_parameters["name"])
     
     # kalmanparam_grid_search(base_parameters,phase_1_flocking, "Flocking")
     # kalmanparam_grid_search(base_parameters,phase_2_random, "Random")
     
-    #noise_grid_search(base_parameters,phase_1_flocking, "Flocking")
+    noise_grid_search(base_parameters,phase_1_flocking, "Flocking")
     
     #plot_all()

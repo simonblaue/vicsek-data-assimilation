@@ -17,7 +17,7 @@ def grid_search(parameters,phaseparameters, kind):
     for p in phaseparameters:
         parameters[p] = phaseparameters[p]
         
-    parameters["seed"] = [0,1,2,3]
+    parameters["seeds"] = [0,1,2,3]
     
     for observation_noise in tqdm(test_observation_noise, position=0, leave=False):
         for ensemble_pos_noise in tqdm(ensemble_pos_noises, position=1, leave=False):
