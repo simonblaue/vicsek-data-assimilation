@@ -55,23 +55,35 @@ def format_e(n):
 
 ###### MATHS
 
-def periodic_distant_vectors(vectors, x_size, y_size):
+def periodic_distant_vectors(vectors, box_size):
     
     assert vectors.shape[-1] == 2, f"Dont pass angles in this function you dumbo!, { vectors.shape[-1]}"
     
-    vectors[:,:,0] = np.where(vectors[:,:,0]>x_size/2,vectors[:,:,0]-x_size,vectors[:,:,0])
-    vectors[:,:,0] = np.where(vectors[:,:,0]<-x_size/2,vectors[:,:,0]+x_size,vectors[:,:,0])
-    vectors[:,:,1] = np.where(vectors[:,:,1]>y_size/2,vectors[:,:,1]-y_size,vectors[:,:,1])
-    vectors[:,:,1] = np.where(vectors[:,:,1]<-y_size/2,vectors[:,:,1]+y_size,vectors[:,:,1])
+    vectors[:,:,0:2] = np.where(vectors[:,:,0]>box_size/2,vectors[:,:,0]-box_size,vectors[:,:,0])
+    vectors[:,:,0:2] = np.where(vectors[:,:,0]<-box_size/2,vectors[:,:,0]+box_size,vectors[:,:,0])
+
     
     return vectors
 
-def foldback_dist_ensemble(ensemble_a, ensemble_b, x_size, y_size):
+
+def absolute_distances_with_periodic_box_size(
+    a_positions,
+    b_positions,        
+    box_size,
+):
+    _a1 = np.tile(a_positions, (a_positions.shape[0], 1, 1))
+    _b1 = np.tile(b_positions, (b_positions.shape[0], 1, 1))
+    _b1 = np.transpose(_b1, axes=(1, 0, 2))
+    distances = _a1-_b1
+    
+    distances = periodic_distant_vectors(distances, box_size)
+        
+    return np.linalg.norm(distances, axis=2)
+
+def foldback_dist_ensemble(ensemble_a, ensemble_b, box_size):
     vectors = ensemble_a - ensemble_b
-    vectors[:,:,0] = np.where(vectors[:,:,0]>x_size/2,vectors[:,:,0]-x_size,vectors[:,:,0])
-    vectors[:,:,0] = np.where(vectors[:,:,0]<-x_size/2,vectors[:,:,0]+x_size,vectors[:,:,0])
-    vectors[:,:,1] = np.where(vectors[:,:,1]>y_size/2,vectors[:,:,1]-y_size,vectors[:,:,1])
-    vectors[:,:,1] = np.where(vectors[:,:,1]<-y_size/2,vectors[:,:,1]+y_size,vectors[:,:,1])
+    vectors[:,:,0:2] = np.where(vectors[:,:,0]>box_size/2,vectors[:,:,0]-box_size,vectors[:,:,0])
+    vectors[:,:,0:2] = np.where(vectors[:,:,0]<-box_size/2,vectors[:,:,0]+box_size,vectors[:,:,0])
     
     vectors[:,:,3] = np.angle(np.exp(1j* (ensemble_a[:,:,3] - ensemble_b[:,:,3]) ))
     
@@ -79,72 +91,54 @@ def foldback_dist_ensemble(ensemble_a, ensemble_b, x_size, y_size):
     
 
 
-def foldback_dist_states(state_a, state_b, x_size, y_size, theat_axis=3):
+def foldback_dist_states(state_a, state_b, box_size, theta_axis=-1):
     
     vectors = state_a - state_b
 
-    vectors[:,0] = np.where(vectors[:,0]>x_size/2,vectors[:,0]-x_size,vectors[:,0])
-    vectors[:,0] = np.where(vectors[:,0]<-x_size/2,vectors[:,0]+x_size,vectors[:,0])
-    vectors[:,1] = np.where(vectors[:,1]>y_size/2,vectors[:,1]-y_size,vectors[:,1])
-    vectors[:,1] = np.where(vectors[:,1]<-y_size/2,vectors[:,1]+y_size,vectors[:,1])
+    vectors[:,0:2] = np.where(vectors[:,0]>box_size/2,vectors[:,0]-box_size,vectors[:,0])
+    vectors[:,0:2] = np.where(vectors[:,0]<-box_size/2,vectors[:,0]+box_size,vectors[:,0])
     
     # Theta axis is false or -1
-    if theat_axis:
+    if theta_axis:
         vectors[:,-1] = np.mod(state_a[:,-1] - state_b[:,-1] + np.pi, 2*np.pi) - np.pi
     
     return vectors
 
-def mean_over_ensemble(ensemble, x_size, y_size):
+def mean_over_ensemble(ensemble, box_size):
     
     p1 = ensemble[0,:,:]
     n_ensemble = ensemble.shape[0]
     dists = ensemble - p1
 
     # apply pbc to dist
-    dists[:,:,0:2] = periodic_distant_vectors(dists[:,:,0:2], x_size,y_size)
+    dists[:,:,0:2] = periodic_distant_vectors(dists[:,:,0:2], box_size)
 
     average = p1 + 1/(n_ensemble) * np.sum(dists, axis=0)
 
-    average[:,0] = np.mod(average[:,0], x_size)
-    average[:,1] = np.mod(average[:,1], y_size)
+    average[:,0] = np.mod(average[:,0], box_size)
+    average[:,1] = np.mod(average[:,1], box_size)
     average[:,2] = np.mean(ensemble[:,:,2], axis=0)
     average[:,3] = np.angle(np.sum( np.exp(1j* ensemble[:,:,3] ) ,axis=0))
         
     
     return average
 
-def distances_with_periodic_boundary(
-    a_positions,
-    b_positions,        
-    boundary,
-):
-    _a1 = np.tile(a_positions, (a_positions.shape[0], 1, 1))
-    _b1 = np.tile(b_positions, (b_positions.shape[0], 1, 1))
-    _b1 = np.transpose(_b1, axes=(1, 0, 2))
-    distances = _a1-_b1
-    
-    distances[:,:,0] = np.where(distances[:,:,0]>boundary/2,distances[:,:,0]-boundary,distances[:,:,0])
-    distances[:,:,0] = np.where(distances[:,:,0]<-boundary/2,distances[:,:,0]+boundary,distances[:,:,0])
-        
-    distances[:,:,1] = np.where(distances[:,:,1]>boundary/2,distances[:,:,1]-boundary,distances[:,:,1])
-    distances[:,:,1] = np.where(distances[:,:,1]<-boundary/2,distances[:,:,1]+boundary,distances[:,:,1])
-    return np.linalg.norm(distances, axis=2)
 
 
 
 
-def assign_fn(measurement_positions, state_positions, boundary):
+def assign_fn(measurement_positions, state_positions, box_size):
     rowids, colids = linear_sum_assignment(
-        distances_with_periodic_boundary(measurement_positions, state_positions, boundary=boundary)
+        distances_with_periodic_box_size(measurement_positions, state_positions, box_size=box_size)
     )
     return colids
 
 
 ###### METRICS
 
-def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: np.ndarray, boundary:float) -> float:
+def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: np.ndarray, box_size:float) -> float:
     n_particles = np.shape(viscek_positions)[0]
-    cost_matrix = distances_with_periodic_boundary(viscek_positions, kalman_positions, boundary=boundary)
+    cost_matrix = distances_with_periodic_box_size(viscek_positions, kalman_positions, box_size=box_size)
     rowid, col_id = linear_sum_assignment(cost_matrix)
     precision = 1/n_particles*sum(np.diag(np.ones(n_particles))[rowid, col_id])
     return precision

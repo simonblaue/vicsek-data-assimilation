@@ -1,7 +1,9 @@
+.DS_Store
 .gitignore
 README.md
 Readme.md
 pyproject.toml
+analyze/__init__.py
 analyze/analyze.py
 analyze/dataset_analyze.py
 analyze/run_analysis.py
@@ -10,6 +12,7 @@ dataset/external_states.npy
 dataset/external_states_filter.npy
 dataset/external_states_model.npy
 dataset/motileparticlesim.jld2
+experiments/__init__.py
 experiments/parameters.py
 experiments/run_kalmanparam_experiments.py
 experiments/run_noise_experiments.py
@@ -37,6 +40,7 @@ src/AB_Data_Assimilation.egg-info/requires.txt
 src/AB_Data_Assimilation.egg-info/top_level.txt
 tests/test.ipynb
 visualization/Static_Plots.ipynb
+visualization/__init__.py
 visualization/animation.py
 visualization/plotting.py
 visualization/visualize.py
