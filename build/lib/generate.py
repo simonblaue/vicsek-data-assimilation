@@ -21,7 +21,7 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     assignments = []
    
     # with alive_bar(parameters['steps']) as bar:
-    for t in tqdm(range(parameters['steps']), position=5, leave=False):
+    for t in tqdm(range(parameters['steps']), position=6, leave=False):
         viscecmodel.update()
         viscecstates.append(viscecmodel.agents)
 
@@ -39,7 +39,7 @@ def execute_experiment(parameters):
     parameters['theta_observerd'] = parameters['observable_axis'][-1] 
     
     t0 = time.time()
-    for seed in parameters['seeds']:
+    for seed in  tqdm(parameters['seeds'], position=5, leave=False):
         experimentname = parameters['name']
         # print(f'Running experiment {experimentname} with seed {seed}')
 
@@ -71,44 +71,3 @@ def execute_experiment(parameters):
 
 
     
-base_parameters = {
-    'name': 'Baseline',
-    'seeds': [np.random.randint(1,5)],
-    'steps': 200,
-    'timestepsize': 1,
-    'n_particles': 50,
-    'n_ensembles': 50,
-    'observation_noise': 0.1,
-    'alignment_strength':0.05,
-    'noisestrength': 0.15,
-    'velocity': 0.05,
-    'sampling_rate': 1,
-    'alignment_radius': 1,
-    'observable_axis': (True,True,True,True),
-    'box_size': 10,
-    'shuffle_measurements': False,
-    'ensemble_pos_noise' : 0.03,
-    'ensemble_theta_noise': 0.2,
-    'save_name' : 'None'
-    }
-
-parameters_for_given_data = {
-    'name': 'GivenData',
-    'seeds': [np.random.randint(1,5)],
-    'steps': 200,
-    'timestepsize': 1,
-    'n_particles': 361,
-    'n_ensembles': 2,
-    'observation_noise': 0.000,
-    'alignment_strength':0.05,
-    'noisestrength': 0.15,
-    'velocity': 0.09,
-    'sampling_rate': 1,
-    'alignment_radius': 1,
-    'observable_axis': (True,True,True,True),
-    'x_axis': 50,
-    'y_axis': 50,
-    'find_velocities': False,
-    'shuffle_measurements': False,
-    'save_name' : 'None'
-    }
