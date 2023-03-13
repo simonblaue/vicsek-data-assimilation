@@ -1,6 +1,8 @@
 import numpy as np
 import json
 import os
+from pathlib import Path
+import matplotlib.pyplot as plt
 
 
 ##############################################################################
@@ -132,3 +134,58 @@ def get_header(exp):
 
     title = f"Phase: {phase}, Observed: {obs_axis}, \n Agents:{nr_agents}, Ensembles:{nr_ensembles},\n Obs. Noise:{obs_noise}, Shuffling:{shuffling}"
     return title 
+
+# Flocking_50_10_0.01_0.1_0.08
+# experiment particles ensembles obs position theta
+
+def plot_all(
+    path = "/home/henrik/projects/nonlineardynamics23/saves_new/", # path to experiment folder
+    experiment = 'Flocking',
+    ensembles = [10, 25, 50, 75][3],
+    colors = ['navy', 'darkred', 'orange',
+    ]
+):
+    max_lengths = {}
+
+    for folder in list(Path(path).iterdir()):
+        parameters = json.load(open(str(folder)+'/params.json'))
+        metrics = json.load(open(str(folder)+'/metrics.json'))
+        max_lengths[parameters['name']] = metrics['max_length_analysis']
+        
+    scale = 2
+    test_ensembles = [10, 25, 50, 75]
+    test_observation_noise = [0.01, 0.05, 0.1]
+    ensemble_theta_noise = [0.08, 0.2, 0.5]
+    ensemble_pos_noise = [0.002, 0.1, 0.3]
+    fig, axs = plt.subplots(
+        len(ensemble_theta_noise), len(ensemble_pos_noise), figsize=(len(ensemble_pos_noise)*3, len(ensemble_theta_noise)*3),
+        sharey=True
+    )
+    for j in range(len(ensemble_theta_noise)):
+        for i in range(len(ensemble_pos_noise)):
+            # Flocking_50_10_0.01_0.1_0.08
+            # experiment particles ensembles obs position theta
+            names = [
+                f'{experiment}_50_{ensembles}_{noise}_{ensemble_pos_noise[i]}_{ensemble_theta_noise[j]}' for noise in test_observation_noise
+            ]
+            mls = np.array([max_lengths[n] for n in names]).T
+            axs[j][i].set_xlabel('Observation Noise')
+            axs[j][i].grid(which='major', axis='y', linestyle='--')
+            
+            axs[j][i].set_ylim((0, 350))
+            axs[j][i].scatter(test_observation_noise, mls[0],)
+            axs[j][i].set_xscale('log')
+            ob_axis = f'Angle Noise: {ensemble_theta_noise[j]}'
+            axs[j][i].errorbar(test_observation_noise, mls[0],yerr=mls[1], capsize=5, elinewidth=1, fmt='o', c=colors[j], label=ob_axis)
+            if j == 0:
+                axs[j][i].set_title(f'Position Noise: {ensemble_pos_noise[i]}')
+            if i == 0:
+                axs[j][i].set_ylabel('Tracking Consistency (steps)')
+                axs[j][i].legend()
+    plt.title(f'Ensebles: {ensembles}')
+    plt.tight_layout()
+    plt.savefig(f'../nonlineardynamics23/vicsek-data-assimilation/saves/plots/grid_seach_{ensembles}.jpg')
+    plt.show()
+    
+if __name__ == "__main__":
+    plot_all()

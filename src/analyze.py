@@ -165,11 +165,11 @@ def analyze_single_experiment(path: str,):
         'Filter Consistency': []
     }
     
-    metrics  = json.load(open(f'../saves/{path}metrics.json'))
+    metrics  = json.load(open(f'saves/{path}metrics.json'))
     # print(metrics['max_length_analysis'])
-    experiment_params  = json.load(open(f'../saves/{path}params.json'))
+    experiment_params  = json.load(open(f'saves/{path}params.json'))
     seed = experiment_params['seeds'][0]
-    assignmentsT = np.load(f'../saves/{path}{seed}_assignments.npy').T
+    assignmentsT = np.load(f'saves/{path}{seed}_assignments.npy').T
     steps = experiment_params['steps']
 
     trajs = assignments_to_binary_trajectories(assignmentsT, steps)
@@ -180,7 +180,7 @@ def analyze_single_experiment(path: str,):
 
     fig, axs = plt.subplots(1, 2, figsize=(15, 5))
     axs[0].plot(assignmentdata)
-    axs[1].plot(metrics['Filter Consistency'], label='Consistency seed 0')
+    axs[1].plot(metrics['Filter Consistency'], label='AMTC')
     axs[1].plot(metrics['Average Hungarian Precision'], label='Avg Hungarian Precision')
     axs[1].plot(metrics['Average LPP'], label='Avg LPP')
     axs[1].legend()
@@ -188,15 +188,15 @@ def analyze_single_experiment(path: str,):
     axs[1].set_xlabel('Step')
     axs[0].set_ylabel('Assignments')
     axs[1].set_ylabel('Metric')
-    fig.suptitle(f'Experiment: {str(Path(path).name)}')
-    plt.savefig('saves/plots/single_experiment.jpg')
+    fig.suptitle(f'Experiment: {str(Path(path).name)}, seed = 0')
+    plt.savefig('vicsek-data-assimilation/saves/plots/amtc_explanation.jpg')
     plt.show()
 
         
 if __name__ == "__main__":
     # read_and_eval('Obsv_noise_0.1')
-    # print(list(Path('../saves').iterdir())[0])
-    p = 'Flocking_50_10_0.01_0.1_0.08/'
+    # print(list(Path('saves').iterdir())[0])
+    p = 'Flocking_1111_50_50_0.1_True/'
     analyze_single_experiment(p)
     
     # applying changes to all files
