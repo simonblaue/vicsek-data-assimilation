@@ -33,29 +33,8 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     
     return viscecstates, filterstates, assignments
 
-def execute_experiment(
-    parameters = {
-        'name': 'Baseline',
-        'seeds': [np.random.randint(1,1000)],
-        'steps': 300,
-        'timestepsize': 1,
-        'n_particles': 10,
-        'n_ensembles': 75,
-        'observation_noise': 0.01,
-        'alignment_strength':0.15,
-        'noisestrength': 0.15,
-        'velocity': 0.05,
-        'sampling_rate': 1,
-        'alignment_radius': 1,
-        'observable_axis': (True,True,True,False),
-        'x_axis': 10,
-        'y_axis': 10,
-        'find_velocities': False,
-        'shuffle_measurements': False,
-        'ensemble_theta_noise': 0.,
-        'ensemble_pos_noise' : 0.00,
-        'save_name' : "With_Artificall_Noise"
-        }):
+def execute_experiment(parameters):
+    
     
     parameters['theta_observerd'] = parameters['observable_axis'][-1] 
     
@@ -89,9 +68,30 @@ def execute_experiment(
         json.dump(parameters, fp, indent=4)
     
 
+
+
 if __name__ =="__main__":
-    
-    
+    base_parameters = {
+        'name': 'Baseline',
+        'seeds': [np.random.randint()],
+        'steps': 300,
+        'timestepsize': 1,
+        'n_particles': 50,
+        'n_ensembles': 100,
+        'observation_noise': 0.1,
+        'alignment_strength':0.05,
+        'noisestrength': 0.15,
+        'velocity': 0.05,
+        'sampling_rate': 1,
+        'alignment_radius': 1,
+        'observable_axis': (True,True,True,True),
+        'x_axis': 10,
+        'y_axis': 10,
+        'shuffle_measurements': False,
+        'ensemble_pos_noise' : 0.03,
+        'ensemble_theta_noise': 0.2,
+        }
+
     parameters_for_given_data = {
         'name': 'GivenData',
         'seeds': [np.random.randint(1,1000)],
@@ -111,4 +111,4 @@ if __name__ =="__main__":
         'find_velocities': False,
         'shuffle_measurements': False,
         }
-    execute_experiment()
+    execute_experiment(base_parameters)
