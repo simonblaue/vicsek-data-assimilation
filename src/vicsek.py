@@ -23,10 +23,11 @@ class ViszecSimulation:
         self.n_particles = config["n_particles"]
         self.alignment_radius = config["alignment_radius"]
         self.noisestrength = config["noisestrength"]
+        self.alignment_strength = config["alignment_strength"]
 
         self.box_size = config["box_size"]
 
-        self.dt = config["timestep"]
+        self.dt = config["timestepsize"]
         self.time = 0
         
         
@@ -46,7 +47,7 @@ class ViszecSimulation:
         # Has to be commented out because in the complex exponential the particle itself needs to be subtracted.
         #d[d == 0] = np.inf
         
-        aligner = d < selfalignment_radius
+        aligner = d < self.alignment_radius
         
         # calculate mean angles
         all_phi = agents[:,3]

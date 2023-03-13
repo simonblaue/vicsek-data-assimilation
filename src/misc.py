@@ -59,8 +59,8 @@ def periodic_distant_vectors(vectors, box_size):
     
     assert vectors.shape[-1] == 2, f"Dont pass angles in this function you dumbo!, { vectors.shape[-1]}"
     
-    vectors[:,:,0:2] = np.where(vectors[:,:,0]>box_size/2,vectors[:,:,0]-box_size,vectors[:,:,0])
-    vectors[:,:,0:2] = np.where(vectors[:,:,0]<-box_size/2,vectors[:,:,0]+box_size,vectors[:,:,0])
+    vectors[:,:,0:2] = np.where(vectors[:,:,0:2]>box_size/2,vectors[:,:,0:2]-box_size,vectors[:,:,0:2])
+    vectors[:,:,0:2] = np.where(vectors[:,:,0:2]<-box_size/2,vectors[:,:,0:2]+box_size,vectors[:,:,0:2])
 
     
     return vectors
@@ -82,8 +82,8 @@ def absolute_distances_with_periodic_box_size(
 
 def foldback_dist_ensemble(ensemble_a, ensemble_b, box_size):
     vectors = ensemble_a - ensemble_b
-    vectors[:,:,0:2] = np.where(vectors[:,:,0]>box_size/2,vectors[:,:,0]-box_size,vectors[:,:,0])
-    vectors[:,:,0:2] = np.where(vectors[:,:,0]<-box_size/2,vectors[:,:,0]+box_size,vectors[:,:,0])
+    vectors[:,:,0:2] = np.where(vectors[:,:,0:2]>box_size/2,vectors[:,:,0:2]-box_size,vectors[:,:,0:2])
+    vectors[:,:,0:2] = np.where(vectors[:,:,0:2]<-box_size/2,vectors[:,:,0:2]+box_size,vectors[:,:,0:2])
     
     vectors[:,:,3] = np.angle(np.exp(1j* (ensemble_a[:,:,3] - ensemble_b[:,:,3]) ))
     
@@ -95,8 +95,8 @@ def foldback_dist_states(state_a, state_b, box_size, theta_axis=-1):
     
     vectors = state_a - state_b
 
-    vectors[:,0:2] = np.where(vectors[:,0]>box_size/2,vectors[:,0]-box_size,vectors[:,0])
-    vectors[:,0:2] = np.where(vectors[:,0]<-box_size/2,vectors[:,0]+box_size,vectors[:,0])
+    vectors[:,0:2] = np.where(vectors[:,0:2]>box_size/2,vectors[:,0:2]-box_size,vectors[:,0:2])
+    vectors[:,0:2] = np.where(vectors[:,0:2]<-box_size/2,vectors[:,0:2]+box_size,vectors[:,0:2])
     
     # Theta axis is false or -1
     if theta_axis:
@@ -129,7 +129,7 @@ def mean_over_ensemble(ensemble, box_size):
 
 def assign_fn(measurement_positions, state_positions, box_size):
     rowids, colids = linear_sum_assignment(
-        distances_with_periodic_box_size(measurement_positions, state_positions, box_size=box_size)
+        absolute_distances_with_periodic_box_size(measurement_positions, state_positions, box_size=box_size)
     )
     return colids
 
@@ -138,7 +138,7 @@ def assign_fn(measurement_positions, state_positions, box_size):
 
 def metric_hungarian_precision(viscek_positions: np.ndarray, kalman_positions: np.ndarray, box_size:float) -> float:
     n_particles = np.shape(viscek_positions)[0]
-    cost_matrix = distances_with_periodic_box_size(viscek_positions, kalman_positions, box_size=box_size)
+    cost_matrix = absolute_distances_with_periodic_box_size(viscek_positions, kalman_positions, box_size=box_size)
     rowid, col_id = linear_sum_assignment(cost_matrix)
     precision = 1/n_particles*sum(np.diag(np.ones(n_particles))[rowid, col_id])
     return precision

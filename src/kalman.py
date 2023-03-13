@@ -35,7 +35,7 @@ class EnsembleKalman():
         
         self.model_forecast = forecast_func
         
-        self.number_particles = config['n_particles']
+        self.n_particles = config['n_particles']
         self.box_size = config["box_size"]
     
         self.number_ensembles = config['n_ensembles']
@@ -45,7 +45,7 @@ class EnsembleKalman():
         
         self.sampling_rate = config["sampling_rate"]
               
-        self.agents = np.random.rand(self.number_particles, 4)
+        self.agents = np.random.rand(self.n_particles, 4)
         self.agents[:,config["observable_axis"]] = init_state[:,config["observable_axis"]]
         if not self.config["observable_axis"][0]:
             self.agents[:,0] *= self.config["x_axis"]
@@ -65,6 +65,8 @@ class EnsembleKalman():
         self.number_dims = len(config["observable_axis"])
         self.H = create_H(config["n_particles"], config["observable_axis"] )
         
+        
+        self.shuffle_measurements = config["shuffle_measurements"]
         self._idxs = np.arange(0, config['n_particles'], dtype=np.uint8)
         
         
@@ -83,8 +85,8 @@ class EnsembleKalman():
         state = agents.copy()
         
         ensemble = np.tile(state, (self.number_ensembles, 1, 1)) 
-        ensemble[:,:,0:2] += np.random.normal(size=(self.number_ensembles, self.number_particles, 2), scale=self.ensemble_pos_noise)
-        ensemble[:,:,3] += np.random.normal(size=(self.number_ensembles, self.number_particles), scale=self.ensemble_theta_noise) 
+        ensemble[:,:,0:2] += np.random.normal(size=(self.number_ensembles, self.n_particles, 2), scale=self.ensemble_pos_noise)
+        ensemble[:,:,3] += np.random.normal(size=(self.number_ensembles, self.n_particles), scale=self.ensemble_theta_noise) 
         
         for _ in range(self.sampling_rate):
             for j in range(self.number_ensembles):
@@ -96,7 +98,7 @@ class EnsembleKalman():
     def create_virtual_observations_ensemble(self, measured_state):
         virtual_observations = (
                 np.tile(measured_state, (self.number_ensembles, 1, 1)) + 
-                np.random.normal(size=(self.number_ensembles,self.number_particles, self.number_dims), scale=self.observation_noise)
+                np.random.normal(size=(self.number_ensembles,self.n_particles, self.number_dims), scale=self.observation_noise)
             )
         return virtual_observations
     
@@ -134,7 +136,7 @@ class EnsembleKalman():
             virtual_observations = virtual_observations[:,:,self.observable_axis]
             
             # Virtual observation covariance
-            R = np.eye(self.number_particles*self.number_obs, self.number_particles*self.number_obs) * self.observation_noise
+            R = np.eye(self.n_particles*self.number_obs, self.n_particles*self.number_obs) * self.observation_noise
 
             # Kalman Gain is calculated using the pseudo inverse 
             K = PF @ self.H.T @ scipy.linalg.pinv(self.H @ PF @ self.H.T + R)
@@ -142,10 +144,10 @@ class EnsembleKalman():
             
             ensemble_update = np.array([ 
                 x + (K @ foldback_dist_states(z, \
-                        (self.H @ x.flatten()).reshape(self.number_particles, self.number_obs),\
+                        (self.H @ x.flatten()).reshape(self.n_particles, self.number_obs),\
                         self.box_size, \
-                        theat_axis=self.theta_observerd
-                    ).flatten()).reshape(self.number_particles, self.number_dims)
+                        theta_axis=self.theta_observerd
+                    ).flatten()).reshape(self.n_particles, self.number_dims)
                 for x, z in zip(forecast_ensemble, virtual_observations)
             ])
             
