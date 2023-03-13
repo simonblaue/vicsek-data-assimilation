@@ -1,13 +1,13 @@
 # analyze a set of eperiments (given paths) with metrics
 import json
 import numpy as np 
-from misc import metric_lost_particles, metric_hungarian_precision
 import os
-from typing import Dict, List
+from typing import List
 from pathlib import Path
-from misc import bools2str
-from experiments.parameters import load_parameters
 import matplotlib.pyplot as plt
+
+from src.misc import metric_lost_particles, metric_hungarian_precision, bools2str
+from experiments.parameters import load_parameters
 
 def read_and_eval(experiment_name):
     filter_states, model_states, params = read_experiment(experiment_name)

@@ -1,10 +1,11 @@
 import numpy as np
-import kalman
-import vicsek
-
 from tqdm.auto import tqdm
 
-DATASET_PATH = "saves/dataset/ds_model.npy"
+import src.kalman
+import src.vicsek
+
+
+DATASET_PATH = "../dataset/external_states_model.npy"
 
 parameters = {
         'name': 'Dataset',

@@ -2,6 +2,7 @@ import numpy as np
 import tqdm
 import json
 from pathlib import Path
+
 from analyze.analyze import experiments_to_analyze, assignments_to_binary_trajectories
     
 
