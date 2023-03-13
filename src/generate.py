@@ -21,7 +21,7 @@ def simulate(parameters: Dict) -> Tuple[List, List, Dict]:
     assignments = []
    
     # with alive_bar(parameters['steps']) as bar:
-    for t in tqdm(range(parameters['steps']), position=5, leave=False):
+    for t in tqdm(range(parameters['steps']), position=6, leave=False):
         viscecmodel.update()
         viscecstates.append(viscecmodel.agents)
 
@@ -39,7 +39,7 @@ def execute_experiment(parameters):
     parameters['theta_observerd'] = parameters['observable_axis'][-1] 
     
     t0 = time.time()
-    for seed in parameters['seeds']:
+    for seed in  tqdm(parameters['seeds'], position=5, leave=False):
         experimentname = parameters['name']
         # print(f'Running experiment {experimentname} with seed {seed}')
 
