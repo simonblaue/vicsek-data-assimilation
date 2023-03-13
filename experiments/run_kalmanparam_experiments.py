@@ -1,32 +1,13 @@
-from generate import execute_experiment
-from analyze.analyze import read_and_eval
-from misc import bools2str
-import os
-from tqdm import tqdm
-import experiments.run_phase_experiments as run_phase_experiments
-import numpy as np
 
-parameters = {
-        'name': 'Baseline',
-        'seeds': [1,2,3,4,5,6,7,8,9,10],
-        'steps': 300,
-        'timestepsize': 1,
-        'n_particles': 50,
-        'n_ensembles': 100,
-        'observation_noise': 0.1,
-        'alignment_strength':0.05,
-        'noisestrength': 0.15,
-        'velocity': 0.05,
-        'sampling_rate': 1,
-        'alignment_radius': 1,
-        'observable_axis': (True,True,True,False),
-        'x_axis': 10,
-        'y_axis': 10,
-        'find_velocities': False,
-        'shuffle_measurements': False,
-        'ensemble_pos_noise' : 0.03,
-        'ensemble_theta_noise': 0.2,
-        }
+from tqdm.auto import tqdm
+
+
+import experiments.run_phase_experiments as run_phase_experiments
+from parameters import parameters
+from analyze.analyze import read_and_eval
+from src.generate import execute_experiment
+from src.misc import bools2str
+
 
 test_observable_axis = [(True,True,True,True),(True,True,True,False),(True,True,False,False),(True,True,False,True)]
 test_ensembles = [2,10,25,50,100]
@@ -41,7 +22,8 @@ def grid_search(parameters,phaseparameters, kind):
     for p in phaseparameters:
         parameters[p] = phaseparameters[p]
 
-
+    parameters['seed'] = [1,2,3,4,5,6,7,8,9,10]
+    
     for observable_axis in tqdm(test_observable_axis, position=0, leave=False):
         for ensembles in tqdm(test_ensembles, position=2, leave=False):
             for observation_noise in tqdm(test_observation_noise, position=3, leave=False):
