@@ -2,6 +2,13 @@
 requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+# All the following settings are optional:
+include = ["src"]
+exclude = ["build*", "saves", "oldsaves"]  # empty by default
+namespaces = false  # true by default
+
+
 [project]
 name = "AB_Data_Assimilation"
 authors = [
