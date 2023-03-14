@@ -13,7 +13,7 @@ The animations can be saved.
 def visualize_experiment(experiment_name):
 
 
-    experiment = f'oldsaves/{experiment_name}/'
+    experiment = f'saves/{experiment_name}/'
     parameters = json.load(open(f'{experiment}params.json'))
     seed_number = 0
     seed = int(parameters['seeds'][seed_number])
