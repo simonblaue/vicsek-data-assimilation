@@ -1,11 +1,12 @@
 from typing import List, Tuple
 import matplotlib.gridspec as gridspec
 import numpy as np
-from misc import n_colors, xyphi_to_abc, format_e, metric_hungarian_precision, metric_lost_particles, metric_flocking
 from matplotlib import animation
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.patches import Polygon
+
+from src.misc import n_colors, xyphi_to_abc, format_e, metric_hungarian_precision, metric_lost_particles, metric_flocking
 
 """
 This script contains the animation class for visualization
