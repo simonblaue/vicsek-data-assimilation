@@ -16,11 +16,11 @@ if __name__ == "__main__":
     """
 
     # execute_experiment(base_parameters) # You can change the parameters to parameters_for_given_data, phase_1_flocking, phase_2_random, phase_3_jonas
-    visualize_experiment(experiment_name=base_parameters["name"])
+    # visualize_experiment(experiment_name=base_parameters["name"])
     
     # kalmanparam_grid_search(base_parameters,phase_1_flocking, "Flocking")
     # kalmanparam_grid_search(base_parameters,phase_2_random, "Random")
     
-    # noise_grid_search(base_parameters,phase_1_flocking, "Flocking")
+    noise_grid_search(base_parameters, phase_1_flocking, "Flocking")
     
     # plot_all()

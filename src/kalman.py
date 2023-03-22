@@ -75,7 +75,7 @@ class EnsembleKalman():
         np.random.shuffle(shuffled_idxs)
         
         measurement_shuffled = measurement_pos[shuffled_idxs].squeeze()
-        assign_idxs = assign_fn(measurement_shuffled, agents_pos, boundary=self.box_size)
+        assign_idxs = assign_fn(measurement_shuffled, agents_pos, box_size=self.box_size)
         # new measurement, assignment
 
         return shuffled_idxs[assign_idxs]
