@@ -21,6 +21,6 @@ if __name__ == "__main__":
     # kalmanparam_grid_search(base_parameters,phase_1_flocking, "Flocking")
     # kalmanparam_grid_search(base_parameters,phase_2_random, "Random")
     
-    noise_grid_search(base_parameters, phase_1_flocking, "Flocking")
+    # noise_grid_search(base_parameters, phase_1_flocking, "Flocking")
     
-    # plot_all()
+    plot_all()

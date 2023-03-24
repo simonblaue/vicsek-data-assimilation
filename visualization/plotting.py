@@ -142,7 +142,7 @@ def plot_all(
     path = "saves/", # path to experiment folder
     experiment = 'Flocking',
     ensembles = [10, 25, 50, 75][3],
-    colors = ['navy', 'darkred', 'orange',
+    colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 
     ]
 ):
     max_lengths = {}
@@ -160,9 +160,13 @@ def plot_all(
     # ensemble_theta_noise = [0.08, 0.2, 0.5]
     # ensemble_pos_noise = [0.002, 0.1, 0.3]
     
-    test_observation_noise = [0.01, 0.1, 0.2]
-    ensemble_theta_noises = [0.08,0.3, 0.7] 
-    ensemble_pos_noises = [0.002,0.25,  0.5]
+    # test_observation_noise = [0.01, 0.1, 0.2]
+    # ensemble_theta_noises = [0.08,0.3, 0.7] 
+    # ensemble_pos_noises = [0.002,0.25,  0.5]
+    
+    test_observation_noise = [0.01, 0.05, 0.1, 0.15, 0.2]
+    ensemble_theta_noises = [0.08, 0.1 , 0.3, 0.5, 0.7] 
+    ensemble_pos_noises = [0.002, 0.02, 0.4, 0.5, 0.6]
     
     ensembles = 50
     
